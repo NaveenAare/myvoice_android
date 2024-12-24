@@ -1,0 +1,74 @@
+/* TextToSpeech.css */
+
+/* Set background color to light blue */
+body {
+    background-color: #ADD8E6; /* Light blue background */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Style for the container */
+div {
+    padding: 20px;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Style for the title */
+h1 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Style for the input field */
+input {
+    width: 80%;
+    padding: 15px; /* Increased padding for height */
+    margin: 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Ensures padding doesn't affect the width */
+    word-wrap: break-word; /* Ensures text wraps to the next line when it reaches the border */
+}
+
+/* Style for the buttons */
+button {
+    background-color: #5c6bc0; /* Blue color for the button */
+    color: white;
+    padding: 25px 45px; /* Increased padding for better appearance */
+    border: none;
+    border-radius: 55px; /* More rounded corners */
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    margin: 10px; /* Add space around the button */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #3f51b5; /* Darker shade of blue on hover */
+    transform: scale(1.05); /* Slightly increase the size of the button */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhance shadow on hover */
+}
+
+/* Style for the second button */
+button:last-child {
+    background-color: #3f51b5; /* Darker blue color for the second button */
+}
+
+/* Optional: Add spacing between buttons */
+button + button {
+    margin-left: 15px; /* Adds space between buttons */
+}
+
+
+
+/* Add spacing between buttons */
+button + button {
+    margin-left: 10px;
+}

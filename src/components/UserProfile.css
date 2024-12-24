@@ -1,0 +1,32 @@
+.user-profile-container {
+    text-align: center;
+  }
+  
+  .profile-summary {
+    margin: 20px;
+  }
+  
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+  
+  .view-profile-button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .profile-details {
+    margin-top: 20px;
+  }
+  
+  .profile-details-image {
+    width: 100%;
+    height: auto;
+  }
+  

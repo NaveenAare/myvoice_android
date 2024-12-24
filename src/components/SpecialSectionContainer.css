@@ -1,0 +1,52 @@
+.special-sections-container {
+    padding: 16px;
+    background-color: #111111; /* Light background for contrast */
+  }
+  
+  .special-sections-heading {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #ff4081; /* Accent color */
+    margin-bottom: 16px;
+  }
+  
+  .special-sections-cards {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 8px;
+  }
+  
+  .special-section-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    width: 220px;
+    text-align: center;
+    flex-shrink: 0;
+    background-color: #070707;
+  }
+  
+  .special-section-image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  .special-section-info {
+    margin-top: 8px;
+  }
+  
+  .special-section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  .special-section-summary {
+    font-size: 14px;
+    color: #666666;
+  }
+  

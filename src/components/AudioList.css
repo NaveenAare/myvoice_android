@@ -1,0 +1,56 @@
+.audio-list-container {
+    padding: 0; /* Remove extra space */
+    background-color: #111010;
+}
+  
+.audio-list-heading {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #6a1b9a; /* Accent color */
+    margin-bottom: 16px;
+}
+  
+.audio-list {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: nowrap; /* Ensure cards are side by side */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+}
+  
+.audio-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #131212;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+    flex: 0 0 auto; /* Prevent cards from shrinking */
+}
+  
+.audio-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+  
+.audio-description {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+  
+.audio-transcribe {
+    font-size: 0.9rem;
+    color: #999;
+    margin-bottom: 16px;
+    font-style: italic;
+}
+  
+.audio-player {
+    width: 100%;
+    outline: none;
+}

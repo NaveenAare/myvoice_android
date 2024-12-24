@@ -1,0 +1,7 @@
+{
+  "name": "speak-char-ai",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
