@@ -8,6 +8,7 @@ import LatestCharacters from '../components/LatestCharacters';
 import AudioList from '../components/AudioList';
 import FilterSection from '../components/FilterSection';
 import UserProfile from '../components/UserProfile';
+import PremiumAssistants from '../components/PremiumAssistants';
 
 const Home: React.FC = () => {
   return (
@@ -18,10 +19,12 @@ const Home: React.FC = () => {
         <SearchCharacters/>
         <IonText className="popular-tools-heading">❤️ Special Section 💎</IonText>
         <SpecialSectionContainer />
-        <IonText className="popular-tools-heading">🔥 Popular Tools 🚀</IonText>
+        <IonText className="popular-tools-heading">🔥 Popular Assistants 🚀</IonText>
         <PopularToolsContainer/>
         <IonText className="latest-characters-heading">🌟 Latest Characters ✨</IonText>
         <LatestCharacters/>
+        <IonText className="latest-characters-heading">👷Popular Tools🛠️</IonText>
+        <PremiumAssistants/>
         <FilterSection/>
         <AudioList/>
         <TextToSpeech />

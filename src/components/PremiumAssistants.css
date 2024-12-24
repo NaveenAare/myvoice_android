@@ -1,0 +1,60 @@
+/* PremiumAssistants.css */
+
+.assistants-container {
+    padding: 0; /* Remove extra space */
+    background-color: #111010; /* Match dark background */
+}
+
+.assistants-heading {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #6a1b9a; /* Accent color */
+    margin-bottom: 16px;
+}
+
+.assistants-list {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: nowrap; /* Ensure cards are side by side */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+    padding: 8px;
+}
+
+.assistant-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #131212; /* Match dark card background */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+    flex: 0 0 auto; /* Prevent cards from shrinking */
+}
+
+.assistant-image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px; /* Slight rounding for images */
+    margin-bottom: 12px;
+}
+
+.assistant-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff; /* Stand out on dark background */
+    margin-bottom: 8px;
+}
+
+.assistant-summary {
+    font-size: 1rem;
+    color: #999; /* Subtle text color */
+    margin-bottom: 16px;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}
