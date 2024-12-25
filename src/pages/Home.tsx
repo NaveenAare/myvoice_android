@@ -28,7 +28,8 @@ const Home: React.FC = () => {
         <FilterSection2/>
         <SpecialSectionContainer />
         <PopularToolsContainer/>
-    
+        <AudioList/>
+        <TextToSpeech />
       </IonContent>
       <IonFooter>
       </IonFooter>
