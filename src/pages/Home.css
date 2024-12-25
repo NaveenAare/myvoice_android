@@ -1,0 +1,17 @@
+ion-content {
+    --padding-start: 0;
+    --padding-end: 0;
+    width: 100%;
+    height: 100%;
+}
+
+ion-content::part(scroll) {
+    padding: 0;
+}
+
+.home-container {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}

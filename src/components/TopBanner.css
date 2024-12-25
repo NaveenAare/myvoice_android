@@ -1,0 +1,217 @@
+/* Button Container */
+.btn {
+    height: 60px;
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #42A5F5, #26C6DA);
+    color: #F1F1F1;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 2;
+    transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+
+ion-button.btn::part(native) {
+    background: transparent;
+    box-shadow: none;
+    --box-shadow: none;
+    --background: transparent;
+    --background-activated: transparent;
+    --background-focused: transparent;
+    --background-hover: transparent;
+    --ripple-color: transparent;
+}
+
+
+
+/* Wave Icon Container */
+.btn-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Wave Icon Line Base */
+.btn-icon-line {
+    background: #ffffff;
+    border-radius: 2px;
+    width: 4px;
+    position: absolute;
+}
+
+/* Wave Icon Line 1 */
+.btn-icon-line1 {
+    height: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}
+
+/* Wave Icon Line 2 */
+.btn-icon-line2 {
+    height: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+/* Wave Icon Line 3 */
+.btn-icon-line3 {
+    height: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+}
+
+
+
+.image-carousel {
+    left: 50%; /* Move right by 50% */
+    transform: translate(-50%, -50%); /* Perfect center alignment */
+    width: 100%;
+    height: 180px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    overflow: hidden;
+    z-index: 2;
+    animation: fadeIn 1s forwards; /* Fade-in effect */
+    animation: fadeInFromCenter 1s ease-in-out forwards;
+}
+
+/* Base styles for ion-img in the carousel */
+ion-img.carousel-image::part(image) {
+    background: #fff;
+    position: absolute; /* Absolute to position relative to parent */
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    box-shadow: 0 4px 10px rgba(218, 218, 218, 0.7);
+    width: 90px; /* Ionic-friendly size */
+    height: 90px; /* Ionic-friendly size */
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* Centering each image inside the carousel */
+ion-img.carousel-image {
+    display: flex; /* Flexbox for child alignment */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+/* Adjust image positioning for Ionic environment */
+ion-img.carousel-image:nth-child(3)::part(image) {
+    transform: translateX(0px) scale(1.2);
+    z-index: 3;
+    opacity: 1;
+}
+
+ion-img.carousel-image:nth-child(2)::part(image) {
+    transform: translateX(-70px) scale(1.0);
+    z-index: 2;
+    opacity: 0.8;
+}
+
+ion-img.carousel-image:nth-child(1)::part(image) {
+    transform: translateX(-140px) scale(0.8);
+    z-index: 1;
+    opacity: 0.6;
+}
+
+ion-img.carousel-image:nth-child(4)::part(image) {
+    transform: translateX(70px) scale(1.0);
+    z-index: 2;
+    opacity: 0.8;
+}
+
+ion-img.carousel-image:nth-child(5)::part(image) {
+    transform: translateX(140px) scale(0.8);
+    z-index: 1;
+    opacity: 0.6;
+}
+
+/* Keyframe animations for fade-in effects */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInFromCenter {
+    0% {
+        opacity: 0;
+        transform: scaleX(0);
+        transform-origin: center;
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1);
+        transform-origin: center;
+    }
+}
+
+ion-button.btn::part(native) {
+    background: linear-gradient(90deg, #42A5F5, #26C6DA);
+}
+
+.rotating-text-container {
+    height: 25px;
+    z-index: 3;
+    position: relative;
+    display: none; /* Initially hidden */
+    left: 10px; /* Adjust as per your layout */
+    top: 10%;
+    transform: translateY(-50%);
+    margin-top: 10px;
+    font-size: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transition for opacity and position */
+}
+
+@media (min-width: 1024px) { /* Display on desktop (adjust width as needed) */
+    #rotating-text-container {
+        display: block; /* Show on larger screens */
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+.top-banner-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+}
+

@@ -1,59 +1,138 @@
-import React, { useEffect, useState } from 'react';
-import './LatestCharacters.css';
+import React, { useState, useEffect } from 'react';
+import './LatestCharacters.css'; // Import CSS styles
 
-interface PopularCard {
-  category: string;
-  code: string;
-  id: string;
-  image_url: string;
-  name: string;
-  summary2: string;
-}
 
-const LatestCharacters: React.FC = () => {
-  const [cards, setCards] = useState<PopularCard[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const LatestCharcatersSection: React.FC = () => {
+  const emojis: string[] = ["latest"]; // Emoji list
+  // Don't set initial state
+  const [activeFilter, setActiveFilter] = useState<string>('');
 
+  // Initialize on mount
   useEffect(() => {
-    fetch('https://speakingcharacter.ai/get/firstSection/popular', {
-      method: 'POST',
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setCards(data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
+    setActiveFilter(emojis[0]);
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // Separate effect for data fetching
+  useEffect(() => {
+    if (!activeFilter) return; // Don't fetch if no active filter
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+    const fetchData = async () => {
+      const formData = new FormData();
+      formData.append('filters', activeFilter);
+
+      try {
+        const response = await fetch('https://speakingcharacter.ai/get/filterSection', {
+          method: 'POST',
+          body: formData,
+        });
+        const dataFull = await response.json();
+        
+        const movingCardsWrapper = document.querySelector('.moving-cards-wrapper-your-char-latest') as HTMLElement;
+        if (!movingCardsWrapper) return;
+
+        movingCardsWrapper.innerHTML = '';
+
+        if (dataFull.is_emoji === 'true') {
+          const emojiHead = document.getElementById('emoji-head');
+          if (emojiHead) emojiHead.textContent = dataFull.sectionName;
+        }
+
+        dataFull.data.forEach((character: any) => {
+          // Create the card elements
+          const cardDiv = document.createElement('div');
+          cardDiv.classList.add('moving-card');
+
+          // Set the cursor to hand on hover
+          cardDiv.style.cursor = 'pointer'; // Alternatively, this can be set in CSS
+
+          const img = document.createElement('img');
+          img.classList.add('moving-card-img');
+          img.src = character.image_url; // Assuming API returns an 'imageUrl' field
+          img.alt = character.name;
+
+          const infoDiv = document.createElement('div');
+          infoDiv.classList.add('moving-card-info');
+
+          const h3 = document.createElement('h3');
+          h3.classList.add('moving-card-info-h3');
+          h3.textContent = character.name;
+
+          const pBy = document.createElement('p');
+          pBy.classList.add('moving-card-info-p');
+          pBy.textContent = `${character.summary2}`;
+
+          const h4 = document.createElement('h4');
+          h4.classList.add('moving-card-info-h4');
+          h4.textContent = character.description;
+
+          // Append elements to their respective parents
+          infoDiv.appendChild(h3);
+          infoDiv.appendChild(pBy);
+          infoDiv.appendChild(h4);
+          cardDiv.appendChild(img);
+          cardDiv.appendChild(infoDiv);
+
+          // Add click event listener to redirect on card click
+          cardDiv.addEventListener('click', () => {
+            checkLoginStatus(`/chatbox/chat/${character.code}`);
+            //window.location.href = `/chatbox/chat/${character.code}`;  // Assuming API returns a 'code' field for each character
+          });
+
+          // Add the new card to the wrapper
+          movingCardsWrapper.appendChild(cardDiv);
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [activeFilter]); // Re-run when activeFilter changes
+
+  // Dummy checkLoginStatus function (you can replace it with actual logic)
+  const checkLoginStatus = (url: string) => {
+    console.log(`Redirecting to: ${url}`);
+  };
+
+  
 
   return (
-    <div className="popular-cards-container">
-      {cards.map((card) => (
-        <div key={card.id} className="popular-card">
-          <img src={card.image_url} alt={card.name} className="popular-card-image" />
-          <h3 className="popular-card-title">{card.name}</h3>
-          <p className="popular-card-summary">{card.summary2}</p>
+
+      <div className="moving-section-your-char-latest">
+        <h2 id="emoji-head">Latest Characters</h2>
+        <div className="moving-cards-wrapper-your-char-latest">
+          {/* Skeleton card elements */}
+          <div className="moving-card">
+            <img className="moving-card-img" src="assets/shrimmer.png" alt="Loading..." />
+            <div className="moving-card-info">
+              <h3 className="moving-card-info-h3"></h3>
+              <p className="moving-card-info-p"></p>
+              <h4 className="moving-card-info-h4"></h4>
+            </div>
+          </div>
+
+
+          <div className="moving-card">
+            <img className="moving-card-img" src="assets/shrimmer.png" alt="Loading..." />
+            <div className="moving-card-info">
+              <h3 className="moving-card-info-h3"></h3>
+              <p className="moving-card-info-p"></p>
+              <h4 className="moving-card-info-h4"></h4>
+            </div>
+          </div>
+
+
+          <div className="moving-card">
+            <img className="moving-card-img" src="assets/shrimmer.png" alt="Loading..." />
+            <div className="moving-card-info">
+              <h3 className="moving-card-info-h3"></h3>
+              <p className="moving-card-info-p"></p>
+              <h4 className="moving-card-info-h4"></h4>
+            </div>
+          </div>
         </div>
-      ))}
-    </div>
+      </div>
   );
 };
 
-export default LatestCharacters;
+export default LatestCharcatersSection;

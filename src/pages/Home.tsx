@@ -8,6 +8,12 @@ import LatestCharacters from '../components/LatestCharacters';
 import AudioList from '../components/AudioList';
 import FilterSection from '../components/FilterSection';
 import UserProfile from '../components/UserProfile';
+import CardComponent from '../components/TopBanner';
+import BottomNav from '../components/BottomNavigation';
+import EmojiFilter from '../components/EmojiFilter';
+import LatestCharcatersSection from '../components/LatestCharacters'
+import FilterSection2 from '../components/FilterSection2';
+import PopularAudiosSection from '../components/AudioList';
 
 const Home: React.FC = () => {
   return (
@@ -16,20 +22,17 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent>
         <SearchCharacters/>
-        <IonText className="popular-tools-heading">❤️ Special Section 💎</IonText>
+        <CardComponent/>
+        <EmojiFilter/>
+        <LatestCharcatersSection/>
+        <FilterSection2/>
         <SpecialSectionContainer />
-        <IonText className="popular-tools-heading">🔥 Popular Tools 🚀</IonText>
         <PopularToolsContainer/>
-        <IonText className="latest-characters-heading">🌟 Latest Characters ✨</IonText>
-        <LatestCharacters/>
-        <FilterSection/>
-        <AudioList/>
-        <TextToSpeech />
-        <UserProfile/>
+    
       </IonContent>
       <IonFooter>
-        
       </IonFooter>
+
     </IonPage>
   );
 };

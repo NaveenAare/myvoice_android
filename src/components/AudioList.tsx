@@ -1,80 +1,81 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { IonButton } from '@ionic/react';
 import './AudioList.css';
 
-interface AudioItem {
-  code: string;
-  created_date: string | null;
-  description: string;
-  id: string;
-  name: string;
-  transcribe_text: string;
-  voice_url: string;
-}
+const PopularAudiosSection: React.FC = () => {
+    const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [characters, setCharacters] = useState<any[]>([]);  // No need for manual parameters
 
-const AudioList: React.FC = () => {
-  const [audios, setAudios] = useState<AudioItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+    // Fetch characters data from the API
+    useEffect(() => {
+        fetch('/get/all/audios')  // Your provided API URL
+            .then(response => response.json())
+            .then(data => setCharacters(data.data))  // Directly set the data
+            .catch(error => console.error('Error fetching characters:', error));
+    }, []);
 
-  useEffect(() => {
-    // Fetch audio data from the API
-    const fetchAudios = async () => {
-      try {
-        const response = await fetch('https://speakingcharacter.ai/get/all/audios');
-        if (!response.ok) {
-          throw new Error('Failed to fetch audio data');
+    const handlePlayPause = async (character: any, audio: HTMLAudioElement, playButton: HTMLButtonElement) => {
+        const loadingSpinner = document.createElement('div');
+        loadingSpinner.classList.add('loading-spinner');
+        loadingSpinner.style.display = 'none'; // Initially hidden
+        playButton.appendChild(loadingSpinner);
+
+        // If there's already audio playing, pause and reset it
+        if (currentAudio && currentAudio !== audio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            setIsPlaying(false);
         }
-        const data = await response.json();
-        setAudios(data.data); // Assuming the data is in the 'data' field
-      } catch (err) {
-      } finally {
-        setLoading(false);
-      }
+
+        // Toggle between play and pause
+        if (isPlaying && currentAudio === audio) {
+            audio.pause();
+            playButton.innerHTML = '<i class="fas fa-play"></i>'; // Reset to Play
+            setIsPlaying(false);
+        } else {
+            loadingSpinner.style.display = 'inline-block';  // Show loading spinner
+            try {
+                await audio.play();
+                setCurrentAudio(audio);
+                setIsPlaying(true);
+                playButton.innerHTML = '<i class="fas fa-pause"></i>'; // Change to Pause
+                loadingSpinner.style.display = 'none'; // Hide loading spinner
+            } catch (error) {
+                console.error('Error playing audio:', error);
+                loadingSpinner.style.display = 'none';
+            }
+        }
     };
 
-    fetchAudios();
-  }, []);
-
-  const handlePlay = (audioElement: HTMLAudioElement) => {
-    // Stop the currently playing audio, if any
-    if (currentAudioRef.current && currentAudioRef.current !== audioElement) {
-      currentAudioRef.current.pause();
-      currentAudioRef.current.currentTime = 0; // Reset the playback to the start
-    }
-    // Set the current audio as the one being played
-    currentAudioRef.current = audioElement;
-  };
-
-  if (loading) {
-    return <p>Loading audio data...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
-
-  return (
-    <div className="audio-list-container">
-      <h2 className="audio-list-heading">🎵 Audio List</h2>
-      <div className="audio-list">
-        {audios.map((audio) => (
-          <div className="audio-card" key={audio.id}>
-            <h3 className="audio-name">{audio.name}</h3>
-            <p className="audio-description">{audio.description}</p>
-            <audio
-              controls
-              className="audio-player"
-              onPlay={(e) => handlePlay(e.currentTarget)}
-            >
-              <source src={audio.voice_url} type="audio/wav" />
-              Your browser does not support the audio element.
-            </audio>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    return (
+        <div className="special-section">
+            <div className="card-list">
+                {characters.map((character, index) => {
+                    const audio = new Audio(character.voice_url);
+                    return (
+                        <div key={index} className="special-card">
+                            <img src="shrimmer.png" alt={`Character ${index + 1}`} />
+                            <div className="special-card-content">
+                                <h3 className="shimmer-title">{character.name}</h3>
+                                <p>{character.description}</p>
+                            </div>
+                            <div className="play-pause-button-container">
+                                <IonButton
+                                    onClick={(e) => {
+                                        e.stopPropagation();  // Prevent card click event
+                                        handlePlayPause(character, audio, e.currentTarget as unknown as HTMLButtonElement);
+                                    }}
+                                >
+                                    <i className="fas fa-play"></i> {/* Default play icon */}
+                                </IonButton>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
 };
 
-export default AudioList;
+export default PopularAudiosSection;
