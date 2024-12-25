@@ -32,6 +32,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import ChatScreen from './pages/ChatScreen';
 
 setupIonicReact();
 
@@ -45,6 +46,7 @@ const App: React.FC = () => (
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
+        <Route exact path="/chat/:charId" component={ChatScreen} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

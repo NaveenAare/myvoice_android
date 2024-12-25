@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom'; // Import useHistory for navigation
 import './PopularTools.css';
 
 interface Assistant {
@@ -12,12 +13,16 @@ interface Assistant {
 
 const AssistantComponent: React.FC = () => {
   const [assistants, setAssistants] = useState<Assistant[]>([]);
+  const history = useHistory(); // Initialize useHistory for routing
 
   useEffect(() => {
     // Fetch the assistant data from the API
     const fetchAssistants = async () => {
       try {
         const response = await fetch('https://speakingcharacter.ai/get/assistants');
+        if (!response.ok) {
+          throw new Error('Failed to fetch assistants');
+        }
         const data = await response.json();
         setAssistants(data.data); // Assuming the data is in 'data' field
       } catch (error) {
@@ -28,11 +33,20 @@ const AssistantComponent: React.FC = () => {
     fetchAssistants();
   }, []);
 
+  const handleCardClick = (assistantId: string) => {
+    console.log(`Redirecting to chat screen with assistant ID: ${assistantId}`);
+    history.push(`/chat/${assistantId}`); // Redirect to the chat screen with the assistant ID
+  };
+
   return (
     <div className="assistant-container">
       {assistants.length > 0 ? (
         assistants.map((assistant) => (
-          <div className="assistant-card" key={assistant.id}>
+          <div
+            className="assistant-card"
+            key={assistant.id}
+            onClick={() => handleCardClick(assistant.id)} // Redirect on click
+          >
             <img
               src={assistant.image_url}
               alt={assistant.category}

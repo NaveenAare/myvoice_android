@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom'; // Import useHistory for navigation
 import './FilterSection.css';
 
 interface FilterResponse {
@@ -14,6 +15,7 @@ const FilterSection: React.FC = () => {
   const [filteredData, setFilteredData] = useState<FilterResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const history = useHistory(); // Initialize useHistory for routing
 
   const buttons = [
     { label: 'All', value: 'All' },
@@ -62,6 +64,11 @@ const FilterSection: React.FC = () => {
     handleFilter('All');
   }, []);
 
+  const handleCardClick = (itemId: string) => {
+    console.log(`Redirecting to chat screen with item ID: ${itemId}`);
+    history.push(`/chat/${itemId}`); // Redirect to the chat screen with the item ID
+  };
+
   return (
     <div className="filter-section-container">
       <div className="filter-buttons">
@@ -79,7 +86,11 @@ const FilterSection: React.FC = () => {
       {error && <p className="error-message">{error}</p>}
       <div className="filtered-data-container">
         {filteredData.map((item) => (
-          <div className="filtered-data-card" key={item.id}>
+          <div
+            className="filtered-data-card"
+            key={item.id}
+            onClick={() => handleCardClick(item.id)} // Redirect on click
+          >
             <img
               src={item.image_url}
               alt={item.name}

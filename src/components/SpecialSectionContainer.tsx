@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom'; // Import useHistory for navigation
 import './SpecialSectionContainer.css';
 
 interface SpecialSection {
@@ -14,6 +15,7 @@ const SpecialSectionsComponent: React.FC = () => {
   const [specialSections, setSpecialSections] = useState<SpecialSection[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const history = useHistory(); // Initialize useHistory for routing
 
   useEffect(() => {
     const fetchSpecialSections = async () => {
@@ -26,12 +28,18 @@ const SpecialSectionsComponent: React.FC = () => {
         setSpecialSections(data.data); // Assuming the data is in the 'data' field
         setLoading(false);
       } catch (error) {
+        setError(error instanceof Error ? error.message : 'An error occurred');
         setLoading(false);
       }
     };
 
     fetchSpecialSections();
   }, []);
+
+  const handleCardClick = (charId: string) => {
+    console.log(`Redirecting to chat screen with character ID: ${charId}`);
+    history.push(`/chat/${charId}`); // Redirect to the chat screen with the character ID
+  };
 
   if (loading) {
     return <p>Loading special sections...</p>;
@@ -45,7 +53,11 @@ const SpecialSectionsComponent: React.FC = () => {
     <div className="special-sections-container">
       <div className="special-sections-cards">
         {specialSections.map((section) => (
-          <div className="special-section-card" key={section.id}>
+          <div
+            className="special-section-card"
+            key={section.id}
+            onClick={() => handleCardClick(section.id)} // Redirect on click
+          >
             <img
               src={section.image_url}
               alt={section.name}
