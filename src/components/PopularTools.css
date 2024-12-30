@@ -80,7 +80,9 @@
     gap: 25px;
     padding: 5px 0 5px 5px;
     -webkit-overflow-scrolling: touch;
-    width: 100%;
+    width: calc(100% - 14px);
+    margin-left: 7px;
+    margin-right: 20px !important;
   }
   .card-image {
     width: 40px;
@@ -116,19 +118,19 @@
   }
   
   
-  .moving-card {
+  .moving-card-tool {
     gap:10px;
     display: flex;
     flex-direction: row;  /* Ensure horizontal layout within card */
     align-items: center;
     background: linear-gradient(-180deg, 
-        white 40%,    /* White takes up the top 40% */
-        #E0F7FA 100%  /* Light cyan smoothly transitions in the bottom */
-    );     
+                            white 40%,    /* White takes up the top 40% */
+                            #FCE4EC 100%  /* Light pink at the bottom */
+                );     
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 85%;
-    min-width: 85%;
+    width: 65%;
+    min-width: 65%;
     margin-right: 0%;
     padding: 10px;
     flex: 0 0 auto;  /* Prevent shrinking and growing */

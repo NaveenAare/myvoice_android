@@ -40,7 +40,7 @@ const SpecialSectionContainer: React.FC = () => {
         dataFull.data.forEach((character: any) => {
           // Create the card elements
           const cardDiv = document.createElement('div');
-          cardDiv.classList.add('moving-card');
+          cardDiv.classList.add('moving-card-tool');
 
           // Set the cursor to hand on hover
           cardDiv.style.cursor = 'pointer'; // Alternatively, this can be set in CSS

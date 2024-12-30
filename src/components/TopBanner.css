@@ -168,7 +168,6 @@ ion-button.btn::part(native) {
 
 .rotating-text-container {
     height: 25px;
-    z-index: 3;
     position: relative;
     display: none; /* Initially hidden */
     left: 10px; /* Adjust as per your layout */
@@ -177,7 +176,8 @@ ion-button.btn::part(native) {
     margin-top: 10px;
     font-size: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #000;
+    color: #4A4A4A;
+    
     font-weight: bold;
     white-space: nowrap;
     transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transition for opacity and position */
@@ -204,6 +204,7 @@ ion-button.btn::part(native) {
 }
 
 .fade-out {
+    
     animation: fadeOut 0.5s ease-in-out forwards;
 }
 

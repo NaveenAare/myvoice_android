@@ -1,39 +1,55 @@
-import { IonContent, IonFooter, IonHeader, IonPage, IonText, IonTitle, IonToolbar ,IonSearchbar} from '@ionic/react';
+import { IonContent, IonPage, IonTabs } from '@ionic/react';
+import { useState } from 'react';
 import './Home.css';
 import SearchCharacters from '../components/SearchContainer';
-import TextToSpeech from '../components/TextToSpeech';
+import CardComponent from '../components/TopBanner';
+import EmojiFilter from '../components/EmojiFilter';
+import LatestCharcatersSection from '../components/LatestCharacters';
+import FilterSection2 from '../components/FilterSection2';
 import SpecialSectionContainer from '../components/SpecialSectionContainer';
 import PopularToolsContainer from '../components/PopularToolsContainer';
-import LatestCharacters from '../components/LatestCharacters';
+import PopularAssistants2 from '../components/popularAssistants';
 import AudioList from '../components/AudioList';
-import FilterSection from '../components/FilterSection';
-import UserProfile from '../components/UserProfile';
-import CardComponent from '../components/TopBanner';
-import BottomNav from '../components/BottomNavigation';
-import EmojiFilter from '../components/EmojiFilter';
-import LatestCharcatersSection from '../components/LatestCharacters'
-import FilterSection2 from '../components/FilterSection2';
-import PopularAudiosSection from '../components/AudioList';
+import BottomNavigation from '../components/BottomNavigation';
+import MenuCards from '../components/chatHistory';
+import Dashboard from '../components/UserProfile'
 
 const Home: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('home'); // Track active tab
+
+  const renderContent = () => {
+    switch(activeTab) {
+      case 'home': // Home Tab
+        return (
+          <>
+            <SearchCharacters/>
+            <CardComponent/>
+            <EmojiFilter/>
+            <LatestCharcatersSection/>
+            <FilterSection2/>
+            <SpecialSectionContainer />
+            <PopularToolsContainer/>
+            <PopularAssistants2/>
+            <AudioList/>
+          </>
+        );
+      case 'chats': // Chats Tab
+        return <MenuCards/>;
+      case 'profile': // Profile Tab
+        return <Dashboard/>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <IonPage>
-      <IonHeader>
-      </IonHeader>
       <IonContent>
-        <SearchCharacters/>
-        <CardComponent/>
-        <EmojiFilter/>
-        <LatestCharcatersSection/>
-        <FilterSection2/>
-        <SpecialSectionContainer />
-        <PopularToolsContainer/>
-        <AudioList/>
-        <TextToSpeech />
+        <div className="home-container">
+          {renderContent()} {/* Render content based on active tab */}
+        </div>
       </IonContent>
-      <IonFooter>
-      </IonFooter>
-
+      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} /> {/* Update tab on change */}
     </IonPage>
   );
 };

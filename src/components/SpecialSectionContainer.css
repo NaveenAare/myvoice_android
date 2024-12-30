@@ -80,7 +80,9 @@
   gap: 25px;
   padding: 5px 0 5px 5px;
   -webkit-overflow-scrolling: touch;
-  width: 100%;
+  width: calc(100% - 14px);
+  margin-left: 7px;
+  margin-right: 20px !important;
 }
 .card-image {
   width: 40px;
@@ -127,8 +129,8 @@
   );     
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 85%;
-  min-width: 85%;
+  width: 65%;
+  min-width: 65%;
   margin-right: 0%;
   padding: 10px;
   flex: 0 0 auto;  /* Prevent shrinking and growing */

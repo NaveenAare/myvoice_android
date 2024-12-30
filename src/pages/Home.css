@@ -3,6 +3,7 @@ ion-content {
     --padding-end: 0;
     width: 100%;
     height: 100%;
+    --padding-bottom: 60px;
 }
 
 ion-content::part(scroll) {
@@ -12,6 +13,19 @@ ion-content::part(scroll) {
 .home-container {
     width: 100%;
     min-height: 100%;
+    padding-bottom: 60px;
     display: flex;
     flex-direction: column;
+}
+
+ion-tabs {
+    display: flex;
+    flex-direction: column;
+}
+
+ion-tab-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
 }

@@ -1,44 +1,48 @@
-import React, { useState } from 'react';
-import { IonContent, IonIcon, IonLabel, IonTabBar, IonTabButton, IonBadge } from '@ionic/react';
-import { homeOutline, chatbubbleEllipsesOutline, personOutline } from 'ionicons/icons';
-import './BottomNavigation.css'; // Import custom styles for navigation bar
+import { IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
+import { homeOutline, chatbubblesOutline, personOutline } from 'ionicons/icons';
+import './BottomNavigation.css';
 
-const BottomNav: React.FC = () => {
-  const [messageCount, setMessageCount] = useState<number>(5); // Message count example
+interface BottomNavigationProps {
+  onTabChange: (tab: string) => void;
+  activeTab: string;
+}
 
-  const navigateTo = (path: string) => {
-    console.log(`Navigating to ${path}`);
-    // Replace this with Ionic navigation logic
-  };
-
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ onTabChange, activeTab }) => {
   return (
-    <IonContent>
-      <IonTabBar slot="bottom" className="bottom-nav">
-        {/* Chat Icon with Badge */}
-        <IonTabButton tab="chat" onClick={() => navigateTo('/chat')}>
-          <IonIcon icon={chatbubbleEllipsesOutline} />
-          <IonLabel>Chat</IonLabel>
-          {messageCount > 0 && (
-            <IonBadge color="danger" className="badge">
-              {messageCount}
-            </IonBadge>
-          )}
-        </IonTabButton>
+    <IonTabBar slot="bottom" className="bottom-nav">
+  
 
-        {/* Home Icon */}
-        <IonTabButton tab="home" onClick={() => navigateTo('/home')} className="home-btn">
-          <IonIcon icon={homeOutline} />
-          <IonLabel>Home</IonLabel>
-        </IonTabButton>
+      <IonTabButton
+        tab="chats"
+        className={activeTab === 'chats' ? 'active-tab' : ''}
+        onClick={() => onTabChange('chats')}
+      >
+        <IonIcon icon={chatbubblesOutline} />
+        <IonLabel>Chats</IonLabel>
+      </IonTabButton>
 
-        {/* Profile Icon */}
-        <IonTabButton tab="profile" onClick={() => navigateTo('/profile')}>
-          <IonIcon icon={personOutline} />
-          <IonLabel>Profile</IonLabel>
-        </IonTabButton>
-      </IonTabBar>
-    </IonContent>
+      <IonTabButton
+        tab="home"
+        className={activeTab === 'home' ? 'active-tab' : ''}
+        onClick={() => onTabChange('home')}
+      >
+        <IonIcon icon={homeOutline} />
+        <IonLabel>Home</IonLabel>
+      </IonTabButton>
+
+      
+      <IonTabButton
+        tab="profile"
+        className={activeTab === 'profile' ? 'active-tab' : ''}
+        onClick={() => onTabChange('profile')}
+      >
+        <IonIcon icon={personOutline} />
+        <IonLabel>Profile</IonLabel>
+      </IonTabButton>
+
+      
+    </IonTabBar>
   );
 };
 
-export default BottomNav;
+export default BottomNavigation;

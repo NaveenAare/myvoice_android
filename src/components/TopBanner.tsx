@@ -5,10 +5,10 @@ import './TopBanner.css';
 const CardComponent: React.FC = () => {
 
     const texts: string[] = [
-        "AI-powered character creation",
-        "Create and customize characters",
-        "Bring characters to life with AI",
-        "Voice cloning at its finest"
+        "AI-powered character creation 🤖",
+        "Create and customize characters 😍",
+        "Bring characters to life with AI 👻",
+        "Voice cloning at its finest 🗣"
     ];
     
     let currentIndex: number = 0;
@@ -57,7 +57,7 @@ useEffect(() => {
 
   return (
         <div className="top-banner-container">
-            <div id="rotating-text-container" style={{ zIndex: 30 }}>
+            <div id="rotating-text-container" style={{ zIndex: 30, color: '#4A4A4A', fontFamily: 'fantasy' }}>
                 <p id="rotating-text">Welcome to speaking Character.Ai</p>
             </div>
             <div className="image-carousel">

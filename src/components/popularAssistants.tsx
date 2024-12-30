@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './FilterSection2.css'; // Import CSS styles
+import './popularAssistants.css'; // Import CSS styles
 
-const FilterSection2: React.FC = () => {
-  const emojis: string[] = ["All", "History & Culture 📜", "Love & Relationships 💖", "Food & Cooking 🍽️", "Art & Creativity 🎨", "Sports & Fitness ⚽", "Health & Wellness 🏥", "Adventure & Travel ✈️", "Finance & Business 💼", "Environment & Nature 🌍", "Gaming & Entertainment 🎮", "Fashion & Lifestyle 👗", "Motivation & Inspiration 🌟", "Self-Improvement & Personal Development 📈", "Mythology & Fantasy 🧚‍♂️", "Comedy & Humor 😂"]; // Emoji list
+
+const PopularAssistants2: React.FC = () => {
+  const emojis: string[] = ["assistants"]; // Emoji list
   // Don't set initial state
   const [activeFilter, setActiveFilter] = useState<string>('');
 
@@ -26,39 +27,42 @@ const FilterSection2: React.FC = () => {
         });
         const dataFull = await response.json();
         
-        const movingCardsWrapper = document.querySelector('.moving-cards-wrapper-your-char-full-card') as HTMLElement;
+        const movingCardsWrapper = document.querySelector('.moving-cards-wrapper-your-char-assis') as HTMLElement;
         if (!movingCardsWrapper) return;
 
         movingCardsWrapper.innerHTML = '';
 
-
+        if (dataFull.is_emoji === 'true') {
+          const emojiHead = document.getElementById('emoji-head');
+          if (emojiHead) emojiHead.textContent = "Special Section";
+        }
 
         dataFull.data.forEach((character: any) => {
           // Create the card elements
           const cardDiv = document.createElement('div');
-          cardDiv.classList.add('full-image-card');
+          cardDiv.classList.add('moving-card');
 
           // Set the cursor to hand on hover
           cardDiv.style.cursor = 'pointer'; // Alternatively, this can be set in CSS
 
           const img = document.createElement('img');
-          img.classList.add('full-image-card-img');
+          img.classList.add('moving-card-img');
           img.src = character.image_url; // Assuming API returns an 'imageUrl' field
           img.alt = character.name;
 
           const infoDiv = document.createElement('div');
-          infoDiv.classList.add('full-image-card-info');
+          infoDiv.classList.add('moving-card-info');
 
           const h3 = document.createElement('h3');
-          h3.classList.add('full-image-card-info-h3');
+          h3.classList.add('moving-card-info-h3');
           h3.textContent = character.name;
 
           const pBy = document.createElement('p');
-          pBy.classList.add('full-image-card-info-p');
+          pBy.classList.add('moving-card-info-p');
           pBy.textContent = `${character.summary2}`;
 
           const h4 = document.createElement('h4');
-          h4.classList.add('full-image-card-info-h4');
+          h4.classList.add('moving-card-info-h4');
           h4.textContent = character.description;
 
           // Append elements to their respective parents
@@ -90,43 +94,45 @@ const FilterSection2: React.FC = () => {
     console.log(`Redirecting to: ${url}`);
   };
 
-  return (
-    <div className="emoji-filter-wrapper">
-      <div className="unique-filter-container-text">
-        {emojis.map((emoji, index) => (
-          <button
-            key={`emoji-${index}`} // More specific key
-            className={`unique-filter-button-emoji ${activeFilter === emoji ? 'active' : ''}`}
-            onClick={() => setActiveFilter(emoji)}
-          >
-            {emoji}
-          </button>
-        ))}
-      </div>
+  
 
-      <div className="moving-section-your-char">
-        <div className="moving-cards-wrapper-your-char-full-card">
-          {/* Skeleton card elements will be displayed here initially */}
-      
-            <div className ="full-image-card">
-                <img className ="full-image-card-img" src="/assets/shrimmer.png"  />
+  return (
+
+      <div className="moving-section-your-char-tool">
+        <h2 id="emoji-head">👷Popular Tools🛠️</h2>
+        <div className="moving-cards-wrapper-your-char-assis">
+          {/* Skeleton card elements */}
+          <div className="moving-card">
+            <img className="moving-card-img" src="assets/shrimmer.png" alt="Loading..." />
+            <div className="moving-card-info">
+              <h3 className="moving-card-info-h3"></h3>
+              <p className="moving-card-info-p"></p>
+              <h4 className="moving-card-info-h4"></h4>
             </div>
-            <div className ="full-image-card">
-                <img className ="full-image-card-img" src="/assets/shrimmer.png"  />
+          </div>
+
+
+          <div className="moving-card">
+            <img className="moving-card-img" src="assets/shrimmer.png" alt="Loading..." />
+            <div className="moving-card-info">
+              <h3 className="moving-card-info-h3"></h3>
+              <p className="moving-card-info-p"></p>
+              <h4 className="moving-card-info-h4"></h4>
             </div>
-            <div className ="full-image-card">
-                <img className ="full-image-card-img" src="/assets/shrimmer.png"  />
+          </div>
+
+
+          <div className="moving-card">
+            <img className="moving-card-img" src="assets/shrimmer.png" alt="Loading..." />
+            <div className="moving-card-info">
+              <h3 className="moving-card-info-h3"></h3>
+              <p className="moving-card-info-p"></p>
+              <h4 className="moving-card-info-h4"></h4>
             </div>
-            <div className ="full-image-card">
-                <img className ="full-image-card-img" src="/assets/shrimmer.png"  />
-            </div>
-            <div className ="full-image-card">
-                <img className ="full-image-card-img" src="/assets/shrimmer.png"  />
-            </div>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
-export default FilterSection2;
+export default PopularAssistants2;

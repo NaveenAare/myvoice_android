@@ -1,0 +1,147 @@
+.menu-cards {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Menu card with fixed width and height */
+.menu-card {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Call Button */
+.call-button {
+    display: block;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%) scaleX(-1); /* Center vertically and mirror horizontally */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.call-button:hover {
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+
+/* Delete Button */
+.delete-button {
+    display: block;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    right: 60px;
+    transform: translateY(-50%);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+
+.shimmer-card {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 70px;
+}
+
+.shimmer-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #eee;
+    margin-right: 10px;
+}
+
+.shimmer-content {
+    flex-grow: 1;
+}
+
+.shimmer-title {
+    height: 15px;
+    width: 60%;
+    background: #eee;
+    margin-bottom: 8px;
+}
+
+.shimmer-text {
+    height: 10px;
+    width: 90%;
+    background: #eee;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.3s;
+}
+
+.search-bar:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.search-icon-container-history {
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: #666;
+    font-size: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 35px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+.close-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: #666;
+    font-size: 20px;
+    cursor: pointer;
+}

@@ -1,0 +1,166 @@
+.chat-content {
+  --background: #e5ddd5;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAUSSURBVGiB7ZlrbBRVFMd/Z3Zmd9vdthTaWiy2FBD5gBiMiUbFxEQgxvgBQzQqiCAgGIKvIAYTDWp8xBhjCPHDB8EHGgwYMNGYGCHG+EAgiAQVQQwICtSW0naX7s7uzNx7fGi7dLs7u0Npt9DG/2Ry7z3nzPnfc+fOnXsXEiRIkCBBggQJEiS4r5DxKs2p2bheIX4FQqoQz0T7Kvf0Vt+QmjVZKvRGBQsAFEwXiv0CvQXYG+2r3AXIePp/T0iNXCqEeBEwAARcVkptkYJ3o30VX8ZTP2ZkVs06gVKvAY8ApwX6NSn5PNpXeT0eH+4JyazeoBDiDaBQwVkhxEYp2B7trbiWiC/3RFbNhlQp9SvAYwqaEWKjFGwL9VUEEvXnrpBZs16hxHqgVMEFKdkoBduifRWRZHy6I2RWrVdKrAXKFFwSgo1SsHXk2tVkfbsjZFavV0qsBsoVXBaCTVKwZeTqVTd8uyNkVq9XKPEaUKHgihBsloLNQ1ev3FNxR0h29QaFEq8ClQquCsEWKdkUvNLnmo47QrJrNiiUWANUKegXgq1SsDF4pc91nW4LyaneqBRiNTBJQVAI3pWSjYP9fYnodFtITs1GpRCrgMkKrgvBu1KyYbC/L1GdbgvJqdmoFOIVYIqCISF4T0rWD/b3JaXTVSG5NRuVQqwEpioICcH7UvLWQH9f0jrdFZJbvUkpxApguoKwEHwgJesG+vvc0OmukNpNSiFeBmYoCAvBh1KyduBynys63RWSW7tJKcQLwEwFESH4SEpeH7jc54pOV4Xk1m5SCvE8MEtBRAg+kZLXrlzqdUWn20JeBOYoiArBp1Ly6pVLva7odE1IXu0mpRDPAfMURIXgMyl55Z9LPa7odE1IXu0mpRDLgfkKYkLwuZS8fPlSjys6XRGSV7dZKcQyYIGCmBB8ISUvXT7/tys6XRGSV7dZKcRSYKGCmBBsk5IXL5//2xWdrgjJq9usFGIJsEhBTAi+lJIXLp//yxWdiQvJr9usFOJ5YLGCmBB8JSXPXzr/pys6ExeSX79ZKcQzwBIFMSH4WkqeGzj3pys6ExaSX79ZKcQyYKmCmBB8IyXPDpz70xWdCQsprN+iFGIpsFxBTAi+lZJnBs6dc0VnQkIK67cohVgCrFAQE4LvpOTpgXNnXdGZkJDC+i1KIZ4EViqICcH3UvLUwNmzruhMWMgk4GkFMSE4ICVPDpw544rOhIUUNWxRCvEE8IyCmBAclJInLp45k7TOhIUUNWxRCvE48KyCmBAckpLHL5454YrOhIUUN2xRCvEY8JyCmBAclpLqi8dPuKIzYSHFDVuUQiwCViuICcERKVl48fhxV3QmLKSkYYtSiIXAGgUxITgqJQsuHj/mis6EhZQ0bFEKsQBYqyAmBD9JyfyLx466ojNhIaUNW5VCzAfWKYgJwc9SMu/C0aOu6ExYSGnDVqUQ84D1CmJCcExK5l44etQVnQkLKW3YqhRiLvC6gpgQHJeS2ReOHHFFZ8JCyhq3KoWYA7yhICYEJ6Rk1oUjR1zRmbCQssatSiFmA28qiAnBSSmZeeHwYVd0JiykrHGrUohZwFsKYkJwSkpmXDh82BWdCQspb9yqFGIm8LaCmBD8IiXTLxw+7IrOhIWUN25VCjEDeEdBTAjOSMm084cOuaIzYSEVTVuVQkwH3lUQE4KzUjL1/KFDruhMkCBBggQJEiRIcL/xL5JWYZx1oqwnAAAAAElFTkSuQmCC");
+}
+
+.message-container {
+  padding: 10px;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.message.sent {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  position: relative;
+}
+
+.message.sent .message-bubble {
+ background-color: #dcf8c6;
+}
+
+.message.received .message-bubble {
+  background-color: white;
+}
+
+.message-bubble p {
+  margin: 0;
+  padding-right: 40px;
+}
+
+.message-time {
+  position: absolute;
+  bottom: 5px;
+  right: 8px;
+  font-size: 0.7em;
+  color: #667781;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  background-color: #f0f2f5;
+}
+
+.message-input {
+  flex: 1;
+  background: white;
+  border-radius: 20px;
+  margin: 0 8px;
+  --padding-start: 15px;
+  --padding-end: 15px;
+}
+
+.input-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.input-button ion-icon {
+  font-size: 24px;
+  color: #54656f;
+}
+
+.send-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.send-button ion-icon {
+  font-size: 24px;
+  color: #00a884;
+}
+
+ion-toolbar {
+  --background: #008069;
+  --color: white;
+}
+
+ion-toolbar ion-item {
+  --background: transparent;
+  --color: white;
+}
+
+ion-avatar {
+  width: 35px;
+  height: 35px;
+}
+
+.loading-dots-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: #b3b3b3;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0);
+  } 
+  40% { 
+    transform: scale(1.0);
+  }
+}
+
+.character-subtitle {
+  margin: 0;
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.8);
+} 
+
+.ion-tittle {
+    display: flex !important;
+    align-items: center;
+    align-content: start !important;
+    color: #000;
+}
+
+.custom-title {
+    font-size: 12px;
+    color: #000;
+    margin: 0; /* Remove default margin */
+    text-align: left; /* Align text to the left */
+    flex: 1; /* Allow the title to take available space */
+}
+
+.scroll-down-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: white; /* Optional: background color */
+    border-radius: 50%; /* Optional: round button */
+    padding: 10px; /* Optional: padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Optional: shadow */
+  }
