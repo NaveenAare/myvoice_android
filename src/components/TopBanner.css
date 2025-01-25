@@ -1,6 +1,6 @@
 /* Button Container */
 .btn {
-    height: 60px;
+    height: 45px;
     display: inline-flex;
     align-items: center;
     padding: 12px 24px;
@@ -8,7 +8,7 @@
     background: linear-gradient(90deg, #42A5F5, #26C6DA);
     color: #F1F1F1;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     z-index: 2;
     transition: background 0.3s ease, transform 0.3s ease;

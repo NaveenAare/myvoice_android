@@ -9,6 +9,7 @@
     margin: 0;
     width: 100%;
     padding: 0;
+    
   }
   
   .unique-filter-container-emoji {
@@ -83,7 +84,17 @@
     width: calc(100% - 14px);
     margin-left: 7px;
     margin-right: 20px !important;
+    margin-bottom: 30px;
+    
+    /* Hide scrollbar */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
   }
+  
+  .moving-cards-wrapper-your-char-assis::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+  
   .card-image {
     width: 40px;
     height: 40px;
@@ -129,8 +140,8 @@
     );     
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 65%;
-    min-width: 65%;
+    width: 60%;
+    min-width: 60%;
     margin-right: 0%;
     padding: 10px;
     flex: 0 0 auto;  /* Prevent shrinking and growing */
@@ -140,8 +151,8 @@
   
   
   .moving-card-img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 5%;
     margin-right: 0px;

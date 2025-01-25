@@ -1,0 +1,3 @@
+declare module 'cordova-plugin-tts' {
+       export function speak(text: string, options?: any): Promise<void>;
+   }

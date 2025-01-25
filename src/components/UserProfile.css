@@ -1,698 +1,691 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height of the viewport */
+}
+
 .header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 250px;
+    background-color: #fff !important;
+    flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .user-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #a9a9a9; /* Grey border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #a9a9a9; /* Grey border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .user-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 10px;
-  color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
 }
 
 .category {
-  width: 90%;
-  max-width: 800px;
-  margin: 20px 0;
+    width: 90%;
+    max-width: 800px;
+    margin: 20px 0;
 }
 
 .category-title {
-font-size: 20px;
-font-weight: bold;
-margin-bottom: 10px;
-color: #555;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
 }
 
 .card-container {
-  margin-top:20px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 20px;
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-gap: 15px;
+    margin-top:20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
 }
 
 .character-card-container {
-  margin-left: 10px;
-  margin-right: 10px;
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-gap: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
 }
 
 .character-card {
-background-color: white;
-border-radius: 10px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-padding: 10px;
-text-align: center;
-transition: transform 0.3s;
-overflow: hidden; /* Ensure content stays within the card */
-}
-
-.character-card:hover {
-transform: translateY(-5px);
+  margin-top: 10px;
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Align text to the left */
+    transition: transform 0.3s;
+    overflow: hidden; /* Ensure content stays within the card */
+    padding: 10px; /* Add padding for spacing */
+    position: relative; /* For positioning buttons */
 }
 
 .character-card img {
-width: 100%;
-height: 100px;
-object-fit: cover;
-border-radius: 5px;
+    width: 80px; /* Set width for image */
+    height: 80px; /* Set height for image */
+    object-fit: cover; /* Ensure image covers the area */
+    border-radius: 5px; /* Optional: rounded corners for the image */
+    margin-right: 10px; /* Space between image and text */
+}
+
+.card-title {
+    font-weight: bold;
+    margin: 5px 0;
+    overflow: hidden;
+    white-space: nowrap; /* Restrict to one line */
+    text-overflow: ellipsis; /* Show ellipsis */
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    color: #666; 
+    max-width: 150px; /* Set a maximum width */
+}
+
+.card-description {
+    height: auto; /* Restrict height for two lines */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis; /* Show "..." for overflow text */
+    margin: 5px 0;
+    color: #666; /* Description color */
+    font-size: 10px; /* Set the desired font size */
+    font-family: 'Roboto', sans-serif;
+    max-width: 150px; /* Set a maximum width */
 }
 
 .button-container {
-display: flex;
-justify-content: space-between;
-margin-top: 10px;
+    z-index: 100;
+    display: flex; /* Use flexbox for button layout */
+    align-items: center; /* Center buttons vertically */
+    margin-left: auto; /* Push buttons to the right */
 }
 
-.action-button {
-background-color: #D3D3D3;
-color: white;
-border: none;
-border-radius: 5px;
-padding: 10px;
-cursor: pointer;
-font-size: 12px;
-flex: 1;  /* Make buttons fill the available space equally */
-text-align: center;
-transition: background-color 0.3s ease;
-margin: 5px;  /* Adds some space between the buttons */
-}
-
+.action-button,
 .action-button-2 {
-background-color: #D3D3D3;
-color: white;
-border: none;
-border-radius: 5px;
-padding: 10px;
-cursor: pointer;
-font-size: 10px;
-flex: 1;  /* Make buttons fill the available space equally */
-text-align: center;
-transition: background-color 0.3s ease;
-margin: 5px;  /* Adds some space between the buttons */
+  background-color: #D3D3D3;
+  color: white;
+  border: none;
+  border-radius: 50%; /* Make buttons circular */
+  height: 35px; /* Set height for circular shape */
+  width: 35px; /* Set width for circular shape */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex; /* Center icon inside button */
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px; /* Space between buttons */
 }
 
-.button-container {
-display: flex;
-justify-content: space-between; /* Align buttons within the container */
-width: 100%; /* Ensure the buttons container takes the full width */
-gap: 2px; /* Space between buttons */
-}
-
-.action-button:hover {
-background-color: #90EE90;
-}
-
+.action-button:hover,
 .action-button-2:hover {
-background-color: #FF7F7F;
+  background-color: #90EE90; /* Change color on hover */
 }
+
 .audio-card {
-background-color: #f0f0f0; /* Light background for audio cards */
-border-radius: 10px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-padding: 10px;
-text-align: center;
-transition: transform 0.3s;
-display: flex;
-flex-direction: column;
-align-items: center;
-overflow: hidden; /* Ensure content stays within the card */
-width: 90%; /* Full width */
-position: relative; /* Allows absolute positioning for delete button */
+    background-color: #f0f0f0; /* Light background for audio cards */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Space between items */
+    overflow: hidden; /* Ensure content stays within the card */
+    width: 100%; /* Full width */
+    position: relative; /* Allows absolute positioning for delete button */
+    margin-bottom: 10px;
 }
 
 .audio-card:hover {
-transform: translateY(-5px);
+    transform: translateY(-5px);
 }
 
 .audio-symbol {
-width: 50px;
-height: 50px;
-border-radius: 50%; /* Circular shape */
-object-fit: cover;
-margin-bottom: 5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Circular shape */
+    object-fit: cover;
+    margin-bottom: 5px;
 }
 
 /* New CSS for delete button */
 .delete-button {
-background-color: #D3D3D3;
-color: #808080;
-border: none;
-border-radius: 50%;
-margin-top: 10px;
-width: 20px;
-height: 20px;
-font-size: 10px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-transition: background-color 0.3s ease;
-position: absolute;
-top: 10px;
-right: 10px;
-outline: none;
-z-index: 1; /* Ensure button is on top */
+    background-color: #D3D3D3;
+    color: #808080;
+    border: none;
+    border-radius: 50%;
+    width: 30px; /* Adjust size for delete button */
+    height: 30px; /* Adjust size for delete button */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    outline: none;
 }
 
 .delete-button:hover {
-background-color: #c82333;
+    background-color: #c82333; /* Change color on hover */
 }
 
-
-
 .audio-card:hover {
-  transform: translateY(-5px);
+    transform: translateY(-5px);
 }
 
 .audio-symbol {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%; /* Circular shape */
-  object-fit: cover;
-  margin-bottom: 5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Circular shape */
+    object-fit: cover;
+    margin-bottom: 5px;
 }
 
 .card-title {
-  font-weight: bold;
-  margin: 5px 0;
-  overflow: hidden;
-  white-space: nowrap; /* Restrict to one line */
-  text-overflow: ellipsis; /* Show ellipsis */
-  font-size: 14px;
-  font-family: 'Roboto', sans-serif;
-  color: #666; 
-
+    font-weight: bold;
+    margin: 0; /* Remove margin for better alignment */
+    overflow: hidden;
+    white-space: nowrap; /* Restrict to one line */
+    text-overflow: ellipsis; /* Show ellipsis */
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    color: #666; 
+    flex: 1; /* Allow title to take available space */
+    text-align: center; /* Center the title */
 }
 
 .card-description {
-  height: 34px; /* Restrict height for two lines */
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis; /* Show "..." for overflow text */
-  margin: 5px 0;
-  color: #666; /* Description color */
-  font-size: 10px; /* Set the desired font size */
-  font-family: 'Roboto', sans-serif;
+    height: auto; /* Restrict height for two lines */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis; /* Show "..." for overflow text */
+    margin: 5px 0;
+    color: #666; /* Description color */
+    font-size: 10px; /* Set the desired font size */
+    font-family: 'Roboto', sans-serif;
+    max-width: 150px; /* Set a maximum width */
 }
 
-
 @media (max-width: 600px) {
-  .user-image {
-      width: 100px;
-      height: 100px;
-  }
+    .user-image {
+        width: 100px;
+        height: 100px;
+    }
 
-  .user-name {
-      font-size: 20px;
-  }
+    .user-name {
+        font-size: 20px;
+    }
 
-  .category-title {
-      font-size: 18px;
-  }
+    .category-title {
+        font-size: 18px;
+    }
 }
 
 .overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.5); /* Dark overlay with transparency */
-display: none; /* Initially hidden */
-z-index: 100000;
-backdrop-filter: blur(5px); /* Apply blur effect */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(231, 8, 8, 0.5) !important; /* Semi-transparent background */
+    display: flex !important; /* Use flexbox to center the spinner */
+    justify-content: center !important; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1000000000 !important; /* Ensure overlay is on top */
 }
 
 /* Popup Styles */
 .pop {
-display: none; /* Initially hidden */
-position: fixed;
-
-top: 50%;
-left: 50%;
-background: #fff;
-transform: translate(-50%, -50%);
-border-radius: 20px; /* Rounded corners */
-z-index: 200000;
-max-width: 90%; /* Responsive max width */
-width: 400px; /* Default width */
-
-flex-direction: column; /* Stack child elements vertically */
-align-items: center; /* Align items to the center horizontally */
-justify-content: center; /* Center elements vertically */
-padding: 20px; /* Add some padding for better spacing */
-gap: 20px; /* Add gap between the child elements */
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    border-radius: 20px; /* Rounded corners */
+    z-index: 10001;
+    max-width: 90%; /* Responsive max width */
+    width: 400px; /* Default width */
+    flex-direction: column; /* Stack child elements vertically */
+    align-items: center; /* Align items to the center horizontally */
+    justify-content: center; /* Center elements vertically */
+    padding: 20px; /* Add some padding for better spacing */
+    gap: 20px; /* Add gap between the child elements */
 }
-
 
 @media (max-width: 500px) {
-
-.pop {
-  display: none; /* Initially hidden */
-  position: fixed;
-  
-  top: 50%;
-  left: 50%;
-  background: #fff;
-  transform: translate(-50%, -50%);
-  border-radius: 20px; /* Rounded corners */
-  z-index: 200000;
-  max-width: 90%; /* Responsive max width */
-  width: 300px; /* Default width */
-
-  flex-direction: column; /* Stack child elements vertically */
-  align-items: center; /* Align items to the center horizontally */
-  justify-content: center; /* Center elements vertically */
-  padding: 20px; /* Add some padding for better spacing */
-  gap: 20px; /* Add gap between the child elements */
-}
+    .pop {
+        display: none; /* Initially hidden */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 20px; /* Rounded corners */
+        z-index: 10001;
+        max-width: 90%; /* Responsive max width */
+        width: 85%; /* Default width */
+        flex-direction: column; /* Stack child elements vertically */
+        align-items: center; /* Align items to the center horizontally */
+        justify-content: center; /* Center elements vertically */
+        padding: 20px; /* Add some padding for better spacing */
+        gap: 20px; /* Add gap between the child elements */
+    }
 }
 
 /* Pop Styles */
 .pop-content {
-width: 100%; /* Full width of popup */
-height: fit-content;
-display: flex;
-flex-direction: column;
-gap: 5px;
+    width: 100%; /* Full width of popup */
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .pop-heading {
-font-size: 15px;
-font-weight: 700;
-color: rgb(27, 27, 27);
+    font-size: 15px;
+    font-weight: 700;
+    color: rgb(27, 27, 27);
 }
 
 .pop-description {
-font-weight: 100;
-color: rgb(102, 102, 102);
+    font-weight: 100;
+    color: rgb(102, 102, 102);
 }
 
 .pop-button-wrapper {
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .pop-button {
-width: 50%;
-height: 35px;
-border-radius: 10px;
-border: none;
-cursor: pointer;
-font-weight: 600;
+    width: 50%;
+    height: 35px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
 }
 
 .primary {
-background-color: rgb(255, 114, 109);
-color: white;
+    background-color: rgb(255, 114, 109);
+    color: white;
 }
 
 .primary:hover {
-background-color: rgb(255, 73, 66);
+    background-color: rgb(255, 73, 66);
 }
 
 .secondary {
-background-color: #ddd;
+    background-color: #ddd;
 }
 
 .secondary:hover {
-background-color: rgb(197, 197, 197);
+    background-color: rgb(197, 197, 197);
 }
 
 .exit-button {
-display: flex;
-align-items: center;
-justify-content: center;
-border: none;
-background-color: transparent;
-position: absolute;
-top: 20px;
-right: 20px;
-cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
 }
 
 .exit-button:hover svg {
-fill: black;
+    fill: black;
 }
 
 .exit-button svg {
-fill: rgb(175, 175, 175);
+    fill: rgb(175, 175, 175);
 }
 
 /* Loading Bar Styles (optional) */
 .loading-bar {
-display: none; /* Initially hidden */
-height: 5px;
-background-color: rgb(255, 114, 109);
-position: fixed;
-top: 0;
-left: 0;
-width: 0%;
-transition: width 0.5s;
+    display: none; /* Initially hidden */
+    height: 5px;
+    background-color: rgb(255, 114, 109);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    transition: width 0.5s;
 }
 
 .toast {
-visibility: hidden;
-max-width: 300px;
-background-color: #333;
-color: #fff;
-text-align: center;
-border-radius: 5px;
-padding: 16px;
-position: fixed;
-z-index: 9999;
-left: 50%;
-top: 20px;
-transform: translateX(-50%);
-font-size: 17px;
+    visibility: hidden;
+    max-width: 300px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 16px;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%);
+    font-size: 17px;
 }
 
 .toast.show {
-visibility: visible;
-animation: fadeInOut 4s;
+    visibility: visible;
+    animation: fadeInOut 4s;
 }
 
 @keyframes fadeInOut {
-0% { top: 0; opacity: 0; }
-20% { top: 20px; opacity: 1; }
-80% { top: 20px; opacity: 1; }
-100% { top: 0; opacity: 0; }
+    0% { top: 0; opacity: 0; }
+    20% { top: 20px; opacity: 1; }
+    80% { top: 20px; opacity: 1; }
+    100% { top: 0; opacity: 0; }
 }
 
 .toast.success {
-background-color: green;
+    background-color: rgb(22, 217, 22);
 }
 
 .toast.error {
-background-color: red;
+    background-color: red;
 }
 
 .back-arrow-btn {
-position: fixed;
-top: 20px;
-left: 20px;
-background-color: #4a90e2; /* Light blue background */
-border: none;
-border-radius: 50%;
-padding: 10px;
-cursor: pointer;
-z-index: 999;
-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-transition: background-color 0.3s ease, transform 0.3s ease;
-display: flex;
-justify-content: center;
-align-items: center;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #4a90e2; /* Light blue background */
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .arrow-icon {
-transform: rotate(180deg); /* Rotates the arrow 180 degrees to point left */
+    transform: rotate(180deg); /* Rotates the arrow 180 degrees to point left */
 }
 
 .back-arrow-btn svg {
-width: 24px; /* Size of the arrow icon */
-height: 24px;
+    width: 24px; /* Size of the arrow icon */
+    height: 24px;
 }
 
 .back-arrow-btn:hover {
-background-color: #357ABD; /* Darker blue on hover */
-transform: scale(1.1); /* Slightly enlarge on hover */
+    background-color: #357ABD; /* Darker blue on hover */
+    transform: scale(1.1); /* Slightly enlarge on hover */
 }
 
 /* Hide button on screens smaller than 600px */
 @media (max-width: 600px) {
-.back-arrow-btn {
-  display: none;
+    .back-arrow-btn {
+        display: none;
+    }
 }
-}
-
-
-
 
 .spinner {
-border: 5px solid rgba(255, 255, 255, 0.3); /* Light border */
-border-top: 5px solid rgb(255, 114, 109); /* Darker border for top */
-border-radius: 50%; /* Circular shape */
-width: 20px; /* Size of spinner */
-height: 20px; /* Size of spinner */
-animation: spin 1s linear infinite; /* Spin animation */
-margin-left: 10px; /* Space between button and spinner */
+    display: block; /* Ensure it can be displayed */
+    border: 5px solid rgba(255, 255, 255, 0.3) !important; /* Light border */
+    border-top: 5px solid rgb(255, 114, 109) !important; /* Darker border for top */
+    border-radius: 50%; /* Circular shape */
+    width: 20px !important; /* Size of spinner */
+    height: 20px !important; /* Size of spinner */
+    animation: spin 1s linear infinite; /* Spin animation */
+    z-index: 1001; /* Ensure spinner is above overlay */
 }
 
 /* Animation for spinner */
 @keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Hide spinner by default */
 #loadingSpinner {
-display: none; /* Hidden by default */
+    display: none; /* Hidden by default */
 }
 
-
-
 .play-pause-button {
-margin-top:20px;
-background-color: #3498db;
-color: white;
-border: none;
-border-radius: 50%;
-width: 40px;
-height: 40px;
-font-size: 20px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-margin-bottom: 10px;
-outline: none;
+    background-color: #87CEEB; /* Button color */
+    color: white; /* Icon color */
+    border: none;
+    border-radius: 5px; /* Circular button */
+    width: 50px; /* Size of the button */
+    height: 50px; /* Size of the button */
+    font-size: 24px; /* Size of the icon */
+    cursor: pointer;
+    display: flex; /* Use flexbox for centering */
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    margin-right: 10px; /* Space between button and title */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.play-pause-button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
 }
 
 .logout-button {
-background: none;
-border: none;
-cursor: pointer;
-outline: none;
-padding: 10px;
-border-radius: 50%;
-transition: background 0.2s ease;
-display: flex;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+    display: flex;
 }
 
 .logout-button:hover {
-background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 
 .logout-icon {
-fill: #333;
-width: 24px;
-height: 24px;
-transition: transform 0.2s ease;
+    fill: #333;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease;
 }
 
 .logout-button:hover .logout-icon {
-transform: scale(1.1);
+    transform: scale(1.1);
 }
 
-
 .logout-button-custom {
-background: #D3D3D3;
-border: none;
-cursor: pointer;
-outline: none;
-padding: 10px;
-left: 50%;
-border-radius: 45%;
-height: 50px;
-width: 50px;
-margin-left: calc(50% - 25px);
-transition: background 0.2s ease;
-align-items: center;
-  justify-content: center;
+    background: #D3D3D3;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 10px;
+    left: 50%;
+    border-radius: 45%;
+    height: 50px;
+    width: 50px;
+    margin-left: calc(50% - 25px);
+    transition: background 0.2s ease;
+    align-items: center;
+    justify-content: center;
 }
 
 .logout-button-custom:hover {
-background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 
 .logout-icon-custom {
-transform: scaleX(-1); /* Flips the icon horizontally */
-transition: transform 0.2s; /* Optional: smooth transition */
+    transform: scaleX(-1); /* Flips the icon horizontally */
+    transition: transform 0.2s; /* Optional: smooth transition */
 }
 
 .logout-icon-custom:hover {
-transform: scaleX(-1) scale(1.05); /* Optional: Scale on hover for effect */
+    transform: scaleX(-1) scale(1.05); /* Optional: Scale on hover for effect */
 }
 
-
-
-
 .popup-bg-logout {
-display: flex;
-position: fixed;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background-color: rgba(0, 0, 0, 0.5);
-z-index: 10000;
-justify-content: center;
-align-items: center;
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
 }
 
 .popup-logout {
-background: white;
-padding: 2rem;
-border-radius: 12px;
-box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-text-align: center;
-width: 90%;
-max-width: 400px;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
 }
 
 .popup-heading-logout {
-font-family: 'Roboto', sans-serif;
-color: #333;
-font-size: 1.5rem;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    font-size: 1.5rem;
 }
 
 .popup-description-logout {
-font-size: 1rem;
-color: #666;
-margin: 1rem 0;
+    font-size: 1rem;
+    color: #666;
+    margin: 1rem 0;
 }
 
 .confirm-logout-button-custom, 
 .cancel-logout-button-custom {
-padding: 10px 20px;
-border: none;
-border-radius: 30px;
-margin: 0.5rem;
-cursor: pointer;
-transition: background 0.2s ease;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    margin: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
 }
 
 .confirm-logout-button-custom {
-background-color: #f44336; /* Red for confirmation */
-color: white;
+    background-color: #f44336; /* Red for confirmation */
+    color: white;
 }
 
 .confirm-logout-button-custom:hover {
-background-color: rgb(255, 114, 109);
+    background-color: rgb(255, 114, 109);
 }
 
 .cancel-logout-button-custom {
-background-color: #ddd;
-color: white;
+    background-color: #ddd;
+    color: white;
 }
 
 .cancel-logout-button-custom:hover {
-background-color: #388E3C; /* Darker green */
+    background-color: #388E3C; /* Darker green */
 }
 
 .popup-bg-logout {
-display: flex;
-position: fixed;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background-color: rgba(0, 0, 0, 0.5);
-z-index: 10000;
-justify-content: center;
-align-items: center;
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
 }
 
 .popup-logout {
-position: relative; /* Important for positioning the close button */
-background: white;
-padding: 2rem;
-border-radius: 12px;
-box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-text-align: center;
-width: 90%;
-max-width: 400px;
+    position: relative; /* Important for positioning the close button */
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
 }
 
 .close-popup-logout {
-position: absolute; /* Make it absolute to the popup */
-top: 10px;
-right: 15px;
-cursor: pointer;
-font-size: 1.5rem;
-color: #999;
+    position: absolute; /* Make it absolute to the popup */
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #999;
 }
 
 .close-popup-logout:hover {
-color: #333;
+    color: #333;
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-.popup-logout {
-padding: 1rem;
-width: 90%;
-}
+    .popup-logout {
+        padding: 1rem;
+        width: 90%;
+    }
 
-.popup-heading-logout {
-font-size: 1.3rem;
-}
+    .popup-heading-logout {
+        font-size: 1.3rem;
+    }
 
-.popup-description-logout {
-font-size: 0.9rem;
+    .popup-description-logout {
+        font-size: 0.9rem;
+    }
 }
-}
-
-
 
 .nocharacter {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 250px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 250px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
 /* Image styling */
 .nocharacter img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 /* Text styling */
 .nocharacter .description {
-  margin-top: 15px;
-  font-size: 16px;
-  color: #333;
+    margin-top: 15px;
+    font-size: 16px;
+    color: #333;
 }
 
 .shimmer-card {
@@ -731,4 +724,78 @@ font-size: 0.9rem;
 
 .custom-toast {
     margin-top: env(safe-area-inset-top);  /* Respects device notches */
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.tabs button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+    border-radius: 5px; /* Rounded top corners */
+    font-weight: bold;
+    position: relative; /* For pseudo-element positioning */
+    outline: none; /* Remove outline */
+    z-index: 10;
+}
+
+.tabs button.active {
+    color: #000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for active tab */
+}
+
+.tabs button:hover {
+    background-color: #e0e0e0; /* Lighten on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.tabs button::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; /* Position below the button */
+    left: 0;
+    right: 0;
+    height: 4px; /* Height of the underline */
+    transform: scaleX(0); /* Initially hidden */
+    transition: transform 0.3s; /* Smooth transition */
+}
+
+
+
+.tab-content {
+    overflow-y: auto; /* Allow vertical scrolling */
+    flex-grow: 1; /* Allow tab-content to grow and take available space */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the content area */
+    background-color: #fff; /* White background for content */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    outline: none; /* Remove outline */
+}
+
+.centered-message {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100%; /* Full height of the container */
+    text-align: center; /* Center text */
+    color: #666; /* Optional: text color */
+    font-size: 18px; /* Optional: font size */
+}
+
+.new-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Darker background */
+    display: none; /* Initially hidden */
+    z-index: 10000; /* Ensure it is above other elements */
 }

@@ -11,6 +11,14 @@ const MenuCards: React.FC = () => {
         updateHamCards();
     }, []);
 
+    const handleCallClick = (chatId: number) => {
+        // Navigate to the TalkingPage with chatId as a query parameter
+        const url = `/talking?chatId=${chatId}` // Use navigate instead of history.push
+
+        window.location.href = url;
+
+    };
+
     async function updateHamCards() {
         try {
             const authToken = "eyJ1c2VySWQiOiAxLCAibWFpbCI6ICJhYXJlbmF2ZWVudmFybWFAZ21haWwuY29tIiwgIm5hbWUiOiAiTmF2ZWVuIHZhcm1hIEFhcmUiLCAicHJvZmlsZV9waWMiOiAiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSTZQa3BFSGJkdGZoQTFETFp5OHVCcnZrejRIaDhTVjhMQmtzajRYRjdTVlB2OEllRDU9czk2LWMifTAxODYzNTczMDA3ODJiMmRjOTFjZWNlZDBiZGM0OWNiMWNjZDZmODIzZDM2ZTcyMzY0N2EwZjIwZjVkZTgyOTc=";
@@ -99,6 +107,13 @@ const MenuCards: React.FC = () => {
             menuCard.appendChild(cardText);
            // menuCard.appendChild(deleteButton);
             menuCard.appendChild(callButton);
+
+            callButton.addEventListener('click', () => {
+                const url = `/talking/${character.charc_id}` 
+                window.location.href = url;
+            });
+
+
             cardsContainer.appendChild(menuCard);
         });
     }
@@ -198,7 +213,6 @@ const MenuCards: React.FC = () => {
                         </div>
                     </div>
             </div>
-
         </div>
     );
 };

@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './UserProfile.css'; // Ensure CSS styles are imported
 import { IonButton, IonIcon, IonToast } from '@ionic/react';
-import { searchOutline, closeCircleOutline, logOutOutline } from 'ionicons/icons';
+import { chatbubbleOutline,searchOutline, closeCircleOutline, logOutOutline, play, pause } from 'ionicons/icons';
 
+// ... existing code ...
+
+<button className="action-button" onClick={() => window.location.href = `/chatbox/chat/${character.code}`}>
+    <IonIcon icon={chatbubbleOutline} /> {/* Change to chat icon */}
+</button>
+
+// ... existing code ...
 const ShimmerCard: React.FC = () => (
     <div className="shimmer-card">
         <div className="shimmer-image shimmer"></div>
@@ -24,10 +31,16 @@ const UserProfile: React.FC = () => {
     const [toastMessage, setToastMessage] = useState<string>('');
     const [toastType, setToastType] = useState<string>(''); // 'success' or 'error'
     const [isToastVisible, setIsToastVisible] = useState<boolean>(false); // State to control toast visibility
+    const [activeTab, setActiveTab] = useState<string>('characters'); // New state for active tab
+    const [playingAudio, setPlayingAudio] = useState<string | null>(null); // State to track currently playing audio
+    const audioRefs = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Ref to store audio elements
+    const [noCharactersFound, setNoCharactersFound] = useState<boolean>(false); // State for no characters message
+    const [noAudiosFound, setNoAudiosFound] = useState<boolean>(false); // State for no audios message
 
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const popupRef = useRef<HTMLDivElement | null>(null);
     const loadingSpinnerRef = useRef<HTMLDivElement | null>(null);
+    const newOverlayRef = useRef<HTMLDivElement | null>(null); // New overlay reference
 
     // Fetch API Details
     const fetchApiDetails = async () => {
@@ -56,6 +69,7 @@ const UserProfile: React.FC = () => {
     // Fetch and update characters
     const fetchAndUpdateCharacters = async () => {
         setLoadingCharacters(true); // Start loading
+        setNoCharactersFound(false); // Reset no characters found state
         try {
             const token = localStorage.getItem("authToken"); // Use token from local storage
             if (!token) throw new Error("No auth token found");
@@ -77,13 +91,13 @@ const UserProfile: React.FC = () => {
 
             if (Array.isArray(data) && data.length === 0) {
                 // Handle no characters found
-                displayToast('No characters found.', 'error');
+                setNoCharactersFound(true); // Set state to show no characters message
             } else {
                 setCharacters(data); // Update characters state
             }
         } catch (error) {
             console.error('Error fetching character data:', error);
-            displayToast('Error fetching characters.', 'error');
+            setNoCharactersFound(true); // Set state to show no characters message on error
         } finally {
             setLoadingCharacters(false); // Stop loading
         }
@@ -92,6 +106,7 @@ const UserProfile: React.FC = () => {
     // Fetch and update audio cards
     const updateAudioCards = async () => {
         setLoadingAudios(true); // Start loading
+        setNoAudiosFound(false); // Reset no audios found state
         try {
             const token = localStorage.getItem("authToken"); // Use token from local storage
             if (!token) throw new Error("No auth token found");
@@ -111,13 +126,13 @@ const UserProfile: React.FC = () => {
             const data = await response.json();
             if (Array.isArray(data.data2) && data.data2.length === 0) {
                 // Handle no audio found
-                displayToast('No audio found.', 'error');
+                setNoAudiosFound(true); // Set state to show no audios message
             } else {
                 setAudios(data.data2); // Update audios state
             }
         } catch (error) {
             console.error('Error fetching and updating audio cards:', error);
-            displayToast('Error fetching audio.', 'error');
+            setNoAudiosFound(true); // Set state to show no audios message on error
         } finally {
             setLoadingAudios(false); // Stop loading
         }
@@ -200,9 +215,12 @@ const UserProfile: React.FC = () => {
 
     // Update the showDeletePopup function to handle both characters and audios
     const showDeletePopup = (item: any, isAudio: boolean = false) => {
+        console.log("Showing delete popup"); // Debug log
+        showNewOverlay();
         if (overlayRef.current && popupRef.current && loadingSpinnerRef.current) {
-            overlayRef.current.style.display = 'block';
-            popupRef.current.style.display = 'flex';
+            overlayRef.current.style.display = 'block'; // Show overlay
+            console.log("Overlay displayed"); // Debug log
+            popupRef.current.style.display = 'flex'; // Show popup
 
             document.getElementById('cancel-delete')!.onclick = hideDeletePopup;
             document.getElementById('confirm-delete')!.onclick = async () => {
@@ -218,6 +236,7 @@ const UserProfile: React.FC = () => {
     };
 
     const hideDeletePopup = () => {
+        hideNewOverlay();
         if (overlayRef.current && popupRef.current) {
             overlayRef.current.style.display = 'none';
             popupRef.current.style.display = 'none';
@@ -231,6 +250,41 @@ const UserProfile: React.FC = () => {
         setTimeout(() => {
             setIsToastVisible(false);
         }, 4000);
+    };
+
+    // Function to handle play/pause
+    const handlePlayPause = (audio: any) => {
+        const audioId = audio.code; // Assuming audio object has a unique code
+        const audioElement = audioRefs.current[audioId];
+
+        if (playingAudio === audioId) {
+            // If the audio is already playing, pause it
+            audioElement?.pause();
+            setPlayingAudio(null);
+        } else {
+            // If another audio is playing, pause it
+            if (playingAudio) {
+                const currentAudioElement = audioRefs.current[playingAudio];
+                currentAudioElement?.pause();
+            }
+            // Play the selected audio
+            audioElement?.play();
+            setPlayingAudio(audioId);
+        }
+    };
+
+    // Function to show the new overlay
+    const showNewOverlay = () => {
+        if (newOverlayRef.current) {
+            newOverlayRef.current.style.display = 'block'; // Show new overlay
+        }
+    };
+
+    // Function to hide the new overlay
+    const hideNewOverlay = () => {
+        if (newOverlayRef.current) {
+            newOverlayRef.current.style.display = 'none'; // Hide new overlay
+        }
     };
 
     useEffect(() => {
@@ -247,47 +301,79 @@ const UserProfile: React.FC = () => {
                 <h1 className="user-name">{userName}</h1>
             </header>
 
-            {/* Character Cards */}
-            <div className="character-card-container">
-                {loadingCharacters ? (
-                    // Show shimmer cards while loading
-                    Array.from({ length: 3 }).map((_, index) => <ShimmerCard key={index} />)
-                ) : (
-                    characters.map(character => (
-                        <div className="character-card" key={character.id}>
-                            <img src={character.image_url || 'default-image.png'} alt={character.name} />
-                            <p className="card-title">{character.name}</p>
-                            <p className="card-description">{character.summary2}</p>
-                            <div className="button-container">
-                                <button className="action-button" onClick={() => window.location.href = `/chatbox/chat/${character.code}`}>
-                                    <IonIcon icon={searchOutline} />
-                                </button>
-                                <button className="action-button-2" onClick={() => showDeletePopup(character)}>
-                                    <i className="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                )}
+            {/* Tabs Section */}
+            <div className="tabs">
+                <button onClick={() => setActiveTab('characters')} className={activeTab === 'characters' ? 'active' : ''}>Characters</button>
+                <button onClick={() => setActiveTab('audios')} className={activeTab === 'audios' ? 'active' : ''}>Audios</button>
+                <button onClick={() => setActiveTab('groups')} className={activeTab === 'groups' ? 'active' : ''}>Groups</button>
             </div>
 
-            {/* Audio Cards */}
-            <div className="card-container">
-                {loadingAudios ? (
-                    // Show shimmer cards while loading
-                    Array.from({ length: 3 }).map((_, index) => <ShimmerCard key={index} />)
-                ) : (
-                    audios.map(audio => (
-                        <div className="audio-card" key={audio.id}>
-                            <button className="play-pause-button">
-                                <IonIcon icon={audio.isPlaying ? 'pause' : 'play'} />
-                            </button>
-                            <p className="card-title">{audio.name || 'No Description'}</p>
-                            <button className="delete-button" onClick={() => showDeletePopup(audio, true)}>
-                                <i className="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    ))
+            {/* Content Section */}
+            <div className="tab-content">
+                {activeTab === 'characters' && (
+                    <div className="character-card-container">
+                        {loadingCharacters ? (
+                            Array.from({ length: 3 }).map((_, index) => <ShimmerCard key={index} />)
+                        ) : noCharactersFound ? (
+                            <div className="centered-message">
+                                <p>No characters found.</p>
+                            </div>
+                        ) : (
+                            characters.map(character => (
+                                <div className="character-card" key={character.id} style={{ display: 'flex', alignItems: 'center' }}>
+                                    <img src={character.image_url || 'default-image.png'} alt={character.name} />
+                                    <div style={{ flex: 1, marginLeft: '10px' }}>
+                                        <p className="card-title">{character.name}</p>
+                                        <p className="card-description">{character.summary2}</p>
+                                    </div>
+                                    <div className="button-container">
+                                        <button className="action-button" onClick={() => window.location.href = `/chatbox/chat/${character.code}`}>
+                                            <IonIcon icon={chatbubbleOutline} />
+                                        </button>
+                                        <button className="action-button-2" onClick={() => showDeletePopup(character)}>
+                                            <i className="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
+
+                {activeTab === 'audios' && (
+                    <div className="card-container">
+                        {loadingAudios ? (
+                            Array.from({ length: 3 }).map((_, index) => <ShimmerCard key={index} />)
+                        ) : noAudiosFound ? (
+                            <div className="centered-message">
+                                <p>No audios found.</p>
+                            </div>
+                        ) : (
+                            audios.map(audio => (
+                                <div className="audio-card" key={audio.id}>
+                                    <audio ref={el => (audioRefs.current[audio.code] = el)} src={audio.voice_url} />
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <button className="play-pause-button" onClick={() => handlePlayPause(audio)}>
+                                            <IonIcon icon={playingAudio === audio.code ? pause : play} />
+                                        </button>
+                                        <p className="card-title" style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'center' }}>
+                                            {audio.name || 'No Description'}
+                                        </p>
+                                        <button className="delete-button" onClick={() => showDeletePopup(audio, true)}>
+                                            <i className="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
+
+                {activeTab === 'groups' && (
+                    <div className="groups-content">
+                        {/* Placeholder for Groups content */}
+                        <p>No groups available.</p>
+                    </div>
                 )}
             </div>
 
@@ -311,6 +397,9 @@ const UserProfile: React.FC = () => {
                     </svg>
                 </button>
             </div>
+
+            {/* New Overlay JSX */}
+            <div className="new-overlay" id="new-overlay" ref={newOverlayRef} style={{ display: 'none' }}></div>
 
             {/* Toast Notification */}
             <IonToast

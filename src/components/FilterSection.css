@@ -1,7 +1,13 @@
 .filter-section-container {
     margin: 20px;
     text-align: center;
-}
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  }
+
+  .filter-section-container::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
 
 .filter-buttons {
     display: flex;

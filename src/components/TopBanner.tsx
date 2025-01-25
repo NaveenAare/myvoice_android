@@ -57,7 +57,7 @@ useEffect(() => {
 
   return (
         <div className="top-banner-container">
-            <div id="rotating-text-container" style={{ zIndex: 30, color: '#4A4A4A', fontFamily: 'fantasy' }}>
+            <div id="rotating-text-container" style={{ zIndex: 30, color: '#4A4A4A', fontFamily: 'Gill Sans, sans-serif' }}>
                 <p id="rotating-text">Welcome to speaking Character.Ai</p>
             </div>
             <div className="image-carousel">

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './SearchContainer.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 interface Character {
   category: string;
@@ -15,8 +17,10 @@ const SearchCharacters: React.FC = () => {
   const [results, setResults] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [showResults, setShowResults] = useState<boolean>(false);
 
-  // Debounce logic using useCallback
+  // Debounce logic
   const debounce = (func: (...args: any[]) => void, delay: number) => {
     let timer: NodeJS.Timeout;
     return (...args: any[]) => {
@@ -30,11 +34,14 @@ const SearchCharacters: React.FC = () => {
   const fetchCharacters = async (searchQuery: string) => {
     if (!searchQuery) {
       setResults([]);
+      setShowOverlay(false);
       return;
     }
 
     setLoading(true);
     setError(null);
+    setShowOverlay(true);
+
     try {
       const response = await fetch(`https://speakingcharacter.ai/character/search?query=${searchQuery}`);
       if (!response.ok) {
@@ -54,21 +61,40 @@ const SearchCharacters: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
+    setShowResults(value.length > 0);
     debouncedFetch(value);
   };
 
+  const clearSearch = () => {
+    setQuery('');
+    setResults([]);
+    setShowOverlay(false);
+    setShowResults(false);
+  };
+
   return (
-    <div className="search-container">
-      <input
-        type="text"
-        className="search-input"
-        placeholder="Search characters..."
-        value={query}
-        onChange={handleInputChange}
-      />
+    <div className={`search-container-main-page ${showOverlay ? 'overlay-active' : ''}`}>
+      {showOverlay && <div className="search-overlay" onClick={clearSearch}></div>}
+      <div className="search-input-wrapper">
+        <span className="search-icon magnifier-icon">
+          <FontAwesomeIcon icon={faSearch} />
+        </span>
+        <input
+          type="text"
+          className="search-input-main-page"
+          placeholder="Search characters..."
+          value={query}
+          onChange={handleInputChange}
+        />
+        {query && (
+          <span className="search-icon cross-icon" onClick={clearSearch}>
+            <FontAwesomeIcon icon={faTimes} />
+          </span>
+        )}
+      </div>
       {loading && <p className="search-loading">Loading...</p>}
       {error && <p className="search-error">{error}</p>}
-      {results.length > 0 && (
+      {showResults && (
         <ul className="search-results-dropdown">
           {results.map((character) => (
             <li key={character.id} className="search-result-item">

@@ -83,7 +83,13 @@
   width: calc(100% - 14px);
   margin-left: 7px;
   margin-right:7px;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
+     
+     .moving-cards-wrapper-your-char-latest::-webkit-scrollbar {
+       display: none; /* For Chrome, Safari, and Opera */
+     }
 .card-image {
   width: 40px;
   height: 40px;

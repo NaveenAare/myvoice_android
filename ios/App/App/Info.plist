@@ -45,5 +45,21 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>This app needs access to your microphone to record audio.</string>
+<!-- Add these to your Info.plist if not already present -->
+<key>UIBackgroundModes</key>
+<array>
+    <string>audio</string>
+</array>
+<key>NSMicrophoneUsageDescription</key>
+<string>Need microphone access for audio chat</string>
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+
+
 </dict>
 </plist>

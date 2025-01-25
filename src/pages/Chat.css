@@ -20,15 +20,17 @@
   max-width: 70%;
   padding: 8px 12px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 15px;
   position: relative;
 }
 
 .message.sent .message-bubble {
+    color: #000;
  background-color: #dcf8c6;
 }
 
 .message.received .message-bubble {
+    color: #000;
   background-color: white;
 }
 
@@ -45,21 +47,74 @@
   color: #667781;
 }
 
+body.keyboard-open .input-container {
+  transform: translateY(-150px) !important; /* Keep the transform */
+  transition: none !important; /* Remove transition to make it immediate */
+}
+
 .input-container {
   display: flex;
   align-items: center;
-  padding: 5px;
   background-color: #f0f2f5;
+  margin-top: 0px !important;
+  border-radius: 0px !important;
+  transition: none !important; /* Remove transition here as well */
 }
 
 .message-input {
   flex: 1;
+  width: 100%; /* Ensure it stretches to fill the width */
+  font-size: 15px;
+
   background: white;
   border-radius: 20px;
   margin: 0 8px;
-  --padding-start: 15px;
-  --padding-end: 15px;
+
 }
+
+.message-input .message-textarea {
+  width: 100%; /* Full width of the container */
+  font-size: 15px; /* Font size for input */
+  background: transparent; /* Transparent background */
+  border: none; /* Remove border */
+  outline: none; /* Remove outline */
+  line-height: 1.5; /* Line height for readability */
+  color: #333; /* Text color */
+  padding: 0; /* Reset padding */
+}
+
+/* Target the native input element inside the IonInput */
+.message-input .message-textarea .native-input {
+  padding-left: 15px !important; /* Add left padding */
+  padding-right: 15px; /* Add right padding */
+  border-radius: 15px;
+  font-size: 15px !important; /* Rounded corners inside input */
+}
+/* Change the color of the IonBackButton */
+ion-back-button {
+  --color: #000 !important; /* Custom color for the back button */
+}
+
+
+
+.native-input {
+  background: transparent; /* Make it transparent */
+  border: none; /* Remove any visible borders */
+  outline: none; /* Remove the focus outline */
+  color: inherit; /* Ensure the text matches parent styles */
+  width: calc(100% - 8px) !important; /* Ensure it fills the container */
+  height: 100%;
+  border-radius: 20px; /* Rounded corners */
+  display: block; /* Ensures the layout is correct */
+  padding: 0; /* Remove padding */
+  box-shadow: none !important; /* Remove any shadow */
+  --padding-start: 8px !important; 
+  margin-left: 8px !important;
+  color: #000 !important;
+}
+
+
+
 
 .input-button {
   --padding-start: 8px;
@@ -164,3 +219,434 @@ ion-avatar {
     padding: 10px; /* Optional: padding */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Optional: shadow */
   }
+
+
+  .popup-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 450px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s, visibility 0.4s;
+            z-index: 10;
+        }
+
+        .popup-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-header {
+            background-color: #f3f5f5;
+            color: #000;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .popup-content {
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom 0.3s, color 0.3s;
+            font-weight: 500;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid #008069;
+            color: #87CEEB;
+        }
+
+        .name-list {
+            display: none;
+            min-height: 200px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Hide button on screens smaller than 600px */
+        @media (max-width: 600px) {
+             .name-list {
+            display: none;
+            min-height: 200px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 10px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        }
+
+        .name-list.active {
+            display: block;
+        }
+
+        .name-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            color: #555;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .name-item:hover {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .name-item:last-child {
+            border-bottom: none;
+        }
+
+        .close-btn {
+            background-color: #87CEEB;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s, visibility 0.4s;
+            z-index: 5;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media screen and (max-width: 400px) {
+            .popup-modal {
+                width: 95%;
+            }
+
+            .toggle-btn {
+                width: 90%;
+                padding: 12px;
+            }
+        }
+
+        .audio-btn-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .audio-btn {
+            width: 40px;
+            height: 40px;
+
+            margin-left: 20px;
+            border-radius: 50%;
+            background-image: url('/static/Pasted_image.png'); /* Add your image URL here */
+            background-size: cover; /* Ensures the image covers the entire button */
+            background-position: center; /* Centers the background image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            border: none;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1); /* Slightly enlarge button on hover */
+        }
+
+        /* Tooltip text positioned above */
+        .hover-text {
+            position: absolute;
+            bottom: 100px; /* Positioned above the button */
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-left: 20px;
+            visibility: hidden;
+            opacity: 0;
+            white-space: nowrap;
+            transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+            pointer-events: none;
+        }
+
+        /* Show the text on hover */
+        .audio-btn-container:hover .hover-text {
+            visibility: visible;
+            opacity: 1;
+            bottom: 60px; /* Slide the text slightly upwards on hover */
+        }
+
+        /* Responsive design adjustments */
+        @media (max-width: 600px) {
+            .audio-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .hover-text {
+                font-size: 12px;
+                padding: 6px 10px;
+                bottom: 90px;
+            }
+
+            .audio-btn-container:hover .hover-text {
+                bottom: 60px;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .popup-modal {
+                width: 95%;
+            }
+
+            .popup-header {
+                font-size: 20px;
+            }
+
+            .tab {
+                font-size: 14px;
+            }
+
+            .name-item {
+                font-size: 14px;
+            }
+
+            .close-btn {
+                font-size: 14px;
+            }
+        }
+
+
+        .loading-dots-audio {
+            margin-top:10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px; /* Space between dots */
+        }
+        
+        .loading-dots-audio span {
+            width: 8px;
+            height: 8px;
+            background-color: #008069; /* Color of the dots */
+            border-radius: 50%;
+            animation: bounce 0.9s infinite alternate; /* Animation for bouncing effect */
+        }
+        
+        .loading-dots-audio span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .loading-dots-audio span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+        }
+
+
+        .toolbar-container {
+            background-color: aqua !important;
+            color: aqua;
+        }
+
+
+
+        .popover-content {
+          margin-top: -100px !important;
+          --padding-start: -100px !important;
+          --background: white;
+          --border-radius: 8px;
+          --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          padding: 8px 0 !important; /* Space around the list */
+        }
+        
+        .popover-content ion-item {
+          --padding-start: 12px;
+          --inner-padding-end: 12px;
+          --border-color: transparent;
+          --background-hover: #f0f0f0; /* Highlight on hover */
+        }
+
+        .custom-popover {
+          margin-top: 10px !important;
+          --offset-x: 0; /* Adjust horizontal offset */
+          --offset-y: 0; /* Adjust vertical offset */
+          --width: 200px; /* Set fixed width for the popover */
+        }
+        
+        .custom-popover::part(content) {
+          position: fixed; /* Fix the position */
+          top: 56px; /* Position it just below the header (adjust as per your header's height) */
+          right: 16px; /* Align it to the right edge */
+          border-radius: 8px; /* Add rounded corners */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add subtle shadow */
+          background-color: #fff; /* White background for the popover */
+          z-index: 1000; /* Ensure it's on top of other elements */
+        }
+        
+        .custom-popover ion-list {
+          padding: 0; /* Remove extra padding */
+        }
+        
+        .custom-popover ion-item {
+          --inner-padding-start: 12px; /* Add padding inside items */
+          --inner-padding-end: 12px;
+        }
+
+        .custom-item {
+          background: white;
+        }
+        
+        .delete-icon {
+          color: black;
+          font-size: 20px;
+          filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
+        }
+        
+        .delete-label {
+          color: black;
+        }
+
+
+        .new-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.7); /* Darker background */
+          display: none; /* Initially hidden */
+          z-index: 10000; /* Ensure it is above other elements */
+      }
+
+      .spinner {
+        display: block; /* Ensure it can be displayed */
+        border: 5px solid rgba(255, 255, 255, 0.3) !important; /* Light border */
+        border-top: 5px solid rgb(255, 114, 109) !important; /* Darker border for top */
+        border-radius: 50%; /* Circular shape */
+        width: 20px !important; /* Size of spinner */
+        height: 20px !important; /* Size of spinner */
+        animation: spin 1s linear infinite; /* Spin animation */
+        z-index: 1001; /* Ensure spinner is above overlay */
+    }
+    
+    /* Animation for spinner */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Hide spinner by default */
+    #loadingSpinner {
+        display: none; /* Hidden by default */
+    }
+
+
+    .toast {
+      visibility: hidden;
+      max-width: 300px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 16px;
+      position: fixed;
+      z-index: 9999;
+      left: 50%;
+      top: 20px;
+      transform: translateX(-50%);
+      font-size: 17px;
+  }
+  
+  .toast.show {
+      visibility: visible;
+      animation: fadeInOut 4s;
+  }
+  
+  @keyframes fadeInOut {
+      0% { top: 0; opacity: 0; }
+      20% { top: 20px; opacity: 1; }
+      80% { top: 20px; opacity: 1; }
+      100% { top: 0; opacity: 0; }
+  }
+  
+  .toast.success {
+      background-color: rgb(22, 217, 22);
+  }
+  
+  .toast.error {
+      background-color: red;
+  }
+  
+        
+        
+
+        
+        
+        

@@ -20,36 +20,54 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
+/* Dark mode palettes (if needed in the future) */
+// import '@ionic/react/css/palettes/dark.always.css';
+// import '@ionic/react/css/palettes/dark.class.css';
 import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
 
+import TalkingPage from './pages/TalkingPage';
+import { useEffect } from 'react';
+
+// Initialize Ionic
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/character-chat/:id" component={CharacterChatPage} />
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  // Place the useEffect hook inside the functional component
+  useEffect(() => {
+    // Force light mode by removing dark mode class
+    document.body.classList.remove('dark');
+    document.body.classList.add('light'); // Ensure light mode is added
+
+    // Handle system theme changes
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    prefersDark.addEventListener('change', (e) => {
+      document.body.classList.remove('dark'); // Force light mode even if the system changes
+      document.body.classList.add('light');
+    });
+
+    // Cleanup the listener to avoid memory leaks
+    return () => prefersDark.removeEventListener('change', () => {});
+  }, []);
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="/character-chat/:id" component={CharacterChatPage} />
+          <Route path="/talking/:id" component={TalkingPage} />
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

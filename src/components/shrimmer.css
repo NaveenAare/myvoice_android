@@ -8,11 +8,13 @@
 }
 
 .shimmer.left {
+  border-radius: 12px;
   align-self: flex-start; /* Align to the left */
   max-width: 70%; /* Adjust width for bot messages */
 }
 
 .shimmer.right {
+  border-radius: 12px;
   margin-right: 0px;
   display: flex;
   align-content: end;

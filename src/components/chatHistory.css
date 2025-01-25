@@ -19,6 +19,8 @@
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    /* Add min-height to ensure consistent card size */
+    min-height: 60px;
 }
 
 /* Call Button */
@@ -144,4 +146,23 @@
     color: #666;
     font-size: 20px;
     cursor: pointer;
+}
+
+.card-image {
+    min-height: 40px;
+    min-width: 40px;
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin-right: 10px;
+    display: block;
+}
+
+/* Add this to ensure the image container behaves correctly */
+.menu-card > div:first-child {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 }

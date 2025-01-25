@@ -11,6 +11,12 @@ import {
   cameraOutline
 } from 'ionicons/icons';
 import './ChatPage.css';
+import { IonButton } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
+
+
+
+
 
 const ChatPage: React.FC = () => {
   const [message, setMessage] = useState('');
