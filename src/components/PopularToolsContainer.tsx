@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './PopularTools.css'; // Import CSS styles
+import { useIonRouter } from '@ionic/react';
 
 
 const SpecialSectionContainer: React.FC = () => {
   const emojis: string[] = ["premium"]; // Emoji list
   // Don't set initial state
   const [activeFilter, setActiveFilter] = useState<string>('');
+  const router = useIonRouter();
 
   // Initialize on mount
   useEffect(() => {
@@ -74,7 +76,8 @@ const SpecialSectionContainer: React.FC = () => {
 
           // Add click event listener to redirect on card click
           cardDiv.addEventListener('click', () => {
-            checkLoginStatus(`/chatbox/chat/${character.code}`);
+            router.push(`/character-chat-3/${character.code}`, 'forward', 'push');
+            //checkLoginStatus(`/chatbox/chat/${character.code}`);
             //window.location.href = `/chatbox/chat/${character.code}`;  // Assuming API returns a 'code' field for each character
           });
 

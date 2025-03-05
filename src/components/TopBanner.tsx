@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react';
-import { IonButton, IonImg } from '@ionic/react';
+import { IonButton, IonImg, useIonRouter } from '@ionic/react';
 import './TopBanner.css';
+import {useState } from 'react'; // Added useState
+
 
 const CardComponent: React.FC = () => {
+    const router = useIonRouter();
+    const [images, setImages] = useState<string[]>([]); // State to hold image URLs
+        const [loading, setLoading] = useState(true);
+
 
     const texts: string[] = [
         "AI-powered character creation 🤖",
@@ -12,7 +18,43 @@ const CardComponent: React.FC = () => {
     ];
     
     let currentIndex: number = 0;
-useEffect(() => {
+
+    let imagedomain = "https://speakingcharacter.ai"
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const response = await fetch('https://speakingcharacter.ai/static/config.json');
+                const data = await response.json();
+                const newImages = [
+                    data.top_banner_image_center,
+                    data.top_banner_image_left_1,
+                    data.top_banner_image_left_2,
+                    data.top_banner_image_rigtht_1,
+                    data.top_banner_image_rigtht_2
+                ].map(image => `${imagedomain}${image}`);
+
+                setImages(newImages);
+            } catch (error) {
+                const newImages2 = [
+                    '/assets/shrimmer.png',
+                    "/assets/shrimmer.png",
+                    "/assets/shrimmer.png",
+                    "/assets/shrimmer.png",
+                    "/assets/shrimmer.png"
+                ].map(image => `${image}`);
+
+                setImages(newImages2);
+                console.error("Error fetching images:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchImages();
+    }, []);
+
+    useEffect(() => {
         // Get the rotating text container
         const rotatingTextContainer = document.getElementById('rotating-text-container');
 
@@ -50,22 +92,21 @@ useEffect(() => {
         }
     }, []); // Runs only once after the component is mounted
 
-  const goToCreateCharc = () => {
-    console.log('Navigating to Create Character');
-    // Replace with Ionic navigation logic
-  };
+    const goToCreateCharc = () => {
+        router.push('/insert-character');
+    };
 
-  return (
+    return (
         <div className="top-banner-container">
             <div id="rotating-text-container" style={{ zIndex: 30, color: '#4A4A4A', fontFamily: 'Gill Sans, sans-serif' }}>
                 <p id="rotating-text">Welcome to speaking Character.Ai</p>
             </div>
             <div className="image-carousel">
-                <IonImg class="carousel-image" src="https://media.gettyimages.com/id/1455253758/photo/mumbai-india-rashmika-mandanna-attends-the-trailer-launch-of-netflix-film-mission-majnu-on.jpg?s=612x612&w=0&k=20&c=tOzrO-7x3aIkxxPZcy_8Ldh3xoy5Ur0IyHsihxCPeNk=" alt="Image 1" style={{ zIndex: 30 }}/>
-                <IonImg class="carousel-image" src="https://media.gettyimages.com/id/1455253758/photo/mumbai-india-rashmika-mandanna-attends-the-trailer-launch-of-netflix-film-mission-majnu-on.jpg?s=612x612&w=0&k=20&c=tOzrO-7x3aIkxxPZcy_8Ldh3xoy5Ur0IyHsihxCPeNk=" alt="Image 2" />
-                <IonImg class="carousel-image" src="https://media.gettyimages.com/id/1455253758/photo/mumbai-india-rashmika-mandanna-attends-the-trailer-launch-of-netflix-film-mission-majnu-on.jpg?s=612x612&w=0&k=20&c=tOzrO-7x3aIkxxPZcy_8Ldh3xoy5Ur0IyHsihxCPeNk=" alt="Image 3" />
-                <IonImg class="carousel-image" src="https://media.gettyimages.com/id/1455253758/photo/mumbai-india-rashmika-mandanna-attends-the-trailer-launch-of-netflix-film-mission-majnu-on.jpg?s=612x612&w=0&k=20&c=tOzrO-7x3aIkxxPZcy_8Ldh3xoy5Ur0IyHsihxCPeNk=" alt="Image 4" />
-                <IonImg class="carousel-image" src="https://media.gettyimages.com/id/1455253758/photo/mumbai-india-rashmika-mandanna-attends-the-trailer-launch-of-netflix-film-mission-majnu-on.jpg?s=612x612&w=0&k=20&c=tOzrO-7x3aIkxxPZcy_8Ldh3xoy5Ur0IyHsihxCPeNk=" alt="Image 5" />
+                {images.length > 0 ? images.map((src, index) => (
+                    <IonImg key={index} className="carousel-image" src={src} alt={`Image ${index + 1}`} style={{ zIndex: 30 }} />
+                )) : (
+                    <p>Loading images...</p> // Placeholder while loading
+                )}
             </div>
             <IonButton expand="full" onClick={goToCreateCharc} className="btn">
                 <span className="btn-icon-wrapper">
@@ -75,6 +116,7 @@ useEffect(() => {
                 </span>
                 Create new character
             </IonButton>
+            
         </div>
     );
 };

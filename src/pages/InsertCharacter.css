@@ -1,0 +1,1050 @@
+.insert-character-page {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    background-color: #ffffff !important;
+    z-index: 1;
+    --ion-background-color: #ffffff !important;
+}
+
+/* Update IonContent background */
+ion-content {
+    --background: #ffffff !important;
+    --ion-background-color: #ffffff !important;
+    background-color: #ffffff !important;
+}
+
+/* Force white background on the form containers */
+.form-container,
+.form-container-audio {
+    background-color: #ffffff !important;
+}
+
+/* Add these styles to force light mode */
+:root {
+    --ion-color-light: #ffffff;
+    --ion-background-color: #ffffff;
+    --ion-background-color-rgb: 255,255,255;
+    --ion-text-color: #000000;
+    --ion-text-color-rgb: 0,0,0;
+}
+
+/* Override dark mode styles */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ion-background-color: #ffffff !important;
+        --ion-background-color-rgb: 255,255,255 !important;
+        --ion-text-color: #000000 !important;
+        --ion-text-color-rgb: 0,0,0 !important;
+    }
+
+    ion-content {
+        --background: #ffffff !important;
+        --ion-background-color: #ffffff !important;
+    }
+
+    .insert-character-page,
+    .form-container,
+    .form-container-audio {
+        background-color: #ffffff !important;
+    }
+}
+
+
+.form-container {
+    top: env(safe-area-inset-top);
+    margin-bottom: 50px;
+    border-radius: 12px;
+    width: calc(100% - 50px);
+    height: 100%;
+    margin-left: 20px;
+    margin-right: 20px;
+    max-height: 90%;
+    display: none; /* Initially hidden */
+    margin-top: 50px;
+    position: relative;
+    z-index: 1;
+    background-color: #fff;
+    background: #fff;
+}
+
+.form-container-audio {
+
+    margin-top: 100px;
+    margin-bottom: 50px;
+    border-radius: 12px;
+    margin-left: 6px;
+    margin-right: 6px;
+    width: calc(100% - 15px);
+    height: 100%;
+    max-height: 90%;
+    overflow: hidden; /* Ensure content does not overflow */
+    display: none; /* Initially hidden */
+    position: relative;
+    z-index: 1;
+}
+
+.image-upload {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.image-upload input[type="file"] {
+    display: none;
+}
+
+.image-preview {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: 2px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview:hover {
+    border-color: #007bff;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group-audio {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group-audio label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Update form input styles to maintain text color */
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select,
+.form-group-audio input[type="text"],
+.form-group-audio textarea,
+.form-group-audio select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f0f2f5;
+    transition: border-color 0.3s ease;
+    color: #000 !important; /* Force black color */
+}
+
+/* Update focus styles */
+.form-group input[type="text"]:focus,
+.form-group textarea:focus,
+.form-group select:focus,
+.form-group-audio input[type="text"]:focus,
+.form-group-audio textarea:focus,
+.form-group-audio select:focus {
+    border-color: #007bff;
+    outline: none;
+    color: #000 !important; /* Force black color on focus */
+}
+
+/* Update placeholder color */
+.form-group input::placeholder,
+.form-group textarea::placeholder,
+.form-group select::placeholder,
+.form-group-audio input::placeholder,
+.form-group-audio textarea::placeholder,
+.form-group-audio select::placeholder {
+    color: #666;
+    opacity: 1;
+}
+
+/* Ensure text stays black after input */
+.form-group input[type="text"]:not(:placeholder-shown),
+.form-group textarea:not(:placeholder-shown),
+.form-group select:not(:placeholder-shown),
+.form-group-audio input[type="text"]:not(:placeholder-shown),
+.form-group-audio textarea:not(:placeholder-shown),
+.form-group-audio select:not(:placeholder-shown) {
+    color: #000 !important;
+}
+
+/* Style for select options */
+.form-group select option,
+.form-group-audio select option {
+    color: #000;
+    background-color: #fff;
+}
+
+.form-group textarea {
+    resize: none;
+    height: 120px;
+    color: #000 !important;
+}
+
+.form-group-audio input[type="text"],
+.form-group-audio textarea,
+.form-group-audio select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f0f2f5;
+    transition: border-color 0.3s ease;
+}
+
+.form-group-audio input[type="text"]:focus,
+.form-group-audio textarea:focus,
+.form-group-audio select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.form-group-audio textarea {
+    resize: none;
+    height: 120px;
+}
+
+#audioFileUpload {
+    display: none;
+}
+
+.audio-upload {
+    display: none;
+    margin-top: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.audio-upload:hover {
+    border-color: #007bff;
+}
+
+.audio-upload input[type="file"] {
+    display: none;
+}
+
+.audio-upload label {
+    font-weight: 600;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.audio-upload p {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.audio-upload-audio {
+    display: none;
+    margin-top: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.audio-upload-audio:hover {
+    border-color: #007bff;
+}
+
+.audio-upload-audio input[type="file"] {
+    display: none;
+}
+
+.audio-upload-audio label {
+    font-weight: 600;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.audio-upload-audio p {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(90deg, #42A5F5, #26C6DA);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+    margin-bottom: 20px !important;
+}
+
+.submit-btn:hover {
+    background-color: #fff;
+}
+
+.submit-btn:active {
+    background-color: #fff;
+}
+
+#loading-spinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    z-index: 999;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Toast notification */
+.toast {
+    visibility: hidden;
+    max-width: 300px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 16px;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%);
+    font-size: 17px;
+}
+
+.toast.show {
+    visibility: visible;
+    animation: fadeInOut 4s;
+}
+
+@keyframes fadeInOut {
+    0% { top: 0; opacity: 0; }
+    20% { top: 20px; opacity: 1; }
+    80% { top: 20px; opacity: 1; }
+    100% { top: 0; opacity: 0; }
+}
+
+.toast.success {
+    background-color: green;
+}
+
+.toast.error {
+    background-color: red;
+}
+
+.generate-btn {
+    background-color: #007bff; /* Button color */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px; /* Space between button and label */
+    align-self: center; /* Center align button with label */
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100001;
+    max-width: 90%;
+    width: 600px;
+    display: none;
+  }
+  
+  .popup input[type="text"] {
+    width: 120px;
+    margin: 0 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .ok-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #42A5F5, #26C6DA);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none; /* Initially hide the backdrop */
+}
+
+.description-text {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.description-text input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    width: 80px;
+    margin: 0 5px;
+    transition: border-color 0.3s;
+}
+
+.description-text input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.description-text input::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.ok-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.ok-btn:hover {
+    background-color: #0056b3;
+}
+
+.generated-prompt {
+    margin-top: 20px;
+    font-style: italic;
+    color: #555;
+}
+
+.toggle-btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 20px;
+    transition: background-color 0.3s;
+}
+
+.toggle-btn:hover {
+    background-color: #0056b3;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(3px);
+    z-index: 100000 !important;
+    display: none;
+}
+
+/* Popup Styles */
+.pop {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 100001;
+    width: 90%;
+    max-width: 500px;
+    display: none;
+    position: relative;
+    background-color: #fff;
+}
+
+.pop p {
+    color: #808080;
+}
+
+@media (max-width: 500px) {
+    .pop {
+        display: none; /* Initially hidden */
+        position: fixed;
+        
+        top: 50%;
+        left: 50%;
+        background: #fff;
+        transform: translate(-50%, -50%);
+        border-radius: 20px; /* Rounded corners */
+        z-index: 200000;
+        max-width: 90%; /* Responsive max width */
+        width: 90%; /* Default width */
+
+        flex-direction: column; /* Stack child elements vertically */
+        align-items: center; /* Align items to the center horizontally */
+        justify-content: center; /* Center elements vertically */
+        padding: 20px; /* Add some padding for better spacing */
+        gap: 20px; /* Add gap between the child elements */
+    }
+}
+
+.choose-pop {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 100001;
+    width: 90%;
+    max-width: 500px;
+    display: none;
+    position: relative;
+    background-color: #fff;
+}
+
+.choose-pop p {
+    color: #808080;
+}
+
+@media (max-width: 500px) {
+    .choose-pop {
+        width: 90%;
+        background: #fff;
+        z-index: 100002;
+    }
+}
+
+/* Pop Styles */
+.pop-content {
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ddd; /* Light border for definition */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding for inner spacing */
+    max-width: 600px; /* Limit the width for readability */
+    margin: 20px auto; /* Center the content on the page */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    font-family: Arial, sans-serif; /* Clean font */
+    max-height: 400px; /* Set a fixed height for the pop-up */
+    overflow-y: auto; /* Enable vertical scrolling when content overflows */
+    background: #fff;
+    position: relative;
+    z-index: 100002;
+}
+
+.pop-heading {
+    font-size: 1.5em; /* Larger heading */
+    margin-bottom: 15px; /* Space below heading */
+    text-align: center; /* Center the heading */
+    color: #333; /* Dark text for contrast */
+}
+
+.pop-content p {
+    line-height: 1.6; /* Increase line height for readability */
+    margin: 10px 0; /* Space between paragraphs */
+    color: #555; /* Slightly lighter text color */
+}
+
+.pop-content ul {
+    list-style-type: disc; /* Default bullet points */
+    padding-left: 20px; /* Indent list */
+    margin: 10px 0; /* Space above and below the list */
+}
+
+.pop-content li {
+    margin-bottom: 10px; /* Space between list items */
+}
+
+@media (max-width: 600px) {
+    .pop-content {
+        padding: 15px; /* Adjust padding for smaller screens */
+    }
+
+    .pop-heading {
+        font-size: 1.3em; /* Smaller heading for mobile */
+    }
+}
+
+.pop-description {
+    font-weight: 100;
+    color: rgb(102, 102, 102);
+}
+
+.pop-button-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.choose-pop-button-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Ensures items are arranged in a row */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pop-button {
+    width: 50%;
+    height: 35px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.primary {
+    background: linear-gradient(90deg, #42A5F5, #26C6DA);
+    color: white;
+}
+
+.primary:hover {
+    background-color: rgb(255, 73, 66);
+}
+
+.secondary {
+    background-color: #ddd;
+}
+
+.secondary:hover {
+    background-color: rgb(197, 197, 197);
+}
+
+.choose-pop-button {
+    margin-top: 20px;
+    width: 60%;
+    height: 55px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .choose-pop-button {
+        width: 90%;
+    }
+}
+
+.exit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.exit-button:hover svg {
+    fill: black;
+}
+
+.exit-button svg {
+    fill: rgb(175, 175, 175);
+}
+
+/* Loading Bar Styles (optional) */
+.loading-bar {
+    display: none; /* Initially hidden */
+    height: 5px;
+    background-color: rgb(255, 114, 109);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    transition: width 0.5s;
+}
+
+.form-title {
+    margin: 0 auto;
+    display: block; /* Makes it a block element */
+    text-align: center; /* Centers text within if necessary */
+    margin-bottom: 20px;
+    color: #000;
+    font-style: bold;
+  }
+  
+
+.back-arrow-btn {
+    position: fixed;
+    left: 20px;
+    background-color: #4a90e2; /* Light blue background */
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 99999;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.arrow-icon {
+    transform: rotate(180deg); /* Rotates the arrow 180 degrees to point left */
+}
+
+.back-arrow-btn svg {
+    width: 24px; /* Size of the arrow icon */
+    height: 24px;
+}
+
+.back-arrow-btn:hover {
+    background-color: #357ABD; /* Darker blue on hover */
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+/* Hide button on screens smaller than 600px */
+@media (max-width: 600px) {
+    .back-arrow-btn {
+        display: none;
+    }
+}
+
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3); /* Light border */
+    border-top: 5px solid rgb(255, 114, 109); /* Darker border for top */
+    border-radius: 50%; /* Circular shape */
+    width: 20px; /* Size of spinner */
+    height: 20px; /* Size of spinner */
+    animation: spin 1s linear infinite; /* Spin animation */
+    margin-left: 10px; /* Space between button and spinner */
+}
+
+/* Animation for spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hide spinner by default */
+#loadingSpinner {
+    display: none; /* Hidden by default */
+}
+
+.audio-select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#audioSelection {
+    width: 100%;
+}
+
+/* Position the dropdown list to open upward */
+.dropdown-up {
+    position: absolute;
+    bottom: 100%; /* Position above the selection */
+    left: 0;
+    transform: translateY(-4px); /* Add some space */
+}
+
+/* Optional: Add z-index if needed to make it overlay other elements */
+.dropdown-up {
+    z-index: 10;
+}
+
+/* Styling dropdown options to appear above the selection */
+#audioSelection option {
+    position: relative;
+}
+
+.audio-select-wrapper select {
+    max-height: 150px;
+    overflow-y: auto;
+    display: block;
+}
+
+/* Custom dropdown positioning */
+.audio-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Styling dropdown options to appear above the selection */
+#audioSelection option {
+    position: relative;
+}
+
+.audio-options {
+    max-height: 150px;
+    overflow-y: auto;
+    display: block;
+    position: absolute;
+    top: -150px; /* Adjust as needed */
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 100;
+}
+
+.audio_clone_tips-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 100001;
+    width: 90%;
+    max-width: 500px;
+    display: none;
+    position: relative;
+    background-color: #fff;
+}
+
+.audio_clone_tips-container h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.audio_clone_tips-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.audio_clone_tips-container li {
+    font-size: 1em;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.audio_clone_tips-container .good {
+    color: green;
+}
+
+.audio_clone_tips-container .bad {
+    color: red;
+}
+
+.audio_clone_tips-container li i {
+    margin-right: 10px;
+}
+
+.audio_clone_tips-container button {
+    padding: 10px 20px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    display: block;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.audio_clone_tips-container button:hover {
+    background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .audio_clone_tips-container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .audio_clone_tips-container button {
+        font-size: 0.9em;
+    }
+
+    .audio_clone_tips-container h2{
+        font-size: 20px;
+        color: #808080;
+        text-decoration-color: #808080;
+
+    }
+}
+
+.bad{
+    font-size: 10px;
+
+}
+
+.insert-character-page {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    background: #ffffff;
+    animation: none; /* Remove any existing animations */
+    z-index: 1;
+}
+
+/* Update IonContent styling */
+ion-content {
+    --background: transparent;
+    --z-index: 1;
+}
+
+/* Ensure IonContent stays below overlay */
+ion-content {
+    --background: transparent;
+    --z-index: 1;
+}
+
+
+/* Audio Terms Popup Styles */
+.pop-audio {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100001;
+    max-width: 90%;
+    width: 600px;
+    display: none;
+  }
+  
+  .pop-content-audio {
+    padding: 20px;
+    text-align: left;
+    z-index: 100001;
+    box-sizing: border-box;
+  }
+  
+  .pop-heading-audio {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .pop-button-wrapper-audio {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .pop-button-audio {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .pop-button-audio.primary {
+    background: linear-gradient(90deg, #42A5F5, #26C6DA);
+    color: white;
+    border: none;
+  }
+  
+  .pop-button-audio.secondary {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+  
+  .exit-button-audio {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .pop-audio {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100001; /* Higher than overlay */
+    max-width: 90%;
+    width: 600px;
+    display: none;
+  }

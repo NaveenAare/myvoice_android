@@ -1,0 +1,11 @@
+.chat-app-icons {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.chat-icon {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+  margin-right: 10px; /* Space between icons */
+} 

@@ -1,0 +1,142 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: white; /* Set the background color to white */
+    height: 100%; /* Full height of the viewport */
+    width: 100%; /* Full width of the viewport */
+    overflow: hidden; /* Prevent scrolling */
+    z-index: 1000;
+}
+
+.loader {
+    background-color: white;
+    position: fixed; /* Use fixed positioning to cover the viewport */
+    left: 50%; /* Center horizontally */
+    top: 50%; /* Center vertically */
+    transform: translate(-50%, -50%); /* Adjust position to truly center */
+    z-index: 1000; /* Ensure it appears above other content */
+    width: 100%; /* Width of the loader */
+    height: 100%; /* Height of the loader */
+}
+
+.circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    animation: pulse 1s infinite ease-in-out; /* Faster animation */
+}
+
+.circle:nth-child(1) { background: #87CEEB; animation-delay: 0s; }
+.circle:nth-child(2) { background: #fff; animation-delay: 0.2s; }
+.circle:nth-child(3) { background: #87CEEB; animation-delay: 0.4s; }
+.circle:nth-child(4) { background: #fff; animation-delay: 0.6s; }
+.circle:nth-child(5) { background: #87CEEB; animation-delay: 0.8s; }
+
+@keyframes pulse {
+    0% { transform: scale(0.1); opacity: 1; } /* Start small and fully visible */
+    100% { transform: scale(2); opacity: 0; } /* Scale up to 2 and fade out */
+}
+
+.infinity {
+    width: 120px;
+    height: 60px;
+    position: relative;
+}
+
+.infinity div,
+.infinity span {
+    position: absolute;
+}
+
+.infinity div {
+    top: 0;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    animation: rotate 6.9s linear infinite;
+}
+
+.infinity div span {
+    left: -8px;
+    top: 50%;
+    margin: -8px 0 0 0;
+    width: 16px;
+    height: 16px;
+    display: block;
+    background: #8C6FF0; /* Change this to your desired color */
+    box-shadow: 2px 2px 8px rgba(140, 111, 240, 0.09);
+    border-radius: 50%;
+    transform: rotate(90deg);
+    animation: move 6.9s linear infinite;
+}
+
+.infinity div span:before,
+.infinity div span:after {
+    content: '';
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    background: inherit;
+    top: 50%;
+    left: 50%;
+    margin: -7px 0 0 -7px;
+    box-shadow: inherit;
+}
+
+.infinity div span:before {
+    animation: drop1 .8s linear infinite;
+}
+
+.infinity div span:after {
+    animation: drop2 .8s linear infinite .4s;
+}
+
+@keyframes rotate {
+    50% {
+        transform: rotate(360deg);
+        margin-left: 0;
+    }
+    50.0001%,
+    100% {
+        margin-left: -60px;
+    }
+}
+
+@keyframes move {
+    0%, 50% {
+        left: -8px;
+    }
+    25% {
+        background: #5628EE; /* Change this to your desired color */
+    }
+    75% {
+        background: #23C4F8; /* Change this to your desired color */
+    }
+    50.0001%,
+    100% {
+        left: auto;
+        right: -8px;
+    }
+}
+
+@keyframes drop1 {
+    100% {
+        transform: translate(32px, 8px) scale(0);
+    }
+}
+
+@keyframes drop2 {
+    0% {
+        transform: translate(0, 0) scale(.9);
+    }
+    100% {
+        transform: translate(32px, -8px) scale(0);
+    }
+}
+
+
+
+

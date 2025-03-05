@@ -10,7 +10,7 @@
     --ion-text-color: #000000;
   
     --ion-color-light: #f4f5f8;
-    --ion-color-dark: #222428;
+    --ion-color-dark: #f4f5f8;
   }
   
 
@@ -18,3 +18,16 @@
     --ion-color-scheme: light;
   }
   
+
+/* Global CSS (e.g., src/theme/variables.css) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Override Ionic dark mode variables */
+    --ion-background-color: #ffffff !important; /* Force white background */
+    --ion-text-color: #000000 !important; /* Force black text */
+  }
+}
+
+.login-content {
+  --background: #ffffff; /* Ensure IonContent uses white background */
+}

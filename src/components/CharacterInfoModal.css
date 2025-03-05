@@ -1,0 +1,139 @@
+.character-info-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .character-info-modal {
+    background-color: #fff;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .character-info-header {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: #667781;
+  }
+  
+  .character-image-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .character-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 3px solid #00a884;
+  }
+  
+  .character-info-content {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .character-name {
+    color: #111b21;
+    font-size: 24px;
+    margin-bottom: 10px;
+
+        /* Fix for single-line ellipsis */
+        display: block; /* Ensures it's treated as a block element */
+        white-space: nowrap; /* Prevents text from wrapping */
+        overflow: hidden; /* Hides overflowing text */
+        text-overflow: ellipsis; /* Adds "..." to clipped text */
+        max-width: 100%; /* Limits width */
+  }
+  
+  .character-bio {
+    color: #667781;
+    font-size: 16px;
+    margin-bottom: 20px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limits to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .welcome-message {
+    background-color: #f5f6f6;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limits to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .welcome-message h3 {
+    color: #111b21;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .welcome-message p {
+    color: #667781;
+    font-size: 14px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 20px;
+  }
+  
+  .add-to-group-button,
+  .delete-chat-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .add-to-group-button {
+    background-color: #00a884;
+    color: white;
+  }
+  
+  .add-to-group-button:hover {
+    background-color: #008f72;
+  }
+  
+  .delete-chat-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .delete-chat-button:hover {
+    background-color: #d32f2f;
+  }

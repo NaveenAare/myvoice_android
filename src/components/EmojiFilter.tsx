@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './EmojiFilter.css'; // Import CSS styles
+import { useIonRouter } from '@ionic/react';
 
 const EmojiFilter: React.FC = () => {
   const emojis: string[] = ["😆", "😈", "😤", "🧐", "🥵"]; // Emoji list
   // Don't set initial state
   const [activeFilter, setActiveFilter] = useState<string>('');
-
+  const router = useIonRouter();
   // Initialize on mount
   useEffect(() => {
     setActiveFilter(emojis[0]);
@@ -73,9 +74,12 @@ const EmojiFilter: React.FC = () => {
 
           // Add click event listener to redirect on card click
           cardDiv.addEventListener('click', () => {
-            checkLoginStatus(`/chatbox/chat/${character.code}`);
-            //window.location.href = `/chatbox/chat/${character.code}`;  // Assuming API returns a 'code' field for each character
+            //checkLoginStatus(`/chatbox/chat/${character.code}`);
+            //window.location.href = `/character-chat/${character.code}`;  // Assuming API returns a 'code' field for each character
+            router.push(`/character-chat/${character.code}`, 'forward', 'push');
           });
+
+          
 
           // Add the new card to the wrapper
           movingCardsWrapper.appendChild(cardDiv);

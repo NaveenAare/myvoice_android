@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './SearchContainer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Keyboard } from '@capacitor/keyboard';
 
 interface Character {
   category: string;
@@ -72,6 +73,27 @@ const SearchCharacters: React.FC = () => {
     setShowResults(false);
   };
 
+  const handleScroll = () => {
+    const input = document.querySelector(".search-input-main-page");
+    if (input) {
+      input.blur(); // Close the keyboard by removing focus from the input field
+    }
+  };
+  
+  useEffect(() => {
+    const dropdown = document.querySelector(".search-results-dropdown");
+    if (dropdown) {
+      console.log("Scorling Downnnnnn...")
+      dropdown.addEventListener("scroll", handleScroll);
+    }
+  
+    return () => {
+      if (dropdown) {
+        dropdown.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [showResults]); // Re-run effect when showResults changes
+
   return (
     <div className={`search-container-main-page ${showOverlay ? 'overlay-active' : ''}`}>
       {showOverlay && <div className="search-overlay" onClick={clearSearch}></div>}
@@ -97,7 +119,9 @@ const SearchCharacters: React.FC = () => {
       {showResults && (
         <ul className="search-results-dropdown">
           {results.map((character) => (
-            <li key={character.id} className="search-result-item">
+            <li key={character.id} className="search-result-item" onClick={() => {
+              Keyboard.dismiss();
+            }}>
               <img
                 src={character.image_url}
                 alt={character.name}

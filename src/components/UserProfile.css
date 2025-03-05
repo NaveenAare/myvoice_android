@@ -28,6 +28,7 @@
     font-weight: bold;
     margin-top: 10px;
     color: #333;
+    
 }
 
 .category {
@@ -57,6 +58,8 @@
     margin-right: 10px;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 15px;
+    bottom: env(safe-area-inset-bottom) !important;
+    margin-bottom: 60px;
 }
 
 .character-card {
@@ -74,8 +77,8 @@
 }
 
 .character-card img {
-    width: 80px; /* Set width for image */
-    height: 80px; /* Set height for image */
+    width: 50px; /* Set width for image */
+    height: 50px; /* Set height for image */
     object-fit: cover; /* Ensure image covers the area */
     border-radius: 5px; /* Optional: rounded corners for the image */
     margin-right: 10px; /* Space between image and text */

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">speak-char-ai</string>
-    <string name="title_activity_main">speak-char-ai</string>
-    <string name="package_name">com.speakcharai.app</string>
-    <string name="custom_url_scheme">com.speakcharai.app</string>
+    <string name="app_name">speakingcharacter</string>
+    <string name="title_activity_main">speakingcharacter</string>
+    <string name="package_name">ccom.ain-hub.speakingcharacter</string>
+    <string name="custom_url_scheme">com.ain-hub.speakingcharacter</string>
 </resources>

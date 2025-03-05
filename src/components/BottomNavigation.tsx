@@ -1,5 +1,5 @@
 import { IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
-import { homeOutline, chatbubblesOutline, personOutline } from 'ionicons/icons';
+import { homeOutline, chatbubblesOutline, personOutline, language, volumeHigh, text, logoSoundcloud, volumeHighSharp, fileTrayStackedOutline } from 'ionicons/icons';
 import './BottomNavigation.css';
 
 interface BottomNavigationProps {
@@ -12,6 +12,16 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ onTabChange, active
     <IonTabBar slot="bottom" className="bottom-nav">
   
 
+  <IonTabButton
+        tab="home"
+        className={activeTab === 'home' ? 'active-tab' : ''}
+        onClick={() => onTabChange('home')}
+      >
+        <IonIcon icon={homeOutline} />
+        <IonLabel>Home</IonLabel>
+      </IonTabButton>
+
+
       <IonTabButton
         tab="chats"
         className={activeTab === 'chats' ? 'active-tab' : ''}
@@ -21,13 +31,16 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ onTabChange, active
         <IonLabel>Chats</IonLabel>
       </IonTabButton>
 
+
+
+
       <IonTabButton
-        tab="home"
-        className={activeTab === 'home' ? 'active-tab' : ''}
-        onClick={() => onTabChange('home')}
+        tab="TTS"
+        className={activeTab === 'TTS' ? 'active-tab' : ''}
+        onClick={() => onTabChange('TTS')}
       >
-        <IonIcon icon={homeOutline} />
-        <IonLabel>Home</IonLabel>
+        <IonIcon icon={language} />
+        <IonLabel>TTS</IonLabel>
       </IonTabButton>
 
       

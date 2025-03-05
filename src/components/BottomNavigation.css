@@ -1,9 +1,15 @@
 /* Container styling */
+
+
+
+
 .bottom-nav {
   --background: #ffffff;
   border-top: 1px solid #eaeaea;
-  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+ /*  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);*/
   height: 60px;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 /* Tab buttons */

@@ -16,16 +16,34 @@ import {
   IonPopover,
   IonList,
   IonLabel,
+  IonModal,
 } from '@ionic/react';
+import CharacterInfoModal from '../components/CharacterInfoModal';
 
-import { call, mic, volumeHigh, volumeMute, send, cogSharp, ellipsisVertical, trash, logOut } from 'ionicons/icons'; // Import necessary icons
-import { useState, useEffect, useRef } from 'react';
+import { call, mic, volumeHigh, volumeMute, send, cogSharp, ellipsisVertical, trash, logOut, arrowBack } from 'ionicons/icons'; // Import necessary icons
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import './Chat.css';
 import { io } from 'socket.io-client'; // Import socket.io client
 import Shimmer from '../components/shrimmer'; // Import the Shimmer component
 import { IonToast } from '@ionic/react';
 import { Route, useHistory } from 'react-router-dom';
+import { PushNotificationSchema, PushNotifications, Token, ActionPerformed } from '@capacitor/push-notifications';
+
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { useIonViewDidEnter } from '@ionic/react';
+   import { chevronBack } from 'ionicons/icons'; // Import the chevron back icon
+import React from 'react';
+import { App } from '@capacitor/app';
+
+import { Keyboard, KeyboardInfo } from "@capacitor/keyboard";
+
+import { PluginListenerHandle } from "@capacitor/core"; // Correct import
+import { Capacitor } from '@capacitor/core';
+
+
+
+
 
 
 interface Message {
@@ -64,6 +82,7 @@ const CharacterChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [characterData, setCharacterData] = useState<CharacterData | null>(null);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true); // For loading messages
+  const [isLoadingHeaderContent, setisLoadingHeaderContent] = useState(true); // For loading messages
   let [isLoadingBotMessage, setIsLoadingBotMessage] = useState(false); // For loading bot message
   const { id } = useParams<{ id: string }>();
   const [isVolumeHigh, setIsVolumeHigh] = useState(true); // State to track volume
@@ -85,10 +104,19 @@ const CharacterChatPage: React.FC = () => {
   const [toastType, setToastType] = useState<string>(''); // 'success' or 'error'
   const history = useHistory(); // React Router history
   const ionRouter = useIonRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+
+  
+  const [userScrolling, setUserScrolling] = useState(false); // Add this line
+
+  const [shouldFocusInput, setShouldFocusInput] = useState(false); // State to control focus
+
+  let character_image = 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE';
 
   localStorage.setItem("authToken", "eyJ1c2VySWQiOiAxLCAibWFpbCI6ICJhYXJlbmF2ZWVudmFybWFAZ21haWwuY29tIiwgIm5hbWUiOiAiTmF2ZWVuIHZhcm1hIEFhcmUiLCAicHJvZmlsZV9waWMiOiAiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSTZQa3BFSGJkdGZoQTFETFp5OHVCcnZrejRIaDhTVjhMQmtzajRYRjdTVlB2OEllRDU9czk2LWMifTAxODYzNTczMDA3ODJiMmRjOTFjZWNlZDBiZGM0OWNiMWNjZDZmODIzZDM2ZTcyMzY0N2EwZjIwZjVkZTgyOTc=");
 
-  const socket = io('https://api.speakingcharacter.ai', {
+  const socket = io('https://speakingcharacter.ai', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: 5,
@@ -97,8 +125,61 @@ const CharacterChatPage: React.FC = () => {
     pingInterval: 25000,
     pingTimeout: 60000,
   });
+
+  const nullEntry: any[] = []
+    const [notifications, setnotifications] = useState(nullEntry);
+
+    useEffect(()=>{
+        PushNotifications.checkPermissions().then((res) => {
+            if (res.receive !== 'granted') {
+              PushNotifications.requestPermissions().then((res) => {
+                if (res.receive === 'denied') {
+                  console.log('Push Notification permission denied');
+                }
+                else {
+                  console.log('Push Notification permission granted');
+                  register();
+                }
+              });
+            }
+            else {
+              const fcm = localStorage.getItem('fcmToken');
+              if (!fcm || fcm.trim() === "") {
+                  register();
+                  console.log("FCM token is null, undefined, or empty.");
+              } else {
+                  console.log("FCM token is valid:", fcm);
+              }
+              
+            }
+          });
+    },[])
+    
+    const register = () => {
+        console.log('Initializing HomePage');
+
+        PushNotifications.register();
+
+        PushNotifications.addListener('registration',
+            (token: Token) => {
+               localStorage.setItem('fcmToken', token.value);
+                console.log('Push registration success');
+            }
+        );
+
+        PushNotifications.addListener('registrationError',
+            (error: any) => {
+                alert('Error on registration: ' + JSON.stringify(error));
+            }
+        );
+
+    }
+
+
+
+  
   useEffect(() => {
-    loadMessages();
+    hardReloadMessages();
 
     socket.on('connect', () => {
       console.log('Connected to server');
@@ -111,7 +192,7 @@ const CharacterChatPage: React.FC = () => {
     const authToken = localStorage.getItem('authToken') || '';
     const uniquePart = id;
 
-    let messageHandled = false; // Flag to track if the message has been handled
+    let messageHandled = false; // Flag to track if the message has been handled yet
 
     socket.on(authToken + id + 'new_messagesss', (msg: { text: string; is_user: number }) => {
       console.error('Received new message:', msg);
@@ -171,6 +252,7 @@ const CharacterChatPage: React.FC = () => {
                   return updatedMessages;
               });
           }
+
       }
       // Code to execute when loading is true
     });
@@ -232,58 +314,93 @@ const CharacterChatPage: React.FC = () => {
     };
   }, [id]);
 
-  // Function to scroll to the bottom of the message container
+
+
+
   const scrollToBottom = () => {
-      if (messageEndRef.current) {
-          messageEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      }
+    if (messageEndRef.current ) {
+        console.log("Scrolling to bottom");
+        messageEndRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+        });
+
+        // Add extra bottom padding to ensure complete scroll
+        setTimeout(() => {
+            window.scrollBy(0, 1500 - keyboardHeight); // Adjust scroll position by keyboard height
+        }, 10); // Small delay to allow smooth animation
+    } else {
+        console.log("messageEndRef is null");
+    }
   };
+
 
   
 
+
   useEffect(() => {
-      scrollToBottom(); // Scroll to bottom when the component mounts
-  }, []); // Empty dependency array to run only on mount
+    const keyboardWillShow = async (info: KeyboardInfo) => {
+      const platform = Capacitor.getPlatform();
+      const delay = platform === 'ios' ? 300 : 150;
+  
+      await new Promise(resolve => setTimeout(resolve, delay));
+    };
+  
+    Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+  }, []);
+
+  
+
+
 
   useEffect(() => {
       scrollToBottom(); // Scroll to bottom when messages change
   }, [messages]); // Dependency array includes messages
 
+ 
+
+
   useEffect(() => {
-    const scrollToBottom = () => {
-        if (messageEndRef.current) {
-            messageEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const handleBackButton = (event: PopStateEvent) => {
+        event.preventDefault(); // Prevent default back navigation
+
+        if (ionRouter.canGoBack()) {
+            ionRouter.goBack(); // Use Ionic's navigation with smooth transitions
+        } else {
+            // If there's no page to go back to, you can exit the app or show a confirmation
+            navigator.app.exitApp(); // Use this only for Android devices
         }
     };
 
+    // Add event listener for back button
+    window.addEventListener('popstate', handleBackButton);
 
-    scrollToBottom(); // Scroll to bottom when messages change
-
-    // Add event listener for keyboard open/close
-    const handleKeyboardOpen = () => {
-        scrollToBottom();
-    };
-
-    window.addEventListener('resize', handleKeyboardOpen);
-
+    // Cleanup the event listener on component unmount
     return () => {
-        window.removeEventListener('resize', handleKeyboardOpen);
+        window.removeEventListener('popstate', handleBackButton);
     };
-  }, [messages]);
+}, [ionRouter]);
 
 
-  useEffect(() => {
-    const handleBackButton = (event: Event) => {
-      event.preventDefault();
+const scrollToBottomFromSendMessage = () => {
+  if (!messageEndRef.current) return;
 
-      if (ionRouter.canGoBack()) {
-        ionRouter.goBack();
-      } else {
-        // Exit the app or show confirmation on the main screen
-        navigator.app.exitApp(); // Use this only for Android devices
-      }
-     } // Scroll to bottom when the component mounts
-}, []);
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      messageEndRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+
+      // Adjust scrolling based on keyboard height
+      const extraSpace = keyboardHeight > 0 ? keyboardHeight + 60 : 0;
+      window.scrollBy(0, extraSpace);
+    }, 300); // Small delay to allow reflow
+  });
+};
+
+
+
 
 
   const sendMessage = async () => {
@@ -296,7 +413,6 @@ const CharacterChatPage: React.FC = () => {
         content: message, // Then content
     };
     console.error("After Messages Loading:::")
-
 
     // Update local state and local storage for user message
     setMessages((prevMessages) => {
@@ -311,14 +427,20 @@ const CharacterChatPage: React.FC = () => {
         updatedMessages.push(tempBotMessage); // Add the temporary bot message
 
         localStorage.setItem(id, JSON.stringify(updatedMessages)); // Store only essential data
+
+    
+
         return updatedMessages;
     });
 
 
 
     setMessage(''); // Clear input field
-    inputRef.current?.setFocus(); // Keep focus on the input field
     setIsLoadingBotMessage(true);// Set loading state for bot message
+
+    if (inputRef.current) {
+      await inputRef.current.setFocus(); // Ionic's proper focus method
+    }
 
     // Prepare data for the request
     const authToken = localStorage.getItem('authToken') || ''; // Get auth token
@@ -340,6 +462,8 @@ const CharacterChatPage: React.FC = () => {
     const audioName = localStorage.getItem(`${id}_char_audio_name`) || '';  // Replace with actual audio name if available
     const transcribeText = localStorage.getItem(`${id}_char_voice_trans`) || '';  // Replace with actual transcribe text if available
 
+
+
     // Create URL-encoded body
     const body = new URLSearchParams({
         message: message,
@@ -355,9 +479,11 @@ const CharacterChatPage: React.FC = () => {
         transcibe_text: transcribeText,
     }).toString();
 
+    
+
     // Send message to the server
     try {
-        const response = await fetch('https://api.speakingcharacter.ai/send_message', {
+        const response = await fetch('https://speakingcharacter.ai/send_message', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -382,6 +508,7 @@ const CharacterChatPage: React.FC = () => {
           index === prevMessages.length - 1 ? botMessage : msg
         );
         localStorage.setItem(id, JSON.stringify(updatedMessages));
+      
         return updatedMessages;
       });
 
@@ -389,9 +516,19 @@ const CharacterChatPage: React.FC = () => {
         console.error('Error sending message:', error);
         displayToast('Error sending message:', 'error');
     } finally {
+      setTimeout(() => {
+        inputRef.current?.setFocus();
+      }, 100);
         setIsLoadingBotMessage(false); // Ensure loading is disabled after the request is complete
     }
+
+    // Call createBubble at the end of the function
+    createBubble(); // This will create a bubble after sending the message
 };
+
+
+
+
 
 
 const displayToast = (message: string, type: string) => {
@@ -407,16 +544,36 @@ const displayToast = (message: string, type: string) => {
 
 
 const hardReloadMessages = async () => {
+
+  console.log("  in ::::: hard reload:::::")
   setIsLoadingMessages(true);
+  
   try {
       const authToken = localStorage.getItem('authToken');
-      const storedMessages = localStorage.getItem(id); // Check local storage for messages
       const storedCharData = localStorage.getItem(`${id}_char_data`); // Check local storage for character data
 
+      if(storedCharData){
+        console.log("In if ::::::")
+        const characterData = JSON.parse(storedCharData);
+        setCharacterData(characterData);
+        setisLoadingHeaderContent(false);
+      } else{
+        console.log("In Else ::::::")
+        setisLoadingHeaderContent(true)
+      }
+      const fcm = localStorage.getItem('fcmToken');
 
+      
           // If no messages or character data in local storage, fetch from API
-          const response = await fetch(`https://speakingcharacter.ai/get_messages?authToken=${authToken}&charId=${id}`);
-          
+          const response = await fetch(`https://speakingcharacter.ai/get_messages?authToken=${authToken}&charId=${id}`, {
+            method: "GET",
+            headers: {
+                "device": "ios",
+                "nottoken": `${fcm}`
+            }
+        });
+
+
           if (!response.ok) {
               throw new Error('Failed to fetch messages');
           }
@@ -445,13 +602,18 @@ const hardReloadMessages = async () => {
           localStorage.setItem(`${id}_char_voice_trans`, data.char_data.char_voice_trans);
 
           // Set character data in state
+
+          
+
           setCharacterData(data.char_data);
+          character_image = data.char_data.image_url;
       
   } catch (error) {
       console.error('Error loading messages:', error);
       // You might want to add error handling UI here
   } finally {
       setIsLoadingMessages(false);
+      setisLoadingHeaderContent(false)
   }
 };
 
@@ -464,6 +626,9 @@ const loadMessages = async () => {
         const storedMessages = localStorage.getItem(id); // Check local storage for messages
         const storedCharData = localStorage.getItem(`${id}_char_data`); // Check local storage for character data
 
+        const fcm = localStorage.getItem('fcmToken');
+
+
         if (storedMessages && storedCharData) {
             // If messages and character data are found in local storage, parse and set them
             const formattedMessages = JSON.parse(storedMessages);
@@ -474,8 +639,13 @@ const loadMessages = async () => {
             setCharacterData(characterData); // Set character data from local storage
         } else {
             // If no messages or character data in local storage, fetch from API
-            const response = await fetch(`https://speakingcharacter.ai/get_messages?authToken=${authToken}&charId=${id}`);
-            
+            const response = await fetch(`https://speakingcharacter.ai/get_messages?authToken=${authToken}&charId=${id}`, {
+              method: "GET",
+              headers: {
+                  "device": "ios",
+                  "nottoken": `${fcm}`
+              }
+          });
             if (!response.ok) {
                 throw new Error('Failed to fetch messages');
             }
@@ -518,12 +688,7 @@ const loadMessages = async () => {
     setIsVolumeHigh(prevState => !prevState); // Toggle the volume state
   };
 
-  // Function to handle key down in the input field
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault(); // Prevent default behavior (like form submission)
-    }
-  };
+  
 
   // Function to toggle audio selection popup
   const toggleAudioPopup = () => {
@@ -776,52 +941,325 @@ const showToast = (message: string, type: 'success' | 'error') => {
   alert(message); // Simple implementation - replace with your toast system
 };
 
+
+
+const goHome = () => {
+  router.push('/home');
+};
+
+const handleBackButtonClick = () => {
+  router.goBack(); // Uses Ionic's navigation with smooth transitions
+};
+
+  // Effect to handle physical back button press
+  useEffect(() => {
+    const handleBackButton = (event: PopStateEvent) => {
+      event.preventDefault(); // Prevent default behavior
+      handleBackButtonClick(); // Call the back button click handler
+    };
+
+    // Listen for popstate event
+    window.addEventListener('popstate', handleBackButton);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+    };
+  }, [history]);
+
+
+  // Replace this:
+
+
+
+
+  useEffect(() => {
+    // Handle app resume/pause events
+    App.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        // Blur any focused elements when app resumes
+        const activeElement = document.activeElement as HTMLElement;
+        if (activeElement && activeElement.tagName === 'ION-INPUT') {
+          activeElement.blur();
+        }
+      }
+    });
+  
+
+  
+    return () => {
+      App.removeAllListeners();
+    };
+  }, []);
+
+
+
+  const setInfomodeltotrue = () => {
+    console.log("clicked:::::::")
+    setShowInfoModal(true)
+  }
+
+
+
+
+  // Memoize the header to prevent flickering
+  const header = useMemo(() => (
+    <IonHeader className='navHead'>
+      <IonToolbar color="black" style={{ backgroundColor: 'white', margin: 0, padding: 0 }}>
+        <IonButtons slot="start">
+          <IonButton onClick={handleBackButtonClick} fill="clear">
+            <IonIcon icon={chevronBack} /> {/* Use an icon for the back button */}
+          </IonButton>
+        </IonButtons>
+
+        <IonItem lines="none" color="white" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }} >
+          <IonAvatar slot="start" >
+            {isLoadingHeaderContent ? (
+              <Shimmer width="50px" height="50px" border-radius="50%" /> // Shimmer for image
+            ) : (
+              <img 
+                src={characterData?.image_url || 'default-avatar.png'} 
+                alt={characterData?.name || 'Character'} 
+                onClick={setInfomodeltotrue}
+              />
+            )}
+          </IonAvatar>
+          <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
+            {isLoadingHeaderContent ? (
+              <Shimmer width="100px" height="20px" style={{ borderRadius: '50%' }} /> // Shimmer for title
+            ) : (
+              <h3 className='custom-title' onClick={setInfomodeltotrue}>
+                {truncateString(characterData?.name || 'Loading...', 20)}
+              </h3>
+            )}
+          </div>
+          <div slot="end" style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+            <IonButton fill="clear" onClick={toggleVolume}>
+              <IonIcon icon={isVolumeHigh ? volumeHigh : volumeMute} />
+            </IonButton>
+
+            <IonButton fill="clear" onClick={handleCallClick}>
+              <IonIcon icon={call} />
+            </IonButton>
+
+            <IonButton style={{ marginRight: '-20px' }} fill="clear" onClick={() => setShowPopover(true)}>
+              <IonIcon icon={ellipsisVertical} /> {/* Three vertical dots icon */}
+            </IonButton>
+          </div>
+        </IonItem>
+      </IonToolbar>
+    </IonHeader>
+  ), [isLoadingMessages, characterData, isVolumeHigh, isLoadingHeaderContent]); // Dependencies to memoize
+
+  
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+useEffect(() => {
+  // Add keyboard listeners
+  Keyboard.addListener('keyboardWillShow', (info) => {
+    setKeyboardHeight(info.keyboardHeight);
+  });
+
+  Keyboard.addListener('keyboardWillHide', () => {
+    setKeyboardHeight(0);
+  });
+
+  return () => {
+    Keyboard.removeAllListeners();
+  };
+}, []);
+
+
+
+
+useEffect(() => {
+  if (typeof window !== 'undefined' && window.visualViewport) {
+    const visualViewport = window.visualViewport;
+    
+    const handler = () => {
+      const offset = visualViewport.height - window.innerHeight;
+      setKeyboardHeight(Math.max(0, -offset));
+    };
+
+    
+
+    visualViewport.addEventListener('resize', handler);
+    return () => visualViewport.removeEventListener('resize', handler);
+  }
+}, []);
+
+
+useEffect(() => {
+  if (Capacitor.isNativePlatform()) {
+    Keyboard.setAccessoryBarVisible({ isVisible: false });
+    Keyboard.setScroll({ isDisabled: true });
+  }
+}, []);
+
+// In your keyboard listener
+Keyboard.addListener('keyboardWillShow', (info) => {
+  if (Capacitor.getPlatform() === 'ios') {
+    setKeyboardHeight(info.keyboardHeight - 5); // Adjust for iOS safe area
+  } else {
+    setKeyboardHeight(info.keyboardHeight);
+  }
+});
+
+
+
+
+
+const [isKeyboardOpen2, setIsKeyboardOpen] = useState(false);
+
+useEffect(() => {
+  const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+    setIsKeyboardOpen(true);
+  });
+
+  const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+    setIsKeyboardOpen(false);
+  });
+
+  return () => {
+    showSubscription.remove();
+    hideSubscription.remove();
+  };
+}, []);
+
+const handleContentClick = (e: React.MouseEvent) => {
+  if (!inputRef.current || !isKeyboardOpen2) return; // Only proceed if the keyboard is open
+
+  const target = e.target as HTMLElement;
+  if (!target.closest('.input-container')) {
+    inputRef.current.getInputElement().then((nativeInput) => {
+      nativeInput.blur();
+      Keyboard.hide(); // Ensures the keyboard is closed
+    });
+  }
+};
+
+// Add proper type for IonContent ref
+const ionContentRef = useRef<HTMLIonContentElement>(null);
+
+// Then in your scroll function
+useEffect(() => {
+  if (ionContentRef.current && !isLoadingMessages) {
+    // Use the proper Ionic content API
+    ionContentRef.current.getScrollElement().then((scrollElement) => {
+      scrollElement.scrollTo({
+        top: scrollElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    });
+  }
+}, [messages, isLoadingMessages]);
+
+// In your keyboard listener
+Keyboard.addListener('keyboardWillShow', (info) => {
+  const iosSafeArea = Capacitor.getPlatform() === 'ios' ? 
+    parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ion-safe-area-bottom')) || 0 : 0;
+  
+  setKeyboardHeight(info.keyboardHeight - iosSafeArea);
+});
+
+const messageContainerRef = useRef<HTMLDivElement | null>(null);
+const [isMessageContainerFull, setIsMessageContainerFull] = useState(false);
+
+useEffect(() => {
+  const checkMessageContainerHeight = () => {
+    if (messageContainerRef.current) {
+      const containerHeight = messageContainerRef.current.clientHeight;
+      const viewportHeight = window.innerHeight;
+      setIsMessageContainerFull(containerHeight >= viewportHeight * 0.9);
+    }
+  };
+
+  window.addEventListener('resize', checkMessageContainerHeight);
+  checkMessageContainerHeight(); // Initial check
+
+  return () => {
+    window.removeEventListener('resize', checkMessageContainerHeight);
+  };
+}, [messages]); // Re-check when messages change
+
+
+    useEffect(() => {
+        const checkMessageContainerHeight = () => {
+            if (messageContainerRef.current) {
+                const containerHeight = messageContainerRef.current.clientHeight;
+                const viewportHeight = window.innerHeight;
+
+                // Check if the container height exceeds 50% of the viewport height
+                if (containerHeight > viewportHeight * 0.7) {
+                    // Apply styles directly
+                    messageContainerRef.current.style.transform = `translateY(-${keyboardHeight}px)`;
+                    messageContainerRef.current.style.transition = 'transform 255ms ease-out';
+                } else {
+                    // Reset styles if condition is not met
+                    messageContainerRef.current.style.transform = 'none';
+                }
+            }
+        };
+
+        window.addEventListener('resize', checkMessageContainerHeight);
+        checkMessageContainerHeight(); // Initial check
+
+        return () => {
+            window.removeEventListener('resize', checkMessageContainerHeight);
+        };
+    }, [messages, keyboardHeight]); // Re-check when messages change or keyboard height changes
+
+
+
+const fullContainerStyle = {
+  transform: `translateY(-${keyboardHeight}px)`,
+  transition: 'transform 255ms ease-out',
+};
+
+const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
+
+  const createBubble = () => {
+    const newBubble = (
+      <div
+        key={Date.now()}
+        className="bubble"
+        style={{
+          left: `${window.innerWidth / 2 - 100}px`,
+          top: `${window.innerHeight / 2 - 100}px`,
+        }}
+      >
+        <img
+          src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE"
+          alt="Bubble Content"
+        />
+      </div>
+    );
+
+    setBubbles((prevBubbles) => [...prevBubbles, newBubble]);
+
+    setTimeout(() => {
+      setBubbles((prevBubbles) => prevBubbles.slice(1));
+    }, 3000);
+  };
+
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar color="black" style={{ backgroundColor: 'white' }}>
-          <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" text=""/>
-          </IonButtons>
-
-          <IonItem lines="none" color="white" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-            
-            <IonAvatar slot="start">
-              {isLoadingMessages ? (
-                <Shimmer width="50px" height="50px" border-radius= "50%"/> // Shimmer for image
-              ) : (
-                <img 
-                  src={characterData?.image_url || 'default-avatar.png'} 
-                  alt={characterData?.name || 'Character'} 
-                />
-              )}
-            </IonAvatar>
-            <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
-              {isLoadingMessages ? (
-                <Shimmer width="100px" height="20px" style={{ borderRadius: '50%' }}/> // Shimmer for title
-              ) : (
-                <h3 className='custom-title'>{truncateString(characterData?.name || 'Loading...', 20)}</h3>
-              )}
-            </div>
-            <div slot="end" style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-              <IonButton fill="clear" onClick={toggleVolume}>
-                <IonIcon icon={isVolumeHigh ? volumeHigh : volumeMute} />
-              </IonButton>
+    <IonPage className='ionPage'>
 
 
-              <IonButton fill="clear" onClick={handleCallClick}>
-                <IonIcon icon={call} />
-              </IonButton>
 
-              <IonButton style={{marginRight: '-20px' }} fill="clear" onClick={() => setShowPopover(true)}>
-                <IonIcon icon={ellipsisVertical} /> {/* Three vertical dots icon */}
-              </IonButton>
-            </div>
-          </IonItem>
-        </IonToolbar>
-      </IonHeader>
 
-      <IonContent className="chat-content">
+      {header} {/* Use the memoized header here */}
+      <IonContent 
+          ref={ionContentRef} // Add a ref to IonContent
+
+      className="chat-content"  
+      onClick={handleContentClick}
+      scrollY={true}
+     scrollEvents={true}
+     onIonScrollStart={() => setUserScrolling(true)}
+     onIonScrollEnd={() => setUserScrolling(false)}
+     onTouchStart={(e) => e.stopPropagation()} // Prevent touch events from bubbling up
+     >
         {isLoadingMessages ? (
           <div className="message-container">
             <Shimmer width="100%" height="40px" position="left" /> {/* Shimmer for bot message */}
@@ -838,57 +1276,88 @@ const showToast = (message: string, type: 'success' | 'error') => {
             <Shimmer width="100%" height="40px" position="left" /> {/* Shimmer for bot message */}
           </div>
         ) : (
-          <div className="message-container">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`message ${msg.role === 'user' ? 'sent' : 'received'}`}
-              >
-                <div className="message-bubble">
-                  <p>{msg.content}</p>
-                  {index === messages.length - 1 && msg.loading && isLoadingBotMessage && (
-                    <div className="loading-dots">
-                      <span></span><span></span><span></span>
-                    </div>
+          <div 
+          ref={messageContainerRef}
+          style={{
+            transform: `translateY(-${keyboardHeight}px)`,
+            transition: 'transform 255ms ease-out',
+          }} className="message-container">
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`message ${msg.role === 'user' ? 'sent' : 'received'}`}
+                >
+                  {msg.role !== 'user' && ( // Show avatar only for received messages
+                    <img src = {localStorage.getItem(`${id}_char_image_url`) || ""} alt="Bot Avatar" className="message-avatar" />
                   )}
-                  <span className="message-time">{msg.time}</span>
+                  <div className={`message-bubble ${msg.role === 'user' ? 'sent' : 'received'}`}>
+                    <p>{msg.content}</p>
+                    {index === messages.length - 1 && msg.loading && isLoadingBotMessage && (
+                      <div className="loading-dots">
+                        <span></span><span></span><span></span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div ref={messageEndRef} /> {/* Empty div to scroll to */}
-          </div>
+              ))}
+              <div style={{ height: "70px" }}></div> {/* Extra space at the bottom */}
+              <div ref={messageEndRef} className="message-end"></div>
+
+            </div>
+
         )}
 
     
       </IonContent>
 
-      <IonFooter>
+
+        <div className="containerbubble">
+          {bubbles}
+        </div>
+      
+<IonFooter 
+  style={{
+    transform: `translateY(-${keyboardHeight}px)`,
+    transition: 'transform 255ms ease-out',
+  }}
+  className="input-footer"
+>
   <div className="input-container">
     <IonInput
-      ref={inputRef} // Attach the ref to the input field
+      ref={inputRef}
+      
       placeholder="Type a message"
+      inputmode="text"
       value={message}
-      onIonInput={(e) => {
-        const newMessage = (e.target as HTMLInputElement).value; // Get the value from the event
-        setMessage(newMessage);
+      enterkeyhint="send"
+      className="message-input"
+      autocomplete="on"
+      autocorrect="on"
+      style={{ "--padding-bottom": "5px" }}
+      onIonBlur={() => {
+        // Only prevent blur if using native keyboard
+        if (Capacitor.isNativePlatform() && keyboardHeight > 0) {
+          inputRef.current?.setFocus();
+        }
       }}
+      onIonInput={(e: CustomEvent) => setMessage(e.detail.value as string)}
       onKeyDown={(e) => {
-        if (e.key === "Enter" && !e.shiftKey) { // Handle Enter key without Shift
-          e.preventDefault(); // Prevent default new line behavior
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
           sendMessage();
         }
       }}
-      className="message-input"
-      rows={3} // Allow for multiple rows
-      multiline // Enable multiline input
-      autoCapitalize="sentences" // Auto capitalize the first letter of each sentence
-      autoComplete="on" // Enable autocomplete suggestions
+      autoCapitalize="sentences"
     />
     <IonButton
+    onClick={(e) => {
+      e.stopPropagation();
+      sendMessage();
+    }}
       fill="clear"
       className="send-button"
-      onClick={sendMessage}
-      disabled={isLoadingBotMessage || !message.trim()} // Disable button if loading or message is empty
+      disabled={isLoadingBotMessage || !message.trim()}
+      
     >
       <IonIcon icon={send} />
     </IonButton>
@@ -927,7 +1396,7 @@ const showToast = (message: string, type: 'success' | 'error') => {
 <IonPopover
   isOpen={showPopover}
   onDidDismiss={() => setShowPopover(false)}
-  showBackdrop={true}
+  showBackdrop={false}
   className="custom-popover"
 >
   <IonContent className="popover-content">
@@ -985,7 +1454,7 @@ const showToast = (message: string, type: 'success' | 'error') => {
             </div>
 
 
-            <div className="new-overlay" id="new-overlay" ref={newOverlayRef} style={{ display: 'none' }}></div>
+            <div className="new-overlay-delete" id="new-overlay" ref={newOverlayRef} style={{ display: 'none' }}></div>
 
   {/* Toast Notification */}
   <IonToast
@@ -998,7 +1467,22 @@ const showToast = (message: string, type: 'success' | 'error') => {
                 cssClass="custom-toast"
             />
 
+
+{showInfoModal && (
+        <CharacterInfoModal
+          characterImage={localStorage.getItem(`${id}_char_image_url`) || "Character Bio"}
+          characterName= {localStorage.getItem(`${id}_char_name`) || "Character Name"}
+          characterBio= {localStorage.getItem(`${id}_char_image_url`) || "Character Bio"}
+          welcomeMessage= {localStorage.getItem(`${id}_char_sub_name_2`) || "Character Bio"}
+          onAddToGroup={() => console.log('Add to group')}
+          onDeleteChat={() => console.log('Delete chat')}
+          onClose={() => setShowInfoModal(false)} // This controls visibility
+        />
+      )}
     </IonPage>
+
+
+
 
     
   );

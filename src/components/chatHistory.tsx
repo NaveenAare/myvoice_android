@@ -1,12 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import './chatHistory.css';
-import { IonIcon, IonItem } from '@ionic/react';
+import React, { useEffect, useState, useRef } from 'react';
+import './chatHistory.scss';
+import { IonIcon, IonItem, useIonRouter } from '@ionic/react';
 import { searchOutline, closeCircleOutline } from 'ionicons/icons';
+import ChatAppIcons from '../components/ChatAppIcons'; // Import the new component
+
 
 const MenuCards: React.FC = () => {
     const [characters, setCharacters] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
+ const router = useIonRouter();
+const emojis: string[] = ["All", "Unread", "Groups", "Popular"]; // Emoji list
+const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
+  // Don't set initial state
+  const [activeFilter, setActiveFilter] = useState<string>('');
+  const [activeFilterForWhatsApp, setActiveFilterForWhatsApp] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Initialize on mount
+  useEffect(() => {
+    setActiveFilter(emojis[0]);
+  }, []);
+
+
+  useEffect(() => {
+    setActiveFilterForWhatsApp(whatsappFilters[0]);
+  }, []);
+ 
     useEffect(() => {
         updateHamCards();
     }, []);
@@ -47,74 +67,70 @@ const MenuCards: React.FC = () => {
         if (!cardsContainer) return;
         cardsContainer.innerHTML = ''; // Clear existing content
 
-        // If searchTerm is empty, show all characters
-        const filteredData = searchTerm
-            ? data.filter(character =>
-                character.character_info.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                character.character_info.summary2.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            : data; // Show all characters if searchTerm is empty
+        // Group characters by message_time_period
+        const groupedCharacters: { [key: string]: any[] } = {};
+        data.forEach(character => {
+            const period = character.message_time_period || 'Unknown'; // Default to 'Unknown' if not defined
+            if (!groupedCharacters[period]) {
+                groupedCharacters[period] = [];
+            }
+            groupedCharacters[period].push(character);
+        });
 
-        // Render the filtered data
-        filteredData.forEach(character => {
-            const menuCard = document.createElement('div');
-            menuCard.classList.add('menu-card');
+        // Render the grouped data
+        Object.keys(groupedCharacters).forEach(period => {
+            // Create a heading for the time period
+            const periodHeading = document.createElement('h6');
+            periodHeading.textContent = period; // Set the heading text
+            cardsContainer.appendChild(periodHeading); // Append heading to the container
 
-            const img = document.createElement('img');
-            img.src = character.character_info.image_url || 'default-image.png';
-            img.alt = character.character_info.name + ' Image';
-            img.classList.add('card-image');
+            // Render characters for this period
+            groupedCharacters[period].forEach(character => {
+                const menuCard = document.createElement('div');
+                menuCard.classList.add('menu-card');
 
-            const cardText = document.createElement('div');
-            cardText.classList.add('card-text');
+                const img = document.createElement('img');
+                img.src = character.character_info.image_url || 'default-image.png';
+                img.alt = character.character_info.name + ' Image';
+                img.classList.add('card-image');
 
-            const title = document.createElement('h4');
-            const fullName = character.character_info.name;
-            title.textContent = fullName.length > 30 ? fullName.substring(0, 30) + '...' : fullName;
+                const cardText = document.createElement('div');
+                cardText.classList.add('card-text');
 
-            const description = document.createElement('p');
-            const fullDescription = character.character_info.summary2;
-            description.textContent = fullDescription.length > 30 ? fullDescription.substring(0, 35) + '...' : fullDescription;
+                const title = document.createElement('h4');
+                const fullName = character.character_info.name;
+                title.textContent = fullName.length > 30 ? fullName.substring(0, 30) + '...' : fullName;
 
-           // const deleteButton = document.createElement('button');
-            //deleteButton.classList.add('delete-button');
-            //deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                const description = document.createElement('p');
+                const fullDescription = character.character_info.summary2;
+                description.textContent = fullDescription.length > 30 ? fullDescription.substring(0, 35) + '...' : fullDescription;
 
-            const callButton = document.createElement('button');
-            callButton.classList.add('call-button');
-            callButton.innerHTML = '<i class="fas fa-phone-alt"></i>';
+                // Create notification badge for unseen messages
+                const notificationContainer = document.createElement('div');
+                notificationContainer.classList.add('notification-container');
 
-           // deleteButton.addEventListener('click', (e) => {
-                   // e.stopPropagation();
-                    //showDeletePopup(character);
-               // });
+                const notificationBadge = document.createElement('span');
+                notificationBadge.classList.add('notification-badge');
+                const unseenCount = character.unseen_messages_count; // Assuming this is part of the character object
+                if (unseenCount > 0) {
+                    notificationBadge.textContent = unseenCount.toString();
+                } else {
+                    notificationBadge.style.display = 'none'; // Hide if zero
+                }
 
-            callButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log(`Calling ${character.character_info.name}`);
+                notificationContainer.appendChild(notificationBadge); // Append badge to the container
+
+                menuCard.addEventListener('click', () => {
+                    router.push(`/character-chat/${character.charc_id}`, 'forward', 'push');
+                });
+                cardText.appendChild(title);
+                cardText.appendChild(description);
+                menuCard.appendChild(img);
+                menuCard.appendChild(cardText);
+                menuCard.appendChild(notificationContainer); // Add the container to the card
+
+                cardsContainer.appendChild(menuCard); // Append the card to the container
             });
-
-            menuCard.addEventListener('click', () => {
-                const url = character.charc_id.includes('PREMIUM')
-                    ? `/character-chat/${character.charc_id}`
-                    : `/character-chat/${character.charc_id}`;
-                window.location.href = url;
-            });
-
-            cardText.appendChild(title);
-            cardText.appendChild(description);
-            menuCard.appendChild(img);
-            menuCard.appendChild(cardText);
-           // menuCard.appendChild(deleteButton);
-            menuCard.appendChild(callButton);
-
-            callButton.addEventListener('click', () => {
-                const url = `/talking/${character.charc_id}` 
-                window.location.href = url;
-            });
-
-
-            cardsContainer.appendChild(menuCard);
         });
     }
 
@@ -131,8 +147,43 @@ const MenuCards: React.FC = () => {
         renderCards(characters);
     };
 
+    const handleFilterChange = (emoji: string) => {
+        setLoading(true); // Set loading to true
+        setActiveFilter(emoji);
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    };
+
+    const handleFilterChange2 = (emoji: string) => {
+        setActiveFilterForWhatsApp(emoji);
+    };
+
+    useEffect(() => {
+        if (loading && videoRef.current) {
+            videoRef.current.play().catch(error => {
+                console.error("Error playing video:", error);
+            });
+        }
+    }, [loading]);
+
     return (
-        <div className="menu-cards">
+        <div className={`menu-cards ${activeFilter === 'WhatsApp' ? 'whatsapp-ui whatsapp-menu-cards' : ''}`}>
+            {loading && (
+                <div className="loading">
+                <div className="loading-text">
+                    <span className="loading-text-words">L</span>
+                    <span className="loading-text-words">O</span>
+                    <span className="loading-text-words">A</span>
+                    <span className="loading-text-words">D</span>
+                    <span className="loading-text-words">I</span>
+                    <span className="loading-text-words">N</span>
+                    <span className="loading-text-words">G</span>
+                </div>
+            </div>
+            )}
+
+
             <div className="search-icon-container-history">
                 <IonIcon icon={searchOutline} className="search-icon" />
                 <input
@@ -142,76 +193,92 @@ const MenuCards: React.FC = () => {
                     value={searchTerm}
                     onChange={handleSearchChange}
                 />
-                
             </div>
-            <hr style={{ border: '1px solid #ccc', width: '80%' }} />
+
+
+             <div className="emoji-filter-wrapper">
+                <div className="unique-filter-container-emoji">
+                    {emojis.map((emoji, index) => (
+                        <button
+                            key={`emoji-${index}`}
+                            className={`unique-filter-button-emoji ${activeFilter === emoji ? 'active' : ''}`}
+                            onClick={() => handleFilterChange(emoji)}
+                        >
+                            {emoji}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            
+
             <div id="cards-container" className="cards-container">
-            <div className="shimmer-card">
+                <div className="shimmer-card">
                     <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
+                </div>
 
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
+                </div>
 
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
+                </div>
 
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
-                    <div className="shimmer-card">
-                        <div className="shimmer-image shimmer"></div>
-                        <div className="shimmer-content">
-                            <div className="shimmer-title shimmer"></div>
-                            <div className="shimmer-text shimmer"></div>
-                        </div>
+                </div>
+                <div className="shimmer-card">
+                    <div className="shimmer-image shimmer"></div>
+                    <div className="shimmer-content">
+                        <div className="shimmer-title shimmer"></div>
+                        <div className="shimmer-text shimmer"></div>
                     </div>
+                </div>
             </div>
         </div>
     );

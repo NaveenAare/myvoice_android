@@ -1,0 +1,16 @@
+.splash-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height */
+    background-color: #fff; /* Background color */
+}
+
+.splash-screen img {
+    max-width: 100px; /* Responsive image */
+    height: auto; /* Maintain aspect ratio */
+} 
+
+ion-content {
+    --background: #ffffff; /* Match status bar color */
+  }

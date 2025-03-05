@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonTabs } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import { useState } from 'react';
 import './Home.css';
 import SearchCharacters from '../components/SearchContainer';
@@ -12,7 +12,8 @@ import PopularAssistants2 from '../components/popularAssistants';
 import AudioList from '../components/AudioList';
 import BottomNavigation from '../components/BottomNavigation';
 import MenuCards from '../components/chatHistory';
-import Dashboard from '../components/UserProfile'
+import Dashboard from '../components/UserProfile';
+import TTSComponent from '../components/TTS'
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home'); // Track active tab
@@ -35,6 +36,8 @@ const Home: React.FC = () => {
         );
       case 'chats': // Chats Tab
         return <MenuCards/>;
+      case 'TTS': // Profile Tab
+        return <TTSComponent/>;
       case 'profile': // Profile Tab
         return <Dashboard/>;
       default:
@@ -43,8 +46,8 @@ const Home: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <IonContent>
+    <IonPage className="force-light-theme">
+      <IonContent scrollY={true}>
         <div className="home-container">
           {renderContent()} {/* Render content based on active tab */}
         </div>

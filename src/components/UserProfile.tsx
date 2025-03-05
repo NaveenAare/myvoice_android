@@ -324,7 +324,6 @@ const UserProfile: React.FC = () => {
                                     <img src={character.image_url || 'default-image.png'} alt={character.name} />
                                     <div style={{ flex: 1, marginLeft: '10px' }}>
                                         <p className="card-title">{character.name}</p>
-                                        <p className="card-description">{character.summary2}</p>
                                     </div>
                                     <div className="button-container">
                                         <button className="action-button" onClick={() => window.location.href = `/chatbox/chat/${character.code}`}>

@@ -1,0 +1,136 @@
+.audio-player-card-tts {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: rgba(135, 206, 235, 0.5) !important;
+  border-radius: 12px;
+  width: 100% !important;
+  max-width: 100% !important;
+  transition: opacity 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.audio-player-card-tts.inactive {
+  background: linear-gradient(90deg, #e0e0e0, #f0f0f0, #e0e0e0) !important; /* Light gradient */
+}
+
+/* Shiny shimmer animation */
+.audio-player-card-tts.inactive::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,  /* Brighter white */
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1s infinite linear; /* Faster animation */
+  opacity: 0.8; /* Increase visibility */
+  filter: blur(3px) brightness(1.3); /* Boost the shine */
+}
+
+/* Smooth shimmering animation */
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+
+
+
+.play-button-tts,
+.download-button-tts {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: rgb(47, 183, 228);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.play-button-tts:hover:not(.inactive),
+.download-button-tts:hover:not(.inactive) {
+  background-color: #3baede;
+  transform: scale(1.05);
+}
+
+.play-button-tts:active:not(.inactive),
+.download-button-tts:active:not(.inactive) {
+  transform: scale(0.95);
+}
+
+.play-button-tts.inactive,
+.download-button-tts.inactive {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.play-button-tts svg,
+.download-button-tts svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
+.seeker-tts {
+  flex: 1;
+  height: 4px;
+  background: #555;
+  border-radius: 2px;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.seeker-tts:hover:not(.inactive) {
+  opacity: 1;
+}
+
+.seeker-tts.inactive {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.seeker-tts::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: rgb(47, 183, 228);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.seeker-tts.inactive::-webkit-slider-thumb {
+  background: #777;
+  cursor: not-allowed;
+}
+
+.seeker-tts::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: rgb(47, 183, 228);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.seeker-tts.inactive::-moz-range-thumb {
+  background: #777;
+  cursor: not-allowed;
+}

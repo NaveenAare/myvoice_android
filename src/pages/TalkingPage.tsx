@@ -9,10 +9,9 @@ import {
     IonRefresherContent 
   } from '@ionic/react';
   import { RefresherEventDetail } from '@ionic/core';
-import { Plugins } from '@capacitor/core';
+
 import { arrowBack, arrowForward } from 'ionicons/icons';
 
-const { NativeAudio } = Plugins;
 
 interface Message {
   content: string;
@@ -86,34 +85,7 @@ const TalkingPage: React.FC = () => {
 
 
 
-  const playSendMessageAudio = async () => {
-    if (Capacitor.getPlatform() === 'ios') {
-        try {
-            // Preload the audio file (do this once, perhaps in useEffect)
-            await NativeAudio.preload({
-                assetId: 'sendMessage',
-                assetPath: 'public/assets/new-message-31-183617.mp3',
-                audioChannelNum: 1,
-                isUrl: false
-            });
 
-            // Play the audio
-            await NativeAudio.play({
-                assetId: 'sendMessage'
-            });
-        } catch (error) {
-            console.error('iOS audio error:', error);
-        }
-    } else {
-        // Web fallback
-        try {
-            const audio = new Audio('assets/new-message-31-183617.mp3');
-            await audio.play();
-        } catch (error) {
-            console.error('Web audio error:', error);
-        }
-    }
-};
 
 
 

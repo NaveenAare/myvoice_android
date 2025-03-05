@@ -1,0 +1,66 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    --ion-safe-area-bottom: env(safe-area-inset-bottom); /* Use safe area inset */
+    --ion-safe-area-top: env(safe-area-inset-top); /* Use safe area inset */
+}
+
+ion-app {
+    padding-bottom: 0; /* Ensure no padding is applied */
+}
+
+.main-content {
+    min-height: calc(100vh - var(--ion-safe-area-bottom)); /* Adjust for safe area */
+    overflow: auto; /* Allow scrolling if content overflows */
+} 
+
+/* In your global CSS (theme/variables.css) */
+/* In your global CSS (theme/variables.css) */
+ion-router-outlet {
+    background: var(--ion-background-color) !important;
+}
+
+ion-page {
+    background: var(--ion-background-color) !important;
+}
+
+
+/* Disable dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+      /* Force light theme variables */
+      --ion-color-primary: #3880ff;
+      --ion-background-color: #ffffff;
+      --ion-text-color: #000000;
+      /* Add other theme variables as needed */
+    }
+  }
+  
+  /* Explicitly set light theme */
+  :root {
+    --ion-color-primary: #3880ff;
+    --ion-background-color: #ffffff;
+    --ion-text-color: #000000;
+    color-scheme: light;
+  }
+  
+  /* Apply to all components */
+  ion-content, ion-toolbar, ion-header {
+    --background: #ffffff;
+    --color: #000000;
+  }
+
+  /* Force light theme */
+/* Global CSS (e.g., src/theme/variables.css) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Override Ionic dark mode variables */
+    --ion-background-color: #ffffff !important; /* Force white background */
+    --ion-text-color: #000000 !important; /* Force black text */
+  }
+}
+
+.login-content {
+  --background: #ffffff; /* Ensure IonContent uses white background */
+}
