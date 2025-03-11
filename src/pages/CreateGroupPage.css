@@ -1,0 +1,175 @@
+/* Reset and isolate styles for create group page */
+.create-group-page {
+  --background: #ffffff;
+  --ion-background-color: #ffffff;
+}
+
+/* Ensure all styles are scoped to create-group-page */
+.create-group-page ion-content {
+  --background: #ffffff;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.create-group-page ion-content::part(scroll) {
+  padding: 0;
+}
+
+/* Scope all component styles */
+.create-group-page .selected-characters-container {
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background-color: #f5f5f5;
+  min-height: 60px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-top: calc(env(safe-area-inset-top) + 16px);
+}
+
+/* Toolbar styles */
+.create-group-page .toolbar-container {
+  background-color: #fff !important;
+  --background: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Character chip styles */
+.create-group-page .selected-character-chip {
+  --background: var(--ion-color-primary);
+  --color: #ffffff;
+}
+
+.create-group-page .selected-character-chip ion-avatar {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.create-group-page .selected-character-chip ion-icon {
+  cursor: pointer;
+  color: #ffffff;
+}
+
+/* List item styles */
+.create-group-page ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --background: #ffffff;
+  --background-hover: rgba(var(--ion-color-primary-rgb), 0.1);
+}
+
+.create-group-page ion-item.selected-character {
+  --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  --border-color: var(--ion-color-primary);
+}
+
+/* Avatar styles */
+.create-group-page ion-avatar {
+  width: 48px;
+  height: 48px;
+}
+
+/* Search bar styles */
+.create-group-page ion-searchbar {
+  padding: 8px 16px;
+  --background: #ffffff;
+  --box-shadow: none;
+  --border-radius: 4px;
+  --placeholder-color: #666;
+  --icon-color: #666;
+}
+
+/* List styles */
+.create-group-page ion-list {
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Text styles */
+.create-group-page .no-selection-text {
+  color: #666;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  font-size: 0.9em;
+}
+
+.create-group-page ion-item h2 {
+  font-size: 1em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.create-group-page ion-item p {
+  font-size: 0.8em;
+  color: #666;
+  margin: 4px 0 0 0;
+}
+
+/* Status text styles */
+.create-group-page .loading-text {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.create-group-page .error-text {
+  text-align: center;
+  padding: 20px;
+  color: var(--ion-color-danger);
+  font-size: 0.9em;
+}
+
+/* Layout container styles */
+.create-group-page .fixed-content {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.create-group-page .scrollable-content {
+  height: calc(100% - 180px);
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+/* Segment styles */
+.create-group-page ion-segment {
+  --background: #ffffff;
+  padding: 5px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.create-group-page ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+  --color-checked: #ffffff;
+  --color: #666;
+  --background-checked: var(--ion-color-primary);
+  min-height: 40px;
+  border-radius: 8px;
+}
+
+.create-group-page ion-segment-button.segment-button-checked {
+  color: #ffffff;
+  --background: var(--ion-color-primary);
+}
+
+/* Private section styles */
+.create-group-page .private-characters-container {
+  margin-top: 10px;
+  background: #ffffff;
+}
+
+/* Override any inherited styles */
+.create-group-page * {
+  box-sizing: border-box;
+} 

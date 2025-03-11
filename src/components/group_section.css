@@ -1,0 +1,309 @@
+.unique-filter-wrapper-emoji {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding: 10px 0; /* Adds padding to prevent overlap */
+  }
+  
+  .emoji-filter-wrapper {
+    margin: 0;
+    width: 100%;
+    padding: 0;
+  }
+  
+  .unique-filter-container-emoji {
+    margin-bottom: 5px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    white-space: nowrap; /* Keeps buttons in a single row */
+    overflow-x: scroll; /* Enables horizontal scroll */
+    scroll-behavior: smooth;
+    width: 100%;
+  }
+  
+  .unique-filter-button-emoji {
+    /* Reset Ionic's default styles */
+    --background: #ffffff !important;
+    --background-activated: #ffffff !important;
+    --background-focused: #ffffff !important;
+    --background-hover: #ffffff !important;
+    --color: #000 !important;
+    --box-shadow: none !important;
+    
+    /* Your existing styles */
+    background-color: #ffffff;
+    border: 2px solid #D3D3D3;
+    border-radius: 25px;
+    color: #000;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+  
+  .unique-filter-button-emoji.active {
+    /* Override Ionic's active state */
+    --background: #007bff !important;
+    --background-activated: #007bff !important;
+    --background-focused: #007bff !important;
+    --background-hover: #007bff !important;
+    --color: #ffffff !important;
+    
+    /* Your existing active styles */
+    background-color: #007bff;
+    color: #ffffff;
+    border-color: #007bff;
+  }
+  
+  /* Optional: Hide scrollbar */
+  .unique-filter-container-emoji::-webkit-scrollbar {
+    display: none;
+  }
+  
+  
+  .moving-section-your-char-latest {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 0px;
+    position: relative;
+  }
+  
+  
+  .moving-cards-wrapper-group{
+    margin-left: 0;
+    display: flex;
+    flex-direction: row;  /* Ensure horizontal layout */
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 25px;
+    padding: 5px 0 5px 5px;
+    -webkit-overflow-scrolling: touch;
+    width: calc(100% - 14px);
+    margin-left: 7px;
+    margin-right:7px;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  }
+       
+       .moving-cards-wrapper-group::-webkit-scrollbar {
+         display: none; /* For Chrome, Safari, and Opera */
+       }
+  .card-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  /* Card text */
+  .card-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: calc(100% - 60px); /* Ensure the text container takes remaining space */
+  }
+  
+  .card-text h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap; /* Prevent line breaks for the title */
+    overflow: hidden; /* Hide overflowed content */
+    text-overflow: ellipsis; /* Add ellipsis when content overflows */
+  }
+  
+  .card-text p {
+    margin: 5px 0 0 0;
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap; /* Restrict to one line */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis (...) for overflowed text */
+  }
+  
+  
+  .moving-card-group {
+    gap:10px;
+    display: flex;
+    flex-direction: column;  /* Ensure horizontal layout within card */
+    align-items: center;
+    background: linear-gradient(-180deg, 
+        white 40%,    /* White takes up the top 40% */
+        #FAF9F6 100%  /* Light cyan smoothly transitions in the bottom */
+    );     
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    min-width: 50%;
+    margin-right: 0%;
+    padding: 10px;
+    flex: 0 0 auto;  /* Prevent shrinking and growing */
+    overflow: hidden; /* Ensure content stays within the card */
+    /*border: 2px solid rgba(135, 206, 235, 0.5); /* Slightly darker border */
+
+  }
+  
+  
+  
+  .moving-card-img-group {
+    width: 120px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 5%;
+    margin-right: 0px;
+  }
+  
+  .moving-card-info-h3 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333333;
+    margin: 0;
+    font-size: 0.7em;
+    white-space: nowrap; /* Prevent name from wrapping */
+    overflow: hidden; /* Hide overflowed text */
+    text-overflow: ellipsis; /* Show ellipsis when text overflows */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+  
+  .moving-card-info-p {
+    color: #616161;
+    font-size: 10px;
+    margin: 5px 0;
+    white-space: normal; /* Allow wrapping for the creator name */
+    word-wrap: break-word; /* Break words if necessary */
+    line-height: 1.2em; /* Keep spacing tight for multiline text */
+    max-height: 6em; /* Allow up to 5 lines before overflow (1.2em * 5) */
+    overflow: hidden; /* Hide overflowing text */
+  }
+  
+  .moving-card-info-h4 {
+    color: #9E9E9E;
+    font-weight: normal;
+    font-size: 10px;
+    margin: 5px 0;
+    white-space: normal; /* Allow wrapping for the description */
+    word-wrap: break-word; /* Break long words if needed */
+    line-height: 1.2em; /* Ensure multiline text looks good */
+    max-height: 2.4em; /* Allow up to 2 lines before overflow */
+    overflow: hidden; /* Hide any text that exceeds 2 lines */
+  }
+  
+  /* Adjust the last card's margin to prevent extra space */
+  .moving-card-group:last-child {
+    margin-right: 10%;
+  }
+  
+  
+  
+  .shimmer-title,
+  .shimmer-subtitle,
+  .shimmer-description {
+      background: #e0e0e0; /* Base color for text placeholders */
+      border-radius: 4px;
+      margin: 5px 0;
+  }
+  
+  .shimmer-title {
+      width: 80%; /* Adjust width as needed */
+      height: 20px; /* Height for title */
+  }
+  
+  .shimmer-subtitle {
+      width: 60%; /* Adjust width as needed */
+      height: 15px; /* Height for subtitle */
+  }
+  
+  .shimmer-description {
+      width: 90%; /* Adjust width as needed */
+      height: 12px; /* Height for description */
+  }
+  
+  @keyframes shimmer {
+      0% {
+          background-position: -100%;
+      }
+      100% {
+          background-position: 100%;
+      }
+  }
+
+.group-card-container {
+    position: relative;
+    width: 65%; /* Set to match the previous image size */
+    height: 250px; /* Set to match the previous image size */
+    margin: 0 auto; /* Center the container */
+
+}
+
+.group-card-image {
+    width: 100%; /* Full width of the container */
+    height: 200px; /* Maintain aspect ratio */
+    border-radius: 5%; /* Rounded corners */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Shadow effect */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    transform-origin: bottom center;
+
+}
+
+/* Center Card */
+.center-card {
+    position: absolute;
+    left: 50%;
+    bottom: 20%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+/* Left Card */
+.left-card {
+    position: absolute;
+    left: 45%;
+    bottom: 20%;
+    transform: translateX(-50%) rotate(-10deg);
+    z-index: 2;
+}
+
+/* Right Card */
+.right-card {
+    position: absolute;
+    left: 55%;
+    bottom: 20%;
+    transform: translateX(-50%) rotate(10deg);
+    z-index: 1;
+}
+
+.group-card-title {
+    font-size: 14px;
+    text-align: center; /* Center the title */
+    color: #616161;
+    margin-top: 10px; /* Add some space above the title */
+    font-weight: bold; /* Make the title bold */
+    margin-bottom: 10px; /* Add space below the title if needed */
+}
+
+.group-card-sub-title {
+    font-size: 10px;
+    text-align: center; /* Center the title */
+    color: #616161;
+    margin-top: 10px; /* Add some space above the title */
+    margin-bottom: 10px; /* Add space below the title if needed */
+}
+
+.group-icon-2{
+  height: 15px;
+  width: 15px;
+  margin-right: 5px;
+
+}
+
+.group-container{
+    display: flex;
+  flex-direction: row;
+  align-items: center;
+}
