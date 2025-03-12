@@ -11,7 +11,6 @@ import { CapacitorConfig } from '@capacitor/cli';
 import React from 'react';
 import { signInWithPopup } from "firebase/auth";
 
-import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import { auth } from '../firebaseConfig';
 import { GoogleAuthProvider, signInWithCredential, signInWithRedirect } from 'firebase/auth';
 

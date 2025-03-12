@@ -4,7 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import CharacterChatPage from './pages/CharacterChatPage';
 import InsertCharacterPage from './pages/InsertCharacterPage';
-
+import GroupCharacterPage from './pages/GroupChattingPage';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -32,9 +32,9 @@ import TalkingPage from './pages/TalkingPage';
 import { useEffect } from 'react';
 
 
+
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { PushNotifications } from "@capacitor/push-notifications";
-import WhatsAppChat from './pages/whatsappchat'; // Import the new page
 
 
 // Use Ionic's animation configuration
@@ -50,6 +50,7 @@ import CharacterChatPage2 from './pages/CharacterChatPage2';
 import CharacterChatPage3 from './pages/Characterchat3';
 import CharacterInfoModal from './components/CharacterInfoModal';
 import { onAuthStateChanged } from 'firebase/auth';
+import CreateGroupPage from './pages/CreateGroupPage';
 
 
 StatusBar.setBackgroundColor({ color: '#ffffff' }); // White background
@@ -194,12 +195,14 @@ const App: React.FC = () => {
           <Route exact path="/character-chat/:id" component={CharacterChatPage} />
           <Route exact path="/character-chat-2/:id" component={CharacterChatPage2} />
           <Route exact path="/character-chat-3/:id" component={CharacterChatPage3} />
+          <Route exact path="/group-chat/:id" component={GroupCharacterPage} />
+          <Route exact path="/create-group" component={CreateGroupPage} />
 
+          
           <Route path="/talking/:id" component={TalkingPage} />
           <Route exact path="/insert-character" component={InsertCharacterPage} />
 
-          <Route exact path="/">
-            <Redirect to="/login" />
+          <Route exact path="/" component={SplashScreen2}>
           </Route>
           <Route path="/character-info" component={CharacterInfoModal}/>
         </IonRouterOutlet>

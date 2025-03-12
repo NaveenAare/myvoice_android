@@ -13,7 +13,8 @@ import AudioList from '../components/AudioList';
 import BottomNavigation from '../components/BottomNavigation';
 import MenuCards from '../components/chatHistory';
 import Dashboard from '../components/UserProfile';
-import TTSComponent from '../components/TTS'
+import TTSComponent from '../components/TTS';
+import GroupSection from '../components/group_section';
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home'); // Track active tab
@@ -26,6 +27,7 @@ const Home: React.FC = () => {
             <SearchCharacters/>
             <CardComponent/>
             <EmojiFilter/>
+            <GroupSection/>
             <LatestCharcatersSection/>
             <FilterSection2/>
             <SpecialSectionContainer />

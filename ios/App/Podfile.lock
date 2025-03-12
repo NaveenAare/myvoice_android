@@ -1,7 +1,7 @@
 PODS:
   - Capacitor (7.0.1):
     - CapacitorCordova
-  - CapacitorApp (6.0.2):
+  - CapacitorApp (7.0.0):
     - Capacitor
   - CapacitorBrowser (7.0.0):
     - Capacitor
@@ -12,13 +12,6 @@ PODS:
     - Capacitor
   - CapacitorFilesystem (7.0.0):
     - Capacitor
-  - CapacitorFirebaseAuthentication (7.1.0):
-    - Capacitor
-    - CapacitorFirebaseAuthentication/Lite (= 7.1.0)
-    - FirebaseAuth (~> 11.7.0)
-  - CapacitorFirebaseAuthentication/Lite (7.1.0):
-    - Capacitor
-    - FirebaseAuth (~> 11.7.0)
   - CapacitorHaptics (6.0.2):
     - Capacitor
   - CapacitorKeyboard (6.0.3):
@@ -125,7 +118,6 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorDialog (from `../../node_modules/@capacitor/dialog`)"
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
-  - "CapacitorFirebaseAuthentication (from `../../node_modules/@capacitor-firebase/authentication`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
@@ -174,8 +166,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/dialog"
   CapacitorFilesystem:
     :path: "../../node_modules/@capacitor/filesystem"
-  CapacitorFirebaseAuthentication:
-    :path: "../../node_modules/@capacitor-firebase/authentication"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
   CapacitorKeyboard:
@@ -197,13 +187,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: de199cba6c8b20995428ad0b7cb0bc6ca625ffd4
-  CapacitorApp: e1e6b7d05e444d593ca16fd6d76f2b7c48b5aea7
+  CapacitorApp: 9cb31064a6c6bb2b1438583733a7bf45557fc1da
   CapacitorBrowser: 55c21db47416dcc8fc3b623e18fd7d09acb26081
   CapacitorCommunityFileOpener: f304bb7e1d2c0ba02db0018138fbc0cc14d659ff
   CapacitorCordova: 63d476958d5022d76f197031e8b7ea3519988c64
   CapacitorDialog: 6dc6bdd5d285118ff3732470b9f169c14fc564a7
   CapacitorFilesystem: 59a2b7b56a897c6a3de4d04c5718e1d80de9d2f5
-  CapacitorFirebaseAuthentication: e4455d89768e02dbe65e1d25f28232e14d643a52
   CapacitorHaptics: 4fc15afe22b123d093e6ace24d95e8e3b1f261b9
   CapacitorKeyboard: e89189ad398b815b6ff7e52271f0fb4f911a0a0a
   CapacitorLocalNotifications: c9577978cd598af5e2b5615548b8222b3b10d7e2
@@ -229,6 +218,6 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
 
-PODFILE CHECKSUM: a859b782d7a9f7445917aa632a3018c569081465
+PODFILE CHECKSUM: ebcb321f3bd97f4a9f2a3e97f88337a33091a06a
 
 COCOAPODS: 1.16.2
