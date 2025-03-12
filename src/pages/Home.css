@@ -21,6 +21,7 @@ ion-content::part(scroll) {
     display: flex;
     flex-direction: column;
     background-color: white;
+    padding-bottom: 56px;
 }
 
 
@@ -41,3 +42,7 @@ ion-tab-bar {
     --ion-text-color: #000000 !important;
     color-scheme: light !important;
   }
+
+.has-bottom-nav {
+  --padding-bottom: 56px; /* Match your bottom nav height */
+}

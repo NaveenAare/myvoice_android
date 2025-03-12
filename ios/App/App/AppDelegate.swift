@@ -1,6 +1,8 @@
 import UIKit
 import Capacitor
 import Firebase
+import SwiftUI
+import FirebaseCore
 
 
 @UIApplicationMain
@@ -92,6 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 
+  
 
 
 

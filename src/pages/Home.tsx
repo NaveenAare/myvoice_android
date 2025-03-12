@@ -1,5 +1,5 @@
-import { IonContent, IonPage } from '@ionic/react';
-import { useState } from 'react';
+import { IonContent, IonPage , IonHeader} from '@ionic/react';
+import { useState, useEffect } from 'react';
 import './Home.css';
 import SearchCharacters from '../components/SearchContainer';
 import CardComponent from '../components/TopBanner';
@@ -14,6 +14,7 @@ import BottomNavigation from '../components/BottomNavigation';
 import MenuCards from '../components/chatHistory';
 import Dashboard from '../components/UserProfile';
 import TTSComponent from '../components/TTS'
+import GroupSection from '../components/group_section'
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home'); // Track active tab
@@ -26,6 +27,7 @@ const Home: React.FC = () => {
             <SearchCharacters/>
             <CardComponent/>
             <EmojiFilter/>
+            <GroupSection/>
             <LatestCharcatersSection/>
             <FilterSection2/>
             <SpecialSectionContainer />
@@ -47,12 +49,12 @@ const Home: React.FC = () => {
 
   return (
     <IonPage className="force-light-theme">
-      <IonContent scrollY={true}>
+      <IonContent fullscreen scrollY={true}>
         <div className="home-container">
-          {renderContent()} {/* Render content based on active tab */}
+          {renderContent()}
         </div>
       </IonContent>
-      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} /> {/* Update tab on change */}
+      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
     </IonPage>
   );
 };

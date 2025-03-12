@@ -21,6 +21,8 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.1062145262228-oretu54sc6igv9flm26ni0mgq8vjipil</string>
@@ -30,9 +32,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.1062145262228-oretu54sc6igv9flm26ni0mgq8vjipil</string>
-			</array>
+			<array/>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
@@ -70,6 +70,8 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
+		<string>fetch</string>
+		<string>processing</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -102,5 +104,8 @@
 	<true/>
 	<key>com.apple.security.get-task-allow</key>
 	<true/>
+
+	<key>FirebaseAppDelegateProxyEnabled</key><false/>
+
 </dict>
 </plist>

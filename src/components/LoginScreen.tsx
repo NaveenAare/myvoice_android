@@ -11,12 +11,20 @@ import { CapacitorConfig } from '@capacitor/cli';
 import React from 'react';
 import { signInWithPopup } from "firebase/auth";
 
-import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import { auth } from '../firebaseConfig';
 import { GoogleAuthProvider, signInWithCredential, signInWithRedirect } from 'firebase/auth';
 
-import { Browser } from '@capacitor/browser';
 
+import {  getRedirectResult } from "firebase/auth";
+
+import { useAuth } from '../context/AuthContext';
+
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+
+import { SignInWithApple } from '@capacitor-community/apple-sign-in';
+
+import { OAuthProvider, updateProfile } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore'; // Add Firestore
 
 
 
@@ -24,27 +32,27 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState<'google' | 'apple' | null>(null);
       const router = useIonRouter();
 
+      const { user, signInWithGoogle } = useAuth();
 
-
-
+      React.useEffect(() => {
+        if (user) {
+          router.push('/home');
+        }
+      }, [user, history]);
     
-      const signInWithGoogle2 = async () => {
+      const handleGoogleSignIn = async () => {
         try {
-          // Sign in using Capacitor Firebase Plugin
-          const result = await FirebaseAuthentication.signInWithGoogle();
-          
-          if (result.credential?.idToken) {
-            // Convert Capacitor response to Firebase Credential
-            const credential = GoogleAuthProvider.credential(result.credential.idToken);
-            const user = await signInWithCredential(auth, credential);
-            console.log('Google Sign-In Success:', user);
-            router.push("/home")
-            return user;
-          }
+          const user = await GoogleAuth.signIn();
+          console.log('Google user:', user);
         } catch (error) {
-          console.error('Error during Google Sign-In:', error);
+          console.error('Error signing in:', error);
         }
       };
+
+
+
+
+
 
 
  
@@ -52,44 +60,69 @@ const LoginPage: React.FC = () => {
         setTimeout(() => reject(new Error("Sign-In Timeout!")), 10000) // 10s timeout
     );
     
-    const signInWithGoogle23 = async () => {
-      try {
-        if (Capacitor.getPlatform() === 'ios') {
-          try {
-            console.log("🔹 Starting Google Sign-In...");
-            const result = await Promise.race([FirebaseAuthentication.signInWithGoogle(), timeout]);
-            console.log("✅ Google Sign-In Success:", result);
-        } catch (error) {
-            console.error("❌ Google Sign-In Failed:", error);
-            alert("Google Sign-In Error: " + JSON.stringify(error, null, 2));
-        }
-        } else {
-          // Web/Android Flow
-          const provider = new GoogleAuthProvider();
-          await signInWithRedirect(auth, provider);
-        }
-      } catch (error) {
-        console.error('Google Sign-In Error:', error);
-        throw error;
-      }
-    };
 
     
     
-    
-    async function signInWithGoogleclaude() {
+    const appleSignIn = async () => {
       try {
-        // This will use the native sign-in flow on iOS
-        const result = await FirebaseAuthentication.signInWithGoogle();
-        
-        // You can then use the credentials with Firebase if needed
-        console.log('User signed in:', result);
-        return result;
+        // ✅ Use the correct method name: authorize()
+        const result = await SignInWithApple.authorize();
+    
+        // Create Firebase credential
+        const provider = new OAuthProvider('apple.com');
+        const credential = provider.credential({
+          idToken: result.response.identityToken // From Apple response
+        });
+    
+        // Sign in to Firebase
+        await signInWithCredential(auth, credential);
       } catch (error) {
-        console.error('Error signing in with Google:', error);
-        throw error;
+        console.error('Apple Sign-In Error:', error);
       }
-    }
+    };
+
+    const appleSignIn2 = async () => {
+      try {
+        const result = await SignInWithApple.authorize({
+          scopes: 'email name',
+          clientId: 'com.ain-hub.speakingcharacter',
+          redirectURI: 'https://videos-downloader-13024.firebaseapp.com/__/auth/handler'
+        });
+    
+        const { identityToken, email, givenName, familyName } = result.response;
+    
+        // 1. Create Firebase credential
+        const provider = new OAuthProvider('apple.com');
+        const credential = provider.credential({ idToken: identityToken! });
+    
+        // 2. Sign in to Firebase
+        const userCredential = await signInWithCredential(auth, credential);
+        const user = userCredential.user;
+
+        const isNewUser = user.metadata.creationTime === user.metadata.lastSignInTime;
+    
+      if (isNewUser) {
+        const displayName = `${givenName} ${familyName}`.trim();
+        if (displayName) await updateProfile(user, { displayName });
+      }
+    
+        console.log("user:", user);
+
+        console.log("familyName::::::", familyName);
+        console.log("email::::::", email);
+        console.log("givenName::::::", givenName);
+
+    
+      } catch (error) {
+        console.error('Apple Sign-In Error:', error);
+      }
+    };
+
+
+ 
+
+
+
 
     const signIn = async () => {
       const provider = new GoogleAuthProvider();
@@ -100,54 +133,9 @@ const LoginPage: React.FC = () => {
       }
     };
 
-    const handleSignIn = async () => {
-      try {
-        const user = await signInWithGoogleclaude();
-        console.log('Sign in successful:', user);
-      } catch (error) {
-        console.error('Sign in failed:', error);
-      }
-    };
 
-      const signInWithGoogle = async () => {
-        try {
-          console.log("Google Sign-In Started");
-      
-          // Check if FirebaseAuthentication plugin is available
-          if (Capacitor.getPlatform() === "ios") {
-            if (!FirebaseAuthentication) {
-              console.error("❌ FirebaseAuthentication plugin is missing! Run `npx cap sync ios`.");
-              return;
-            }
-      
-            console.log("Inside iOS logic...");
-      
-            const result = await FirebaseAuthentication.signInWithGoogle();
-            console.log("Google Sign-In Result:", result);
-      
-            if (result.credential?.idToken) {
-              const credential = GoogleAuthProvider.credential(
-                result.credential.idToken,
-                result.credential.accessToken
-              );
-              const user = await signInWithCredential(auth, credential);
-              console.log("iOS Google Sign-In Success:", user);
-              router.push("/home")
-              return user;
-            }
-          } else {
-            // Web/Android Flow
-            const provider = new GoogleAuthProvider();
-            await signInWithRedirect(auth, provider);
-            router.push("/home")
-          }
-        } catch (error) {
-          console.error("Google Sign-In Error:", error);
-        }
-      };
-      
-      
 
+     
   const config: CapacitorConfig = {
     appId: "com.ain-hub.speakingcharacter",
     appName: "Speaking Character",
@@ -166,7 +154,19 @@ const LoginPage: React.FC = () => {
 
 
   
-
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          const user = result.user;
+          console.log("User signed in:", user);
+        }
+      })
+      .catch((error) => {
+        console.error("Error handling redirect result:", error);
+      });
+  }, []);
+  
   
 
 
@@ -196,31 +196,7 @@ const LoginPage: React.FC = () => {
   };
 
 
-  const signI = async () => {
-    try {
-      console.log("Google Sign-In Started");
-  
-      if (Capacitor.getPlatform() === "ios") {
-        const result = await FirebaseAuthentication.signInWithGoogle();
-        console.log("Google Sign-In Result:", result);
-  
-        if (result.credential?.idToken) {
-          const credential = GoogleAuthProvider.credential(result.credential.idToken);
-          const user = await signInWithCredential(auth, credential);
-          console.log("iOS Google Sign-In Success:", user);
-          router.push("/home");
-          return user;
-        }
-      } else {
-        // Web/Android Flow
-        const provider = new GoogleAuthProvider();
-        await signInWithRedirect(auth, provider);
-        router.push("/home");
-      }
-    } catch (error) {
-      console.error("Google Sign-In Error:", error);
-    }
-  };
+
 
 
 
@@ -347,7 +323,7 @@ const LoginPage: React.FC = () => {
               <IonButton 
                 expand="block" 
                 className="apple-btn"
-                onClick={appleLogin}
+                onClick={appleSignIn2}
                 disabled={!!loading}
               >
                 {loading === 'apple' ? (
@@ -364,7 +340,7 @@ const LoginPage: React.FC = () => {
             <IonButton 
               expand="block" 
               className="google-btn"
-              onClick={signI}
+              onClick={handleGoogleSignIn}
               disabled={!!loading}
             >
               {loading === 'google' ? (

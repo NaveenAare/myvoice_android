@@ -34,7 +34,6 @@ import { useEffect } from 'react';
 
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { PushNotifications } from "@capacitor/push-notifications";
-import WhatsAppChat from './pages/whatsappchat'; // Import the new page
 
 
 // Use Ionic's animation configuration
@@ -50,6 +49,10 @@ import CharacterChatPage2 from './pages/CharacterChatPage2';
 import CharacterChatPage3 from './pages/Characterchat3';
 import CharacterInfoModal from './components/CharacterInfoModal';
 import { onAuthStateChanged } from 'firebase/auth';
+import { initializeGoogleAuth } from './setupGoogleAuth';
+
+import GroupChatPage from './pages/GroupChattingPage';
+import CreateGroupPage from './pages/CreateGroupPage';
 
 
 StatusBar.setBackgroundColor({ color: '#ffffff' }); // White background
@@ -148,7 +151,8 @@ setupIonicReact({
           .fromTo('transform', 'translateX(0)', 'translateX(100%)')
           .fromTo('opacity', 1, 0.5)
       );
-  }
+  },
+  swipeBackEnabled: false
 });
 
 
@@ -181,11 +185,15 @@ const App: React.FC = () => {
   }, []);
 
 
+  useEffect(() => {
+    initializeGoogleAuth();
+  }, []);
+
 
 
 
   return (
-    <IonApp className="force-light-theme">
+    <IonApp>
       <IonReactRouter>
         <IonRouterOutlet animated={true}>
           <Route exact path="/splash" component={SplashScreen2} />
@@ -195,13 +203,15 @@ const App: React.FC = () => {
           <Route exact path="/character-chat-2/:id" component={CharacterChatPage2} />
           <Route exact path="/character-chat-3/:id" component={CharacterChatPage3} />
 
+          <Route exact path="/group-chat/:id" component={GroupChatPage} />
+
           <Route path="/talking/:id" component={TalkingPage} />
           <Route exact path="/insert-character" component={InsertCharacterPage} />
 
-          <Route exact path="/">
-            <Redirect to="/login" />
+          <Route exact path="/" component={SplashScreen2}>
           </Route>
           <Route path="/character-info" component={CharacterInfoModal}/>
+          <Route exact path="/create-group" component={CreateGroupPage} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

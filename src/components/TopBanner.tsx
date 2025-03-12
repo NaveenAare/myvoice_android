@@ -96,6 +96,10 @@ const CardComponent: React.FC = () => {
         router.push('/insert-character');
     };
 
+    const goToCreateGroup = () => {
+        router.push('/create-group');
+    };
+
     return (
         <div className="top-banner-container">
             <div id="rotating-text-container" style={{ zIndex: 30, color: '#4A4A4A', fontFamily: 'Gill Sans, sans-serif' }}>
@@ -115,6 +119,12 @@ const CardComponent: React.FC = () => {
                     <span className="btn-icon-line btn-icon-line3"></span>
                 </span>
                 Create new character
+            </IonButton>
+
+            <IonButton expand="full" onClick={goToCreateGroup} className="btn">
+            <img src = "/assets/group_png.png" alt="Bot Avatar" className="message-avatar-top" />
+
+                Create new Group
             </IonButton>
             
         </div>
