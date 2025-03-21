@@ -36,6 +36,9 @@ const UserProfile: React.FC = () => {
     const audioRefs = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Ref to store audio elements
     const [noCharactersFound, setNoCharactersFound] = useState<boolean>(false); // State for no characters message
     const [noAudiosFound, setNoAudiosFound] = useState<boolean>(false); // State for no audios message
+    const [groups, setGroups] = useState<any[]>([]);
+    const [loadingGroups, setLoadingGroups] = useState<boolean>(true);
+    const [noGroupsFound, setNoGroupsFound] = useState<boolean>(false);
 
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const popupRef = useRef<HTMLDivElement | null>(null);
@@ -214,7 +217,7 @@ const UserProfile: React.FC = () => {
     };
 
     // Update the showDeletePopup function to handle both characters and audios
-    const showDeletePopup = (item: any, isAudio: boolean = false) => {
+    const showDeletePopup = (item: any, isAudio: boolean = false, isGroup: boolean = false) => {
         console.log("Showing delete popup"); // Debug log
         showNewOverlay();
         if (overlayRef.current && popupRef.current && loadingSpinnerRef.current) {
@@ -226,6 +229,8 @@ const UserProfile: React.FC = () => {
             document.getElementById('confirm-delete')!.onclick = async () => {
                 if (isAudio) {
                     await deleteAudio(item);
+                } else if (isGroup) {
+                    await deleteGroup(item);
                 } else {
                     await deleteCharacter(item);
                 }
@@ -287,11 +292,84 @@ const UserProfile: React.FC = () => {
         }
     };
 
+    // Add function to fetch groups
+    const fetchGroups = async () => {
+        setLoadingGroups(true);
+        setNoGroupsFound(false);
+        try {
+            const token = localStorage.getItem("authToken");
+            if (!token) throw new Error("No auth token found");
+
+            const formData = new FormData();
+            formData.append('authToken', token);
+
+            const response = await fetch('https://speakingcharacter.ai/get/user/groups', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch groups');
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.data) && data.data.length === 0) {
+                setNoGroupsFound(true);
+            } else {
+                setGroups(data.data || []);
+            }
+        } catch (error) {
+            console.error('Error fetching groups:', error);
+            setNoGroupsFound(true);
+        } finally {
+            setLoadingGroups(false);
+        }
+    };
+
+    // Add deleteGroup function
+    const deleteGroup = async (group: any) => {
+        const authToken = localStorage.getItem("authToken");
+        const groupCode = group.code;
+
+        const confirmDeleteButton = document.getElementById('confirm-delete')!;
+        const loadingSpinner = loadingSpinnerRef.current!;
+
+        confirmDeleteButton.disabled = true;
+        loadingSpinner.style.display = 'block';
+
+        try {
+            const formData = new FormData();
+            formData.append('authToken', authToken);
+            formData.append('groupCode', groupCode);
+
+            const response = await fetch('https://speakingcharacter.ai/delete/user/group', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                displayToast('Group deleted successfully!', 'success');
+                fetchGroups();
+            } else {
+                throw new Error("Failed to delete group.");
+            }
+        } catch (error) {
+            console.error(error);
+            displayToast('Something went wrong, please try again later!', 'error');
+        } finally {
+            confirmDeleteButton.disabled = false;
+            loadingSpinner.style.display = 'none';
+        }
+    };
+
     useEffect(() => {
         fetchApiDetails(); // Fetch user details
         fetchAndUpdateCharacters(); // Fetch characters
         updateAudioCards(); // Fetch audio cards
-    }, []);
+        if (activeTab === 'groups') {
+            fetchGroups();
+        }
+    }, [activeTab]);
 
     return (
         <div className="dashboard">
@@ -369,9 +447,48 @@ const UserProfile: React.FC = () => {
                 )}
 
                 {activeTab === 'groups' && (
-                    <div className="groups-content">
-                        {/* Placeholder for Groups content */}
-                        <p>No groups available.</p>
+                    <div className="character-card-container">
+                        {loadingGroups ? (
+                            Array.from({ length: 3 }).map((_, index) => <ShimmerCard key={index} />)
+                        ) : noGroupsFound ? (
+                            <div className="centered-message">
+                                <p>No groups found.</p>
+                            </div>
+                        ) : (
+                            groups.map(group => (
+                                <div className="character-card" key={group.id} style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div className="split-image-container">
+                                        <img 
+                                            src={group.image_url_1 || 'default-image.png'} 
+                                            alt={group.name} 
+                                            className="split-image left"
+                                        />
+                                        <img 
+                                            src={group.image_url_2 || 'default-image.png'} 
+                                            alt={group.name} 
+                                            className="split-image right"
+                                        />
+                                    </div>
+                                    <div style={{ flex: 1, marginLeft: '10px' }}>
+                                        <p className="card-title">{group.name}</p>
+                                    </div>
+                                    <div className="button-container">
+                                        <button 
+                                            className="action-button" 
+                                            onClick={() => window.location.href = `/group-chat/${group.code}`}
+                                        >
+                                            <IonIcon icon={chatbubbleOutline} />
+                                        </button>
+                                        <button 
+                                            className="action-button-2" 
+                                            onClick={() => showDeletePopup(group, false, true)}
+                                        >
+                                            <i className="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 )}
             </div>

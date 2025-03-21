@@ -49,7 +49,7 @@ const Home: React.FC = () => {
 
   return (
     <IonPage className="force-light-theme">
-      <IonContent fullscreen scrollY={true}>
+      <IonContent fullscreen scrollY={true} className="ios-content">
         <div className="home-container">
           {renderContent()}
         </div>

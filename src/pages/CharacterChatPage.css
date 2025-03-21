@@ -1,0 +1,6 @@
+.centered-message {
+  text-align: center;
+  font-style: italic; /* Optional: Style for the message */
+  color: #888; /* Optional: Change color for the message */
+  margin: 10px 0; /* Optional: Add some margin */
+} 

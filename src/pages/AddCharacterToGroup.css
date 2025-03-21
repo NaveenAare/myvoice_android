@@ -1,0 +1,43 @@
+/* Add styles for the AddCharacterToGroup page */
+h2 {
+    margin: 16px;
+    font-size: 1.5rem;
+}
+
+ion-list {
+    margin: 0;
+}
+
+.custom-searchbar {
+  --background: white; /* Background color */
+  --border-color: #007bff; /* Change this to your desired border color */
+  --box-shadow: none; /* Remove default shadow */
+  border: 2px solid var(--border-color); /* Set border color */
+  border-radius: 5px; /* Optional: Add border radius */
+}
+
+/* Optional: Change border color on focus */
+.custom-searchbar:focus {
+  --border-color: #0056b3; /* Change to a darker shade on focus */
+}
+
+.loading-spinner {
+  min-height: 100px;
+  min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full height of the viewport */
+    width: 100%; /* Full width */
+    position: absolute; /* Position it absolutely */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    background-color: rgba(255, 255, 255, 0.8); /* Optional: semi-transparent background */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.loading-spinner ion-spinner {
+    width: 100px; /* Set the width of the spinner */
+    height: 100px; /* Set the height of the spinner */
+} 

@@ -53,6 +53,10 @@ import { initializeGoogleAuth } from './setupGoogleAuth';
 
 import GroupChatPage from './pages/GroupChattingPage';
 import CreateGroupPage from './pages/CreateGroupPage';
+import AddCharacterToGroup from './pages/AddCharacterToGroup';
+
+import AddSingleToGroup from './pages/AddSingleToGroup';
+
 
 
 StatusBar.setBackgroundColor({ color: '#ffffff' }); // White background
@@ -212,6 +216,9 @@ const App: React.FC = () => {
           </Route>
           <Route path="/character-info" component={CharacterInfoModal}/>
           <Route exact path="/create-group" component={CreateGroupPage} />
+          <Route path="/add-character-to-group/:id" component={AddCharacterToGroup} />
+          <Route path="/add-single-character-to-group/:id" component={AddSingleToGroup} />
+
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

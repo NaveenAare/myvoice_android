@@ -948,7 +948,7 @@ const goHome = () => {
 };
 
 const handleBackButtonClick = () => {
-  router.goBack(); // Uses Ionic's navigation with smooth transitions
+  router.push("/home", "back");
 };
 
   // Effect to handle physical back button press
@@ -1210,6 +1210,9 @@ useEffect(() => {
     }, [messages, keyboardHeight]); // Re-check when messages change or keyboard height changes
 
 
+    const handleAddToGroup = () => {
+      router.push(`/add-character-to-group/${id}`, 'forward', 'push');
+    };
 
 const fullContainerStyle = {
   transform: `translateY(-${keyboardHeight}px)`,
@@ -1474,7 +1477,7 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
           characterName= {localStorage.getItem(`${id}_char_name`) || "Character Name"}
           characterBio= {localStorage.getItem(`${id}_char_image_url`) || "Character Bio"}
           welcomeMessage= {localStorage.getItem(`${id}_char_sub_name_2`) || "Character Bio"}
-          onAddToGroup={() => console.log('Add to group')}
+          onAddToGroup={() => handleAddToGroup()}
           onDeleteChat={() => console.log('Delete chat')}
           onClose={() => setShowInfoModal(false)} // This controls visibility
         />

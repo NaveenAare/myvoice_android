@@ -22,7 +22,7 @@
 }
 
 /* Menu card with fixed width and height */
-.menu-card {
+.menu-card-1 {
     margin-top: 10px;
     margin-bottom: 10px;
     display: flex;
@@ -174,7 +174,7 @@
 }
 
 /* Add this to ensure the image container behaves correctly */
-.menu-card > div:first-child {
+.menu-card-1 > div:first-child {
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -233,7 +233,7 @@
 }
 
 
-.whatsapp-ui .menu-card {
+.whatsapp-ui .menu-card-1 {
 
     display: flex;
     align-items: center;

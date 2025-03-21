@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { useIonRouter, IonPage, IonContent } from '@ionic/react';
 import './SplashScreen.css'; // Create a CSS file for styling
 
+const SPLASH_DURATION = 3000; // You can also consider importing this from a config file
+
 const SplashScreen2: React.FC = () => {
     const router = useIonRouter();
     const hasNavigated = useRef(false);
@@ -14,7 +16,7 @@ const SplashScreen2: React.FC = () => {
                 hasNavigated.current = true;
                 router.push('/home', 'forward', 'push');
             }
-        }, 3000);
+        }, SPLASH_DURATION); // Use the constant here
 
         return () => {
             clearTimeout(timer);

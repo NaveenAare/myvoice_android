@@ -18,8 +18,8 @@ const config: CapacitorConfig = {
       resizeOnFullScreen: true, // Avoids auto-scrolling issues
     },
     SplashScreen: {
-      launchShowDuration: 0, // Set to 0 to prevent automatic display
-      launchAutoHide: false, // Prevent automatic hiding
+      launchShowDuration: 3, // Set to 0 to prevent automatic display
+      launchAutoHide: true, // Prevent automatic hiding
       launchFadeOutDuration: 3000,
       backgroundColor: "#ffffffff",
       androidSplashResourceName: "splash",
@@ -29,6 +29,7 @@ const config: CapacitorConfig = {
       iosSpinnerStyle: "small",
       spinnerColor: "#999999",
       splashFullScreen: true,
+      Image: "/assets/logo.png",
       splashImmersive: true,
       layoutName: "launch_screen",
       useDialog: true

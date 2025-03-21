@@ -20,7 +20,7 @@ import {
   } from '@ionic/react';
   import CharacterInfoModal from '../components/CharacterInfoModal';
   
-  import { call, mic, volumeHigh, volumeMute, send, cogSharp, ellipsisVertical, trash, logOut, arrowBack, add } from 'ionicons/icons'; // Import necessary icons
+  import { call, mic, volumeHigh, volumeMute, send, cogSharp, ellipsisVertical, trash, logOut, arrowBack, add, close } from 'ionicons/icons'; // Import necessary icons
   import { useState, useEffect, useRef, useMemo } from 'react';
   import { useParams } from 'react-router-dom';
   import './GroupChattingPage.css';
@@ -77,6 +77,11 @@ import {
   let audioPlaying: HTMLAudioElement | null = null; // Variable to hold the currently playing audio
   let currentButton: HTMLElement | null = null; // Variable to hold the current button
   
+  // Update the interface for URL parameters
+  interface RouteParams {
+    id: string;
+  }
+  
   const GroupChattingPage: React.FC = () => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
@@ -84,7 +89,7 @@ import {
     const [isLoadingMessages, setIsLoadingMessages] = useState(true); // For loading messages
     const [isLoadingHeaderContent, setisLoadingHeaderContent] = useState(true); // For loading messages
     let [isLoadingBotMessage, setIsLoadingBotMessage] = useState(false); // For loading bot message
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams<RouteParams>();
     const [isVolumeHigh, setIsVolumeHigh] = useState(true); // State to track volume
     const messageEndRef = useRef<HTMLDivElement | null>(null); // Create a ref for the end of the message container
     const inputRef = useRef<HTMLIonInputElement | null>(null); // Create a ref for the input field
@@ -940,6 +945,10 @@ import {
   const showToast = (message: string, type: 'success' | 'error') => {
     alert(message); // Simple implementation - replace with your toast system
   };
+
+  const handleAddToGroup = () => {
+    router.push(`/add-single-character-to-group/${id}`, 'forward', 'push');
+  };
   
   
   
@@ -948,7 +957,7 @@ import {
   };
   
   const handleBackButtonClick = () => {
-    router.goBack(); // Uses Ionic's navigation with smooth transitions
+    router.push("/home", "back")
   };
   
     // Effect to handle physical back button press
@@ -1003,61 +1012,70 @@ import {
   
   
     // Memoize the header to prevent flickering
+    const handleHeaderClick = () => {
+      if (id) {
+        setShowGroupInfo(true); // Open group info modal instead of character info modal
+        fetchGroupCharacters(); // Fetch characters when opening modal
+      }
+    };
+  
     const header = useMemo(() => (
       <IonHeader className='navHead'>
         <IonToolbar color="black" style={{ backgroundColor: 'white', margin: 0, padding: 0 }}>
           <IonButtons slot="start">
             <IonButton onClick={handleBackButtonClick} fill="clear">
-              <IonIcon icon={chevronBack} /> {/* Use an icon for the back button */}
+              <IonIcon icon={chevronBack} />
             </IonButton>
           </IonButtons>
-  
-          <IonItem lines="none" color="white" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }} >
-          <IonAvatar slot="start" className="avatar-container">
-  {isLoadingHeaderContent ? (
-    <Shimmer width="50px" height="50px" border-radius="50%" /> // Shimmer for image
-  ) : (
-    <>
-      <img
-        className="profile-image"
-        src={characterData?.image_url_1 || 'default-avatar.png'}
-        alt={characterData?.name || 'Character'}
-        onClick={setInfomodeltotrue}
-      />
-      <img
-        className="group-icon"
-        src={characterData?.image_url_2 || 'default-avatar.png'} // Path to your group icon
-        alt="Group"
-      />
-    </>
-  )}
-</IonAvatar>
+
+          <IonItem 
+            lines="none" 
+            color="white" 
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}
+            onClick={handleHeaderClick} // This will now open the group info modal
+            button
+          >
+            <IonAvatar slot="start" className="avatar-container">
+              {isLoadingHeaderContent ? (
+                <Shimmer width="50px" height="50px" border-radius="50%" />
+              ) : (
+                <>
+                  <img
+                    className="profile-image"
+                    src={characterData?.image_url_1 || 'default-avatar.png'}
+                    alt={characterData?.name || 'Character'}
+                  />
+                  <img
+                    className="group-icon"
+                    src={characterData?.image_url_2 || 'default-avatar.png'}
+                    alt="Group"
+                  />
+                </>
+              )}
+            </IonAvatar>
 
             <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
               {isLoadingHeaderContent ? (
-                <Shimmer width="100px" height="20px" style={{ borderRadius: '50%' }} /> // Shimmer for title
+                <Shimmer width="100px" height="20px" />
               ) : (
-                <h3 className='custom-title' onClick={setInfomodeltotrue}>
+                <h3 className='custom-title'>
                   {truncateString(characterData?.name || 'Loading...', 20)}
                 </h3>
               )}
             </div>
+
             <div slot="end" style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-              
-  
-              <IonButton fill="clear" onClick={showDeletePopup}>
+              <IonButton fill="clear" onClick={(e) => { e.stopPropagation(); showDeletePopup(); }}>
                 <IonIcon icon={trash} />
               </IonButton>
-
-              <IonButton fill="clear" onClick={toggleVolume}>
+              <IonButton fill="clear" onClick={(e) => { e.stopPropagation(); handleAddToGroup(); }}>
                 <IonIcon icon={add} />
               </IonButton>
-  
             </div>
           </IonItem>
         </IonToolbar>
       </IonHeader>
-    ), [isLoadingMessages, characterData, isVolumeHigh, isLoadingHeaderContent]); // Dependencies to memoize
+    ), [isLoadingMessages, characterData, isVolumeHigh, isLoadingHeaderContent]);
   
     
     const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -1250,6 +1268,51 @@ import {
       }, 3000);
     };
   
+    // Add these states at the top with other states
+    const [showGroupInfo, setShowGroupInfo] = useState(false);
+    const [groupCharacters, setGroupCharacters] = useState<any[]>([]);
+    const [loadingCharacters, setLoadingCharacters] = useState(false);
+  
+    // Update the fetchGroupCharacters function
+    const fetchGroupCharacters = async () => {
+      setLoadingCharacters(true);
+      try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken || !id) {
+          throw new Error('Missing auth token or group code');
+        }
+
+        const response = await fetch('https://speakingcharacter.ai/get/group/characters', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            authToken,
+            groupCode: id // Now 'id' will be the actual group code from the URL
+          })
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setGroupCharacters(data || []);
+        } else {
+          throw new Error('Failed to fetch characters');
+        }
+      } catch (error) {
+        console.error('Error fetching group characters:', error);
+      } finally {
+        setLoadingCharacters(false);
+      }
+    };
+  
+    // Add this useEffect to fetch characters when modal opens
+    useEffect(() => {
+      if (showGroupInfo) {
+        fetchGroupCharacters();
+      }
+    }, [showGroupInfo]);
+  
     return (
       <IonPage className='ionPage'>
   
@@ -1290,25 +1353,96 @@ import {
               transform: `translateY(-${keyboardHeight}px)`,
               transition: 'transform 255ms ease-out',
             }} className="message-container">
-                {messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`message ${msg.role === 'user' ? 'sent' : 'received'}`}
-                  >
-                    {msg.role !== 'user' && ( // Show avatar only for received messages
-                      <img src = "/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
-                    )}
-                    <div className={`message-bubble ${msg.role === 'user' ? 'sent' : 'received'}`}>
-                      <p>{msg.content}</p>
-                      {index === messages.length - 1 && msg.loading && isLoadingBotMessage && (
-                        <div className="loading-dots">
-                          <span></span><span></span><span></span>
+                {messages.map((msg, index) => {
+                  // Skip rendering empty bot messages during loading
+                  if (msg.role === 'bot' && !msg.content.trim()) {
+                    return null;
+                  }
+
+                  if (msg.role === 'bot') {
+                    try {
+                      // Split the content by double newlines to separate different character messages
+                      const characterMessages = msg.content.split('\n\n').filter(m => m.trim());
+                      
+                      // First check if we can split the message properly
+                      const canSplitMessage = characterMessages.some(charMsg => {
+                        const parts = charMsg.split('**');
+                        return parts.length >= 3;
+                      });
+
+                      if (canSplitMessage) {
+                        return characterMessages.map((charMsg, charIndex) => {
+                          const parts = charMsg.split('**');
+                          if (parts.length >= 3) {
+                            return (
+                              <div key={`${index}-${charIndex}`} className="message received">
+                                <img src="/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
+                                <div className="message-bubble received">
+                                  <p>
+                                    <span className="character-name">{parts[1]}</span>
+                                    <span className="message-content">{parts[2]}</span>
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        });
+                      } else {
+                        // Only show non-empty messages
+                        if (msg.content.trim()) {
+                          return (
+                            <div key={index} className="message received">
+                              <img src="/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
+                              <div className="message-bubble received">
+                                <p>{msg.content}</p>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }
+                    } catch (error) {
+                      // Only show non-empty messages in error case
+                      if (msg.content.trim()) {
+                        return (
+                          <div key={index} className="message received">
+                            <img src="/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
+                            <div className="message-bubble received">
+                              <p>{msg.content}</p>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }
+                  } else {
+                    // User message remains unchanged
+                    return (
+                      <div key={index} className={`message sent`}>
+                        <div className="message-bubble sent">
+                          <p>{msg.content}</p>
                         </div>
-                      )}
+                      </div>
+                    );
+                  }
+                })}
+
+                {/* Separate loading dots message */}
+                {isLoadingBotMessage && (
+                  <div className="message received">
+                    <img src="/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
+                    <div className="message-bubble received">
+                      <div className="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
                     </div>
                   </div>
-                ))}
-                <div style={{ height: "70px" }}></div> {/* Extra space at the bottom */}
+                )}
+
+                <div style={{ height: "70px" }}></div>
                 <div ref={messageEndRef} className="message-end"></div>
   
               </div>
@@ -1487,6 +1621,51 @@ import {
             onClose={() => setShowInfoModal(false)} // This controls visibility
           />
         )}
+  
+        {/* Group Info Modal */}
+        <IonModal isOpen={showGroupInfo} onDidDismiss={() => setShowGroupInfo(false)} className="group-info-modal">
+          <div className="modal-header">
+            <h2>{characterData?.name || 'Group Info'}</h2>
+            <IonButton fill="clear" onClick={() => setShowGroupInfo(false)}>
+              <IonIcon icon={close} />
+            </IonButton>
+          </div>
+  
+          <div className="group-info-content">
+            <div className="characters-section">
+              <h4 className='h4-character-group'>Characters in group</h4>
+              {loadingCharacters ? (
+                <div className="message-container">
+                <Shimmer width="100%" height="40px" /> {/* Shimmer for bot message */}
+                <Shimmer width="100%" height="40px" /> {/* Shimmer for user message */}
+                <Shimmer width="100%" height="40px"/> {/* Shimmer for bot message */}
+                <Shimmer width="100%" height="40px"/> {/* Shimmer for user message */}
+                <Shimmer width="100%" height="40px"  /> {/* Shimmer for bot message */}
+                <Shimmer width="100%" height="40px" /> {/* Shimmer for user message */}
+                <Shimmer width="100%" height="40px"  /> {/* Shimmer for bot message */}
+    
+                <Shimmer width="100%" height="40px"  /> {/* Shimmer for user message */}
+                <Shimmer width="100%" height="40px" /> {/* Shimmer for bot message */}
+                <Shimmer width="100%" height="40px"  /> {/* Shimmer for user message */}
+                <Shimmer width="100%" height="40px"  /> {/* Shimmer for bot message */}
+              </div>
+              ) : (
+                <div className="menu-cards">
+                  {groupCharacters.map((character) => (
+                    <div key={character.id} className="menu-card-nav">
+                      <img 
+                        src={character.image_url} 
+                        alt={character.name}
+                        className="card-image" 
+                      />
+                        <h5 className='char-h5'>{character.name}</h5>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </IonModal>
       </IonPage>
   
   

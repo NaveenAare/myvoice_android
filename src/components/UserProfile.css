@@ -770,8 +770,6 @@
     transition: transform 0.3s; /* Smooth transition */
 }
 
-
-
 .tab-content {
     overflow-y: auto; /* Allow vertical scrolling */
     flex-grow: 1; /* Allow tab-content to grow and take available space */
@@ -801,4 +799,56 @@
     background: rgba(0, 0, 0, 0.7); /* Darker background */
     display: none; /* Initially hidden */
     z-index: 10000; /* Ensure it is above other elements */
+}
+
+.group-images-container {
+    position: relative;
+    width: 60px;
+    height: 48px;
+    margin-right: 4px;
+}
+
+.group-member-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+    border: 2px solid white;
+    object-fit: cover;
+}
+
+.group-member-0 {
+    left: 0;
+    z-index: 2;
+}
+
+.group-member-1 {
+    left: 20px;
+    z-index: 1;
+}
+
+.split-image-container {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin-right: 4px;
+}
+
+.split-image {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+.split-image.left {
+    left: 0;
+    z-index: 2;
+}
+
+.split-image.right {
+    left: 25px;  /* Adjust this value to control overlap */
+    z-index: 1;
 }

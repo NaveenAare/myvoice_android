@@ -2,6 +2,8 @@
 .create-group-page {
   --background: #ffffff;
   --ion-background-color: #ffffff;
+  --padding-top: 0 !important;
+  --ion-safe-area-top: 0 !important;
 }
 
 /* Ensure all styles are scoped to create-group-page */
@@ -9,37 +11,49 @@
   --background: #ffffff;
   --padding-start: 0;
   --padding-end: 0;
-  --padding-top: 0;
+  --padding-top: 0 !important;
   --padding-bottom: 0;
 }
 
 .create-group-page ion-content::part(scroll) {
   padding: 0;
+  padding-top: 0 !important;
 }
 
 /* Scope all component styles */
 .create-group-page .selected-characters-container {
-  padding: 16px;
+  padding: 8px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
   background-color: #f5f5f5;
-  min-height: 60px;
+  max-height: 200px; /* Adjust based on your needs */
   border-bottom: 1px solid #e0e0e0;
-  padding-top: calc(env(safe-area-inset-top) + 16px);
+  overflow-y: auto; /* Allow vertical scrolling */
 }
 
-/* Toolbar styles */
-.create-group-page .toolbar-container {
-  background-color: #fff !important;
-  --background: #ffffff !important;
-  border-bottom: 1px solid #e0e0e0;
+/* Add styles for the rows */
+.selected-characters-row {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 4px;
+  min-height: 48px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* Character chip styles */
+/* Hide scrollbar for Chrome/Safari */
+.selected-characters-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* Update chip styles */
 .create-group-page .selected-character-chip {
-  --background: var(--ion-color-primary);
-  --color: #ffffff;
+  flex: 0 0 auto; /* Prevent chip from shrinking */
+  min-width: fit-content;
+  margin: 0;
 }
 
 .create-group-page .selected-character-chip ion-avatar {
@@ -172,4 +186,141 @@
 /* Override any inherited styles */
 .create-group-page * {
   box-sizing: border-box;
+}
+
+.create-group-page ion-header {
+  position: relative;
+}
+
+/* Toolbar styles */
+.create-group-page .toolbar-container {
+  --background: #ffffff !important;
+  --ion-toolbar-background: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.create-group-page ion-toolbar {
+  --min-height: 56px;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+  --background: #ffffff !important;
+  --ion-toolbar-background: #ffffff !important;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Add this to your CreateGroupPage.css */
+.create-group-page ion-button[slot="start"] {
+  --color: black;
+}
+
+/* Or if you want to target the icon specifically */
+.create-group-page ion-button ion-icon[name="chevron-back"] {
+  color: black;
 } 
+
+.backButton{
+  color: #000 !important;
+}
+
+/* Modal/Popup styles */
+.group-name-modal {
+  --height: auto;
+  --width: 90%;
+  --border-radius: 16px;
+  --background: #ffffff;
+}
+
+.group-name-modal::part(content) {
+  padding: 24px;
+  border-radius: 16px;
+  position: relative;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.group-name-modal::part(backdrop) {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.group-name-modal ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --background: transparent;
+  --border-color: #ddd;
+  margin: 16px 0;
+}
+
+.group-name-modal ion-input {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --border-radius: 8px;
+  --background: #f5f5f5;
+  margin: 8px 0;
+  height: 48px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modal-buttons ion-button {
+  flex: 1;
+  margin: 0;
+  --border-radius: 8px;
+  height: 44px;
+  font-weight: 500;
+}
+
+.modal-buttons .cancel-btn {
+  --background: #f5f5f5;
+  --color: #666;
+}
+
+.modal-buttons .create-btn {
+  --background: var(--ion-color-primary);
+}
+
+/* Add ripple effect to buttons */
+.modal-buttons ion-button::part(native) {
+  transition: transform 0.2s ease;
+}
+
+.modal-buttons ion-button:active::part(native) {
+  transform: scale(0.98);
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1000; /* Ensure it appears above other content */
+}
+
+.loading-message {
+  margin-top: 10px;
+  color: white; /* Change text color for visibility */
+  font-size: 18px; /* Adjust font size as needed */
+}
+

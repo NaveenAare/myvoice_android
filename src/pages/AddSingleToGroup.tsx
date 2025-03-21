@@ -21,6 +21,7 @@ import {
   IonInput,
   IonToast,
   IonSpinner,
+  IonCheckbox,
 } from '@ionic/react';
 import { chevronBack, closeCircle } from 'ionicons/icons';
 import './CreateGroupPage.css';
@@ -30,11 +31,12 @@ import { useIonRouter } from '@ionic/react';
 import { App } from '@capacitor/app';  // Add this import
 import { useIonViewWillEnter } from '@ionic/react';
 import { createAnimation } from '@ionic/react';
+import { useParams } from 'react-router-dom';
 
 // Add constants at the top of the file
 const GROUP_LIMITS = {
-  MAX_CHARACTERS: 6,
-  CHARACTERS_PER_ROW: 3
+  MAX_CHARACTERS: 1,
+  CHARACTERS_PER_ROW: 1
 } as const;
 
 interface Character {
@@ -45,6 +47,7 @@ interface Character {
   category?: string;
   code?: string;
   summary2?: string;
+  groupCode?: string;
 }
 
 // Add these animation functions
@@ -86,24 +89,39 @@ const leaveAnimation = (baseEl: HTMLElement) => {
     .addAnimation([backdropAnimation, wrapperAnimation]);
 };
 
-const CreateGroupPage: React.FC = () => {
-  const [searchText, setSearchText] = useState('');
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [selectedCharacters, setSelectedCharacters] = useState<Character[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'public' | 'private'>('public');
+// Add this new component for the loading overlay
+const LoadingOverlay: React.FC<{ message: string }> = ({ message }) => (
+  <div className="loading-overlay">
+    <IonSpinner name="crescent" />
+    <div className="loading-message">{message}</div>
+  </div>
+);
+
+const AddSingleToGroup: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Access the id parameter
+
+  // You can now use the id as needed
+  console.log('Selected Character ID:', id);
+
+  const [publicCharacters, setPublicCharacters] = useState<Character[]>([]);
   const [privateCharacters, setPrivateCharacters] = useState<Character[]>([]);
-  const [isLoadingPrivate, setIsLoadingPrivate] = useState(false);
-  const [privateError, setPrivateError] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [groupName, setGroupName] = useState('');
+  const [selectedPublic, setSelectedPublic] = useState<string | null>(null);
+  const [selectedPrivate, setSelectedPrivate] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState('');
+  const [activeTab, setActiveTab] = useState<'public' | 'private'>('public');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastColor, setToastColor] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [groupName, setGroupName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoadingPrivate, setIsLoadingPrivate] = useState(false);
+  const [privateError, setPrivateError] = useState<string | null>(null);
+  const [selectedGroupMeta, setSelectedGroupMeta] = useState<Character | null>(null);
+  const [loadingOverlayMessage, setLoadingOverlayMessage] = useState('');
 
   const router = useIonRouter();
-
 
   // Debounce logic
   const debounce = (func: (...args: any[]) => void, delay: number) => {
@@ -131,7 +149,6 @@ const CreateGroupPage: React.FC = () => {
       document.removeEventListener('ionBackButton', preventSwipeBack);
     };
   }, [router]);
-
 
   const useSwipeBack = (threshold = 100) => {
     let touchStartX = 0;
@@ -163,9 +180,6 @@ const CreateGroupPage: React.FC = () => {
 
   useSwipeBack();
 
-
-
-
   useEffect(() => {
     const preventBack = (ev: Event) => {
       ev.preventDefault();
@@ -180,19 +194,12 @@ const CreateGroupPage: React.FC = () => {
     };
   }, [router]);
 
-
   useIonViewWillEnter(() => {
     document.addEventListener('ionBackButton', (ev) => {
       ev.preventDefault();
       console.log('Back gesture blocked on this page');
     });
   });
-
-  
-
-
-
-
 
   // Add a new function to fetch all characters
   const fetchAllCharacters = async () => {
@@ -205,7 +212,7 @@ const CreateGroupPage: React.FC = () => {
         throw new Error('Failed to fetch characters');
       }
       const data = await response.json();
-      setCharacters(data.data);
+      setPublicCharacters(data.data);
     } catch (err) {
       setError('Failed to fetch data');
       console.error('Error fetching characters:', err);
@@ -235,7 +242,7 @@ const CreateGroupPage: React.FC = () => {
         throw new Error('Failed to fetch characters');
       }
       const data = await response.json();
-      setCharacters(data.data);
+      setPublicCharacters(data.data);
     } catch (err) {
       setError('Failed to fetch data');
       console.error('Error fetching characters:', err);
@@ -252,36 +259,34 @@ const CreateGroupPage: React.FC = () => {
     debouncedFetch(value);
   };
 
-  const handleCharacterSelect = (character: Character) => {
-    if (selectedCharacters.find(c => c.id === character.id)) {
-      setSelectedCharacters(selectedCharacters.filter(c => c.id !== character.id));
-    } else {
-      if (selectedCharacters.length < GROUP_LIMITS.MAX_CHARACTERS) {
-        setSelectedCharacters([...selectedCharacters, character]);
-      } else {
-        console.log(`Maximum ${GROUP_LIMITS.MAX_CHARACTERS} characters allowed`);
-      }
-    }
+  const handlePublicSelection = (characterId: string) => {
+    const selectedCharacter = publicCharacters.find(character => character.id === characterId);
+    setSelectedPublic(selectedPublic === characterId ? null : characterId);
+    setSelectedPrivate(null);
+    setSelectedGroupMeta(selectedCharacter || null);
   };
 
-  const handleRemoveCharacter = (characterId: string) => {
-    setSelectedCharacters(selectedCharacters.filter(c => c.id !== characterId));
+  const handlePrivateSelection = (characterId: string) => {
+    const selectedCharacter = privateCharacters.find(character => character.id === characterId);
+    setSelectedPrivate(selectedPrivate === characterId ? null : characterId);
+    setSelectedPublic(null);
+    setSelectedGroupMeta(selectedCharacter || null);
   };
 
   const handleCreateGroup = () => {
-    if (selectedCharacters.length >= 2) {
+    if (selectedPublic || selectedPrivate) {
       setShowModal(true);
     }
   };
 
   const handleFinalCreate = async () => {
-    if (groupName.trim() && selectedCharacters.length >= 2) {
+    if (groupName.trim() && (selectedPublic || selectedPrivate)) {
       setIsLoading(true);
       try {
         const token = localStorage.getItem("authToken");
         if (!token) throw new Error("No auth token found");
 
-        const members = selectedCharacters.map(char => char.code);
+        const members = [selectedPublic, selectedPrivate].filter(Boolean).map(id => id.split('-')[1]);
         
         const response = await fetch('https://speakingcharacter.ai/create/private/group', {
           method: 'POST',
@@ -372,8 +377,8 @@ const CreateGroupPage: React.FC = () => {
   }, []);
 
   const goToHome = () => {
-    router.push(`/home`, 'back', 'push');
-    
+    console.log("Navigating back to the previous page..."); // Debugging log
+    router.push("/group-chat/" + id , "back", "push");
   };
 
   const handleCloseModal = () => {
@@ -384,9 +389,98 @@ const CreateGroupPage: React.FC = () => {
     setShowModal(false); // Close the modal
   };
 
+  // Filter characters based on search text
+  const filteredPublicCharacters = publicCharacters.filter(character =>
+    character.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
+  const filteredPrivateCharacters = privateCharacters.filter(character =>
+    character.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
-  
+  const handleTabChange = (value: 'public' | 'private') => {
+    setActiveTab(value);
+    setSearchText(''); // Clear search text when switching tabs
+  };
+
+  const handleJoinCharacter = async () => {
+    setIsLoading(true); // Show loading indicator
+    try {
+      const authToken = localStorage.getItem("authToken");
+      
+
+      // Get the group code from the selected private character
+      const selectedCharacter = activeTab === 'private' && selectedPrivate 
+        ? privateCharacters.find(character => character.id === selectedPrivate) 
+        : publicCharacters.find(character => character.id === selectedPublic);
+
+      const groupCode = id ;
+      const charCode = selectedCharacter?.code ;
+
+      if (!authToken || !charCode || !groupCode) {
+        setToastMessage('Please select a character to join.');
+        setToastColor('danger');
+        setShowToast(true);
+        return;
+      }
+
+      const requestBody = {
+        authToken: authToken,
+        groupCode: groupCode,
+        charCode: charCode,
+      };
+
+      // Show loading overlay with the joining message
+      setLoadingOverlayMessage('Joining character into group...');
+
+      const response = await fetch('https://speakingcharacter.ai/add/character/to/group', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setToastMessage(`Error: ${errorData.error}`);
+        setToastColor('danger');
+        setShowToast(true);
+      } else {
+        const responseData = await response.json(); // Get the response data
+        const groupCodeFromResponse = responseData.groupCode; // Assuming the response contains the group code
+        setToastMessage('Character added to group successfully!');
+        setToastColor('success');
+        setShowToast(true);
+        // Navigate to the group chat page with the group code
+        router.push(`/group-chat/${groupCodeFromResponse}`, 'forward', 'push'); // Adjust the route as necessary // Ensure the correct route
+      }
+    } catch (error) {
+      console.error('Error joining character:', error);
+      setToastMessage('An error occurred while joining the character.');
+      setToastColor('danger');
+      setShowToast(true);
+    } finally {
+      setIsLoading(false); // Hide loading indicator
+    }
+  };
+
+  useEffect(() => {
+    const fetchCharacterDetails = async () => {
+      try {
+        const response = await fetch(`https://speakingcharacter.ai/get/character/${id}`);
+        const data = await response.json();
+        // Handle the fetched character data
+        console.log('Fetched Character Data:', data);
+      } catch (error) {
+        console.error('Error fetching character details:', error);
+      }
+    };
+
+    if (id) {
+      fetchCharacterDetails();
+    }
+  }, [id]);
 
   return (
     <IonPage className="create-group-page">
@@ -398,15 +492,15 @@ const CreateGroupPage: React.FC = () => {
             </IonButton>
           </IonButtons>
           <IonTitle style={{color: 'black'}}>
-            Create New Group ({selectedCharacters.length}/{GROUP_LIMITS.MAX_CHARACTERS})
+            Add Character Into Group
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
-              onClick={handleCreateGroup}
-              disabled={selectedCharacters.length < 2}
+              onClick={handleJoinCharacter}
+              disabled={!selectedPublic && !selectedPrivate}
               color="primary"
             >
-              Create
+              Join
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -414,49 +508,15 @@ const CreateGroupPage: React.FC = () => {
 
       <IonContent>
         <div className="fixed-content">
-          <div className="selected-characters-container">
-            {selectedCharacters.length === 0 ? (
-              <div className="no-selection-text">
-                Select up to {GROUP_LIMITS.MAX_CHARACTERS} characters to create a group
-              </div>
-            ) : (
-              <>
-                {Array.from({ length: Math.ceil(selectedCharacters.length / GROUP_LIMITS.CHARACTERS_PER_ROW) }).map((_, rowIndex) => (
-                  <div key={rowIndex} className="selected-characters-row">
-                    {selectedCharacters
-                      .slice(
-                        rowIndex * GROUP_LIMITS.CHARACTERS_PER_ROW, 
-                        (rowIndex + 1) * GROUP_LIMITS.CHARACTERS_PER_ROW
-                      )
-                      .map(character => (
-                        <IonChip
-                          key={character.id}
-                          className="selected-character-chip"
-                        >
-                          <IonAvatar>
-                            <img src={character.image_url} alt={character.name} />
-                          </IonAvatar>
-                          <IonLabel>{character.name}</IonLabel>
-                          <IonIcon
-                            icon={closeCircle}
-                            onClick={() => handleRemoveCharacter(character.id)}
-                          />
-                        </IonChip>
-                      ))}
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-
           <IonSearchbar
+            className="custom-searchbar"
             value={searchText}
             onIonChange={handleSearchChange}
             placeholder="Search characters"
-            debounce={300}
+            debounce={0}
           />
 
-          <IonSegment value={activeTab} onIonChange={e => setActiveTab(e.detail.value as 'public' | 'private')}>
+          <IonSegment value={activeTab} onIonChange={e => handleTabChange(e.detail.value as 'public' | 'private')}>
             <IonSegmentButton value="public">
               <IonLabel>Public</IonLabel>
             </IonSegmentButton>
@@ -467,19 +527,20 @@ const CreateGroupPage: React.FC = () => {
         </div>
 
         <div className="scrollable-content">
-          {activeTab === 'public' ? (
+          {isLoading ? (
+            <LoadingOverlay message={loadingOverlayMessage} />
+          ) : activeTab === 'public' ? (
             // Public characters list
             <>
-              {isLoading && <div className="loading-text">Searching...</div>}
               {error && <div className="error-text">{error}</div>}
               <IonList>
-                {characters.map(character => (
+                {filteredPublicCharacters.map(character => (
                   <IonItem
                     key={character.id}
                     button
-                    onClick={() => handleCharacterSelect(character)}
+                    onClick={() => handlePublicSelection(character.id)}
                     className={
-                      selectedCharacters.find(c => c.id === character.id)
+                      selectedPublic === character.id
                         ? 'selected-character'
                         : ''
                     }
@@ -489,7 +550,6 @@ const CreateGroupPage: React.FC = () => {
                     </IonAvatar>
                     <IonLabel>
                       <h2>{character.name}</h2>
-                      {character.summary2 && <p>{character.summary2}</p>}
                     </IonLabel>
                   </IonItem>
                 ))}
@@ -498,16 +558,16 @@ const CreateGroupPage: React.FC = () => {
           ) : (
             // Private characters list
             <>
-              {isLoadingPrivate && <div className="loading-text">Loading private characters...</div>}
+              {isLoadingPrivate && <LoadingOverlay message="Loading private characters..." />}
               {privateError && <div className="error-text">{privateError}</div>}
               <IonList>
-                {privateCharacters.map(character => (
+                {filteredPrivateCharacters.map(character => (
                   <IonItem
                     key={character.id}
                     button
-                    onClick={() => handleCharacterSelect(character)}
+                    onClick={() => handlePrivateSelection(character.id)}
                     className={
-                      selectedCharacters.find(c => c.id === character.id)
+                      selectedPrivate === character.id
                         ? 'selected-character'
                         : ''
                     }
@@ -517,7 +577,6 @@ const CreateGroupPage: React.FC = () => {
                     </IonAvatar>
                     <IonLabel>
                       <h2>{character.name}</h2>
-                      {character.summary2 && <p>{character.summary2}</p>}
                     </IonLabel>
                   </IonItem>
                 ))}
@@ -587,4 +646,4 @@ const CreateGroupPage: React.FC = () => {
   );
 };
 
-export default CreateGroupPage; 
+export default AddSingleToGroup; 

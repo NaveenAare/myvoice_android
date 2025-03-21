@@ -62,10 +62,24 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
         }
     }
 
-    function renderCards(data: any[]) {
+    const renderCards = (data: any[]) => {
         const cardsContainer = document.getElementById('cards-container');
         if (!cardsContainer) return;
         cardsContainer.innerHTML = ''; // Clear existing content
+
+        // Check if the data array is empty
+        if (data.length === 0) {
+            const emptyCard = document.createElement('div');
+            emptyCard.classList.add('menu-card-1'); // Use the same class as existing cards
+
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'empty-message'; // Add a class for styling
+            emptyMessage.textContent = 'No characters available'; // Message to display
+
+            emptyCard.appendChild(emptyMessage); // Append the message to the card
+            cardsContainer.appendChild(emptyCard); // Append the card to the container
+            return; // Exit the function early
+        }
 
         // Group characters by message_time_period
         const groupedCharacters: { [key: string]: any[] } = {};
@@ -78,7 +92,8 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
         });
 
         // Render the grouped data
-        Object.keys(groupedCharacters).forEach(period => {
+        const uniquePeriods = Object.keys(groupedCharacters);
+        uniquePeriods.forEach(period => {
             // Create a heading for the time period
             const periodHeading = document.createElement('h6');
             periodHeading.textContent = period; // Set the heading text
@@ -87,7 +102,7 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
             // Render characters for this period
             groupedCharacters[period].forEach(character => {
                 const menuCard = document.createElement('div');
-                menuCard.classList.add('menu-card');
+                menuCard.classList.add('menu-card-1');
 
                 const img = document.createElement('img');
                 img.src = character.character_info.image_url || 'default-image.png';
@@ -132,7 +147,7 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
                 cardsContainer.appendChild(menuCard); // Append the card to the container
             });
         });
-    }
+    };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -148,11 +163,25 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
     };
 
     const handleFilterChange = (emoji: string) => {
-        setLoading(true); // Set loading to true
-        setActiveFilter(emoji);
-        setTimeout(() => {
-            setLoading(false); // Set loading to false after 3 seconds
-        }, 3000);
+        setActiveFilter(emoji); // Update the active filter
+
+        // Filter the original characters data based on the new filter
+        const filteredCharacters = characters.filter(character => {
+            // Check for active filter match
+            if (emoji === 'Unread') {
+                return character.unseen_messages_count > 0; // Show only characters with unseen messages
+            } else if (emoji === 'Groups') {
+                return character.isGroup; // Assuming there's a property to identify group characters
+            } else if (emoji === 'Popular') {
+                return character.isPopular; // Assuming there's a property to identify popular characters
+            } else if (emoji === 'All') {
+                return true; // Show all characters for 'All' filter
+            }
+            return true; // Default case, show all characters
+        });
+
+        // Call renderCards with the filtered characters
+        renderCards(filteredCharacters); // Re-render cards with the filtered characters
     };
 
     const handleFilterChange2 = (emoji: string) => {
