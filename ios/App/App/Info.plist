@@ -104,8 +104,10 @@
 	<true/>
 	<key>com.apple.security.get-task-allow</key>
 	<true/>
-
-	<key>FirebaseAppDelegateProxyEnabled</key><false/>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+<array>
+    <string>com.ain-hub.speakingcharacter.backgroundTask</string>
+</array>
 
 </dict>
 </plist>

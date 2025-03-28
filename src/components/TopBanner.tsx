@@ -97,7 +97,8 @@ const CardComponent: React.FC = () => {
     };
 
     const goToCreateGroup = () => {
-        router.push('/create-group');
+        //router.push('/create-group');
+        router.push('/subscription', 'none')
     };
 
     return (

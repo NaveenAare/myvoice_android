@@ -1,0 +1,127 @@
+.carousel-container-btm {
+    position: relative;
+    width: 90vw;
+    max-width: 800px;
+    height: calc(90vw * 9 / 16);
+    max-height: 450px;
+    margin: 2rem auto;
+    overflow: hidden;
+    border-radius: 15px;
+    background-color: aliceblue;
+}
+
+.carousel-track {
+    display: flex;
+    height: 100%;
+    width: auto; /* Changed from 100% to auto */
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.carousel-card-btm {
+    flex: 0 0 100%; /* Replaced min-width */
+    height: 100%;
+    position: relative;
+    overflow: hidden; /* Added to clip content */
+}
+
+/* Keep other existing styles the same */
+
+.carousel-image-btm {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.carousel-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 20%, transparent 100%);
+    color: white;
+    transform: translateY(0);
+    transition: none;
+}
+
+.carousel-name {
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.carousel-desc {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.8rem;
+    z-index: 2;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+    background: #fff;
+    transform: scale(1.4);
+}
+
+@media (hover: hover) {
+    .carousel-card-btm {
+        cursor: grab;
+    }
+    
+    .carousel-card-btm:active {
+        cursor: grabbing;
+    }
+}
+
+/* Add mobile-specific styles */
+@media (max-width: 600px) {
+    .carousel-container-btm {
+        height: auto;
+    }
+
+    .carousel-card-btm {
+        min-width: 100%;
+        height: auto;
+    }
+
+    .carousel-image-btm {
+        height: 200px;
+    }
+}
+
+
+/* Add this to your CSS */
+.bot-message-content {
+    contain: content style layout;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  
+  .bot-message-content > * {
+    all: revert;
+    contain: style layout;
+  }
+  
+  .bot-message-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 8px 0;
+  }

@@ -1222,27 +1222,33 @@ const fullContainerStyle = {
 const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
 
   const createBubble = () => {
+    // Clear existing bubbles if needed
+    setBubbles([]); // Clear previous bubbles if you want only one at a time
+
     const newBubble = (
-      <div
-        key={Date.now()}
-        className="bubble"
-        style={{
-          left: `${window.innerWidth / 2 - 100}px`,
-          top: `${window.innerHeight / 2 - 100}px`,
-        }}
-      >
-        <img
-          src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE"
-          alt="Bubble Content"
-        />
-      </div>
+        <div
+            key={Date.now()}
+            className="bubble-1"
+            style={{
+                left: `${window.innerWidth / 2 - 50}px`,
+                top: `${window.innerHeight / 2 - 50}px`,
+                opacity: 0, // Start fully visible
+                transition: 'opacity 0.5s ease-out', // Smooth fade out
+            }}
+        >
+            <img
+                src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE"
+                alt="Bubble Content"
+            />
+        </div>
     );
 
     setBubbles((prevBubbles) => [...prevBubbles, newBubble]);
 
+    // Set a timeout to fade out and remove the bubble after a certain duration
     setTimeout(() => {
-      setBubbles((prevBubbles) => prevBubbles.slice(1));
-    }, 3000);
+        setBubbles((prevBubbles) => prevBubbles.filter(bubble => bubble.key !== newBubble.key)); // Remove the bubble
+    }, 3000); // Adjust the duration as needed
   };
 
   return (
@@ -1314,7 +1320,7 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
       </IonContent>
 
 
-        <div className="containerbubble">
+        <div className="containerbubble-1">
           {bubbles}
         </div>
       

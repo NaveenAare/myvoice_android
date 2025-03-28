@@ -834,7 +834,7 @@ ion-content {
 
 
 
-.containerbubble {
+.containerbubble-1 {
   position: fixed; /* Use fixed positioning to overlay on everything */
   top: 0; /* Align to the top */
   left: 0; /* Align to the left */
@@ -848,8 +848,9 @@ ion-content {
   pointer-events: none; /* Allow clicks to pass through */
 }
 
-.bubble {
-  position: relative; /* Change to relative to keep it within the container */
+.bubble-1 {
+  position: absolute;
+  transition: opacity 0.5s ease-out; /* Smooth transition for opacity */
   border-radius: 50%;
   background: radial-gradient(
     circle at 30% 30%,
@@ -864,14 +865,14 @@ ion-content {
   align-items: center;
   overflow: hidden;
   animation: float3D 3s forwards;
-  width: 130px;
-  height: 130px;
+  min-width: 10px;
+  min-height: 10px;
   transform-style: preserve-3d;
   pointer-events: auto; /* Allow interaction with the bubble */
   margin-bottom: 50%; /* Adjust this value to position the bubble above the center */
 }
 
-.bubble::before {
+.bubble-1::before {
   content: '';
   position: absolute;
   width: 100%;
@@ -885,7 +886,7 @@ ion-content {
   border-radius: 50%;
 }
 
-.bubble img {
+.bubble-1 img {
   width: 90%;
   height: 90%;
   object-fit: cover;
@@ -911,6 +912,13 @@ ion-content {
   }
 }
 
+.fade-in {
+    opacity: 1; /* Fully visible */
+}
+
+.fade-out {
+    opacity: 0; /* Fade out */
+}
 
 ion-router-outlet {
   background: var(--ion-background-color) !important;
@@ -986,17 +994,7 @@ ion-page {
 }
 
 /* Shine effect */
-.popup-modal-html::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-  transform: skewX(-30deg);
-  animation: shine 2s infinite linear;
-}
+
 
 @keyframes shine {
   0% {
@@ -1070,7 +1068,6 @@ ion-page {
   opacity: 0;
   visibility: hidden;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(5px); /* Adds modern glass effect */
   transform: scale(1.02); /* Initial scaled state */
 }
 
@@ -1202,3 +1199,78 @@ ion-page {
   border: 2px solid rgba(135, 206, 235, 0.5) !important;
 
 }
+
+.scrollable-bot-message {
+  max-height: 150px; /* Fixed height for the bot message */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 8px; /* Padding for better readability */
+  background-color: #f9f9f9; /* Light background for contrast */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.read-more-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  margin-top: 5px;
+  text-decoration: underline;
+}
+
+.read-more-button:hover {
+  color: #0056b3;
+}
+
+/* Shadow DOM container */
+.shadow-host {
+  height: 100%;
+  overflow: auto;
+  padding: 15px;
+}
+
+/* Mobile overflow handling */
+.popup-modal-html {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  width: 95%;
+  height: 80vh;
+}
+
+/* Prevent Ionic component interference */
+.popup-modal-html ::part(background),
+.popup-modal-html ::part(handle) {
+  display: none !important;
+}
+
+.popup-modal-html.active .injected-content {
+  all: unset;  /* Resets any styles from injected content */
+}
+
+.popup-modal-html.active #popupModal div {
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+}
+
+
+.injected-content * {
+  all: revert !important;  /* Resets styles to avoid affecting global styles */
+}
+
+/* Delete Popup Styles */
+#delete-popup {
+  display: none; /* Initially hidden */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000000000000000000000000000000; /* Ensure it's above other content */
+  padding: 20px;
+}
+

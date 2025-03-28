@@ -118,7 +118,6 @@ import {
   
     let character_image = 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE';
   
-    localStorage.setItem("authToken", "eyJ1c2VySWQiOiAxLCAibWFpbCI6ICJhYXJlbmF2ZWVudmFybWFAZ21haWwuY29tIiwgIm5hbWUiOiAiTmF2ZWVuIHZhcm1hIEFhcmUiLCAicHJvZmlsZV9waWMiOiAiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSTZQa3BFSGJkdGZoQTFETFp5OHVCcnZrejRIaDhTVjhMQmtzajRYRjdTVlB2OEllRDU9czk2LWMifTAxODYzNTczMDA3ODJiMmRjOTFjZWNlZDBiZGM0OWNiMWNjZDZmODIzZDM2ZTcyMzY0N2EwZjIwZjVkZTgyOTc=");
   
     const socket = io('https://speakingcharacter.ai', {
       transports: ['websocket'],

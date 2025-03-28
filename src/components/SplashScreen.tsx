@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useIonRouter, IonPage, IonContent } from '@ionic/react';
-import './SplashScreen.css'; // Create a CSS file for styling
+import './SplashScreen.css'; // Ensure you have styles defined here
 
-const SPLASH_DURATION = 3000; // You can also consider importing this from a config file
+const SPLASH_DURATION = 1000; // Duration for the splash screen
 
-const SplashScreen2: React.FC = () => {
+const SplashScreen: React.FC = () => {
     const router = useIonRouter();
     const hasNavigated = useRef(false);
 
@@ -16,7 +16,7 @@ const SplashScreen2: React.FC = () => {
                 hasNavigated.current = true;
                 router.push('/home', 'forward', 'push');
             }
-        }, SPLASH_DURATION); // Use the constant here
+        }, SPLASH_DURATION);
 
         return () => {
             clearTimeout(timer);
@@ -26,13 +26,13 @@ const SplashScreen2: React.FC = () => {
 
     return (
         <IonPage className="splash-screen-page">
-            <IonContent className="ion-no-padding">
+            <IonContent className="ion-no-padding splash-content">
                 <div className="splash-screen">
-                    <img src="/assets/logo.png" alt="Splash" /> {/* Replace with your image path */}
+                    <img src="/assets/logo.png" alt="Splash" className="splash-image" /> {/* Replace with your image path */}
                 </div>
             </IonContent>
         </IonPage>
     );
 };
 
-export default SplashScreen2; 
+export default SplashScreen; 

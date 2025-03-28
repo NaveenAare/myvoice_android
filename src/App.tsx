@@ -29,7 +29,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import TalkingPage from './pages/TalkingPage';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 
 import { LocalNotifications } from "@capacitor/local-notifications";
@@ -57,7 +57,13 @@ import AddCharacterToGroup from './pages/AddCharacterToGroup';
 
 import AddSingleToGroup from './pages/AddSingleToGroup';
 
+import { SplashScreen } from '@capacitor/splash-screen';
+import { useIonRouter } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 
+import SubscriptionPage from './pages/SubscriptionPage';
+import InfiniteCarousel from './components/NewIdeaHtml';
+import HtmlCharacterChat from './pages/HtmlCharacterChat'
 
 StatusBar.setBackgroundColor({ color: '#ffffff' }); // White background
 StatusBar.setStyle({ style: Style.Light}); // Dark text/icons (for iOS)
@@ -162,7 +168,18 @@ setupIonicReact({
 
 
 const App: React.FC = () => {
-  // Place the useEffect hook inside the functional component
+  const router = useIonRouter();
+  const history = useHistory(); // Use react-router's history instead
+
+
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
+
+
+  
 
   useEffect(() => {
     // Set status bar properties
@@ -212,13 +229,20 @@ const App: React.FC = () => {
           <Route path="/talking/:id" component={TalkingPage} />
           <Route exact path="/insert-character" component={InsertCharacterPage} />
 
-          <Route exact path="/" component={SplashScreen2}>
-          </Route>
+          <Route exact path="/" render={() => (
+                <Redirect to={localStorage.getItem('authToken') ? "/home" : "/login"} />
+              )} />
+
           <Route path="/character-info" component={CharacterInfoModal}/>
           <Route exact path="/create-group" component={CreateGroupPage} />
           <Route path="/add-character-to-group/:id" component={AddCharacterToGroup} />
           <Route path="/add-single-character-to-group/:id" component={AddSingleToGroup} />
 
+          <Route path="/subscription" component={SubscriptionPage} exact />
+          <Route path="/InfiniteCarousel" component={InfiniteCarousel} exact />
+
+          <Route exact path="/character-chat-4/:id" component={HtmlCharacterChat} />
+          
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

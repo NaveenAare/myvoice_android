@@ -497,10 +497,9 @@
     border: none;
     cursor: pointer;
     outline: none;
-    padding: 10px;
-    border-radius: 50%;
-    transition: background 0.2s ease;
-    display: flex;
+    margin-top: 10px; /* Space between username and button */
+    color: #333; /* Icon color */
+    font-size: 24px; /* Adjust size as needed */
 }
 
 .logout-button:hover {
@@ -561,6 +560,7 @@
 }
 
 .popup-logout {
+    position: relative; /* Important for positioning the close button */
     background: white;
     padding: 2rem;
     border-radius: 12px;

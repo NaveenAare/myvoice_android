@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import './UserProfile.css'; // Ensure CSS styles are imported
 import { IonButton, IonIcon, IonToast } from '@ionic/react';
 import { chatbubbleOutline,searchOutline, closeCircleOutline, logOutOutline, play, pause } from 'ionicons/icons';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'; // Ensure this import is present
+import { SignInWithApple } from '@capacitor-community/apple-sign-in'; // Ensure this import is present
+import { useIonRouter } from '@ionic/react';
 
 // ... existing code ...
 
@@ -22,6 +25,9 @@ const ShimmerCard: React.FC = () => (
 
 const UserProfile: React.FC = () => {
     // State variables
+    const router = useIonRouter();
+
+
     const [profilePic, setProfilePic] = useState<string>('https://via.placeholder.com/120');
     const [userName, setUserName] = useState<string>('John Doe');
     const [characters, setCharacters] = useState<any[]>([]);
@@ -39,6 +45,7 @@ const UserProfile: React.FC = () => {
     const [groups, setGroups] = useState<any[]>([]);
     const [loadingGroups, setLoadingGroups] = useState<boolean>(true);
     const [noGroupsFound, setNoGroupsFound] = useState<boolean>(false);
+    const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false); // New state for logout loading
 
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const popupRef = useRef<HTMLDivElement | null>(null);
@@ -48,7 +55,6 @@ const UserProfile: React.FC = () => {
     // Fetch API Details
     const fetchApiDetails = async () => {
         try {
-            localStorage.setItem(`authToken`, "eyJ1c2VySWQiOiAxLCAibWFpbCI6ICJhYXJlbmF2ZWVudmFybWFAZ21haWwuY29tIiwgIm5hbWUiOiAiTmF2ZWVuIHZhcm1hIEFhcmUiLCAicHJvZmlsZV9waWMiOiAiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSTZQa3BFSGJkdGZoQTFETFp5OHVCcnZrejRIaDhTVjhMQmtzajRYRjdTVlB2OEllRDU9czk2LWMifTAxODYzNTczMDA3ODJiMmRjOTFjZWNlZDBiZGM0OWNiMWNjZDZmODIzZDM2ZTcyMzY0N2EwZjIwZjVkZTgyOTc=");
             const token = localStorage.getItem("authToken"); // Use token from local storage
             if (!token) throw new Error("No auth token found");
 
@@ -362,6 +368,37 @@ const UserProfile: React.FC = () => {
         }
     };
 
+    // Function to handle logout
+    const handleLogout = async () => {
+        // Confirmation dialog
+        const confirmLogout = window.confirm("Do you really want to logout?");
+        if (!confirmLogout) {
+            return; // Exit the function if the user cancels
+        }
+
+        setIsLoggingOut(true); // Set loading state to true
+
+        try {
+            // Clear local storage
+            localStorage.removeItem('authToken');
+
+            // Log out from Google
+            await GoogleAuth.signOut();
+
+            // Log out from Apple
+            // await SignInWithApple.signOut(); // Uncomment if needed
+
+            // Redirect to login or home page
+            window.location.href = '/login'; // Adjust the redirect as necessary
+        } catch (error) {
+            localStorage.removeItem('authToken');
+            window.location.href = '/login'; // Adjust the redirect as necessary
+            console.error('Logout error:', error);
+        } finally {
+            setIsLoggingOut(false); // Reset loading state
+        }
+    };
+
     useEffect(() => {
         fetchApiDetails(); // Fetch user details
         fetchAndUpdateCharacters(); // Fetch characters
@@ -377,6 +414,11 @@ const UserProfile: React.FC = () => {
             <header className="header">
                 <img src={profilePic} alt="User Image" className="user-image" />
                 <h1 className="user-name">{userName}</h1>
+                {/* Logout Icon */}
+                <button className="logout-button" onClick={handleLogout} disabled={isLoggingOut}>
+                    <IonIcon icon={logOutOutline} /> {/* Add the logout icon */}
+                </button>
+                {isLoggingOut && <div className="spinner">Loading...</div>} {/* Show spinner */}
             </header>
 
             {/* Tabs Section */}
@@ -475,7 +517,7 @@ const UserProfile: React.FC = () => {
                                     <div className="button-container">
                                         <button 
                                             className="action-button" 
-                                            onClick={() => window.location.href = `/group-chat/${group.code}`}
+                                            onClick={() => router.push(`/group-chat/${group.code}`)}
                                         >
                                             <IonIcon icon={chatbubbleOutline} />
                                         </button>

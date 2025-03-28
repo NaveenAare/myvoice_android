@@ -1,0 +1,1220 @@
+.ionPage {
+    z-index: -1000;
+  --ion-background-color: #000; /* Change this to your desired background color */
+}
+
+.chat-content {
+  --background: #EDEDED !important;
+
+
+  z-index: -10 !important;
+  padding-bottom: 56px; /* Adjust based on your input height */
+}
+
+.message-container {
+  z-index: -10 !important;
+  padding: 10px;
+  background: #EDEDED;
+  max-height: 100% !important;
+  --height: 100vh !important;
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255, 255, 255, 0.2);
+overflow-y: auto;
+
+padding-bottom: calc(60px + var(--keyboard-height, 0px)); /* Footer height + keyboard */
+
+box-sizing: border-box;
+overflow-anchor: auto !important; /* Enable scroll anchoring */
+
+}
+
+
+
+
+
+.message {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.message.sent {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  position: relative;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+}
+
+.message.sent .message-bubble {
+  margin-right: 0px;
+  background: #FFFFFF;  /* Pure white */
+  color: #444;  /* Dark gray */
+  border-radius: 20px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  white-space: pre-wrap; /* Preserves spaces and line breaks */
+  word-wrap: break-word; /* Ensures long words wrap properly */
+  overflow-wrap: break-word; /* Additional support for long words */
+
+}
+
+
+
+
+.message.received .message-bubble {
+  background: #E4E4E7;  /* Very light gray */
+  color: #333;
+  border-radius: 20px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 5px;
+  font-weight: 400 !important;
+  font-size: 16px;
+  white-space: pre-wrap; /* Preserves spaces and line breaks */
+  word-wrap: break-word; /* Ensures long words wrap properly */
+  overflow-wrap: break-word; /* Additional support for long words */
+
+}
+
+.message-bubble p {
+  margin: 0;
+  padding-right: 10px;
+}
+
+.message-time {
+  position: absolute;
+  bottom: 5px;
+  right: 8px;
+  font-size: 0.7em;
+  color: #667781;
+  display: none;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  margin-top: 0px !important;
+  border-radius: 0px !important;
+  height: 60px;
+  font-size: 15px !important;
+}
+
+.message-input {
+  flex: 1;
+  width: 100%; /* Ensure it stretches to fill the width */
+  font-size: 15px;
+  background: white;
+  border-radius: 20px;
+  margin: 0 8px;
+}
+
+.message-input .message-textarea {
+  width: 100%; /* Full width of the container */
+  font-size: 15px; /* Font size for input */
+  background: transparent; /* Transparent background */
+  border: none; /* Remove border */
+  outline: none; /* Remove outline */
+  line-height: 1.5; /* Line height for readability */
+  color: #333; /* Text color */
+  padding: 0; /* Reset padding */
+}
+
+/* Target the native input element inside the IonInput */
+.message-input .message-textarea .native-input {
+  padding-left: 15px !important; /* Add left padding */
+  padding-right: 15px; /* Add right padding */
+  border-radius: 15px;
+  font-size: 15px !important; /* Rounded corners inside input */
+}
+/* Change the color of the IonBackButton */
+ion-back-button {
+  --color: #000 !important; /* Custom color for the back button */
+}
+
+.native-input {
+  background: transparent; /* Make it transparent */
+  border: none; /* Remove any visible borders */
+  outline: none; /* Remove the focus outline */
+  color: inherit; /* Ensure the text matches parent styles */
+  width: calc(100% - 8px) !important; /* Ensure it fills the container */
+  height: 100%;
+  border-radius: 20px; /* Rounded corners */
+  display: block; /* Ensures the layout is correct */
+  padding: 0; /* Remove padding */
+  box-shadow: none !important; /* Remove any shadow */
+  --padding-start: 8px !important; 
+  margin-left: 8px !important;
+  color: #000 !important;
+}
+
+.input-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.input-button ion-icon {
+  font-size: 24px;
+  color: #54656f;
+}
+
+.send-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.send-button ion-icon {
+  font-size: 24px;
+  color: #00a884;
+}
+
+ion-toolbar {
+  --background: #008069;
+  --color: white;
+}
+
+ion-toolbar ion-item {
+  --background: transparent;
+  --color: white;
+}
+
+ion-avatar {
+  width: 35px;
+  height: 35px;
+}
+
+.loading-dots-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 1px;
+}
+
+.loading-dots span {
+  width: 10px;
+  height: 10px;
+  background-color: #b3b3b3;
+  border-radius: 50%;
+  animation: typing 2s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(1) {
+  margin-right: 0px;
+  background-color: #808080;
+  animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+  background-color: #808080;
+  margin-right: 0px;
+  animation-delay: 0.4s;
+}
+
+.loading-dots span:nth-child(3) {
+  background-color: #808080;
+  margin-right: 0px;
+  animation-delay: 0.8s;
+}
+
+@keyframes typing {
+  0% { transform: scale(0.6); opacity: 0.5; }
+  50% { transform: scale(1.0); opacity: 1; }
+  100% { transform: scale(0.6); opacity: 0.5; }
+}
+
+
+@keyframes typing {
+  0%, 80%, 100% { 
+    transform: scale(0.7); /* Reduced scaling */
+  } 
+  40% { 
+    transform: scale(1); 
+  }
+}
+
+.character-subtitle {
+  margin: 0;
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.8);
+} 
+
+.ion-tittle {
+    display: flex !important;
+    align-items: center;
+    align-content: start !important;
+    color: #000;
+}
+
+.custom-title {
+    font-size: 12px;
+    color: #000;
+    margin: 0; /* Remove default margin */
+    text-align: left; /* Align text to the left */
+    flex: 1; /* Allow the title to take available space */
+}
+
+.scroll-down-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: white; /* Optional: background color */
+    border-radius: 50%; /* Optional: round button */
+    padding: 10px; /* Optional: padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Optional: shadow */
+  }
+
+  .popup-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 450px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s, visibility 0.4s;
+            z-index: 10;
+        }
+
+        .popup-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-header {
+            background-color: #f3f5f5;
+            color: #000;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .popup-content {
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom 0.3s, color 0.3s;
+            font-weight: 500;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid #008069;
+            color: #87CEEB;
+        }
+
+        .name-list {
+            display: none;
+            min-height: 200px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Hide button on screens smaller than 600px */
+        @media (max-width: 600px) {
+             .name-list {
+            display: none;
+            min-height: 200px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 10px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        }
+
+        .name-list.active {
+            display: block;
+        }
+
+        .name-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            color: #555;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .name-item:hover {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .name-item:last-child {
+            border-bottom: none;
+        }
+
+        .close-btn {
+            background-color: #87CEEB;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s, visibility 0.4s;
+            z-index: 5;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media screen and (max-width: 400px) {
+            .popup-modal {
+                width: 95%;
+            }
+
+            .toggle-btn {
+                width: 90%;
+                padding: 12px;
+            }
+        }
+
+        .audio-btn-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .audio-btn {
+            width: 40px;
+            height: 40px;
+
+            margin-left: 20px;
+            border-radius: 50%;
+            background-image: url('/static/Pasted_image.png'); /* Add your image URL here */
+            background-size: cover; /* Ensures the image covers the entire button */
+            background-position: center; /* Centers the background image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            border: none;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1); /* Slightly enlarge button on hover */
+        }
+
+        /* Tooltip text positioned above */
+        .hover-text {
+            position: absolute;
+            bottom: 100px; /* Positioned above the button */
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-left: 20px;
+            visibility: hidden;
+            opacity: 0;
+            white-space: nowrap;
+            transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+            pointer-events: none;
+        }
+
+        /* Show the text on hover */
+        .audio-btn-container:hover .hover-text {
+            visibility: visible;
+            opacity: 1;
+            bottom: 60px; /* Slide the text slightly upwards on hover */
+        }
+
+        /* Responsive design adjustments */
+        @media (max-width: 600px) {
+            .audio-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .hover-text {
+                font-size: 12px;
+                padding: 6px 10px;
+                bottom: 90px;
+            }
+
+            .audio-btn-container:hover .hover-text {
+                bottom: 60px;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .popup-modal {
+                width: 95%;
+            }
+
+            .popup-header {
+                font-size: 20px;
+            }
+
+            .tab {
+                font-size: 14px;
+            }
+
+            .name-item {
+                font-size: 14px;
+            }
+
+            .close-btn {
+                font-size: 14px;
+            }
+        }
+
+        .loading-dots-audio {
+            margin-top:10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px; /* Space between dots */
+        }
+        
+        .loading-dots-audio span {
+            width: 8px;
+            height: 8px;
+            background-color: #008069; /* Color of the dots */
+            border-radius: 50%;
+            animation: bounce 0.9s infinite alternate; /* Animation for bouncing effect */
+        }
+        
+        .loading-dots-audio span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .loading-dots-audio span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+        }
+
+        .toolbar-container {
+            background-color: aqua !important;
+            color: aqua;
+        }
+
+        .popover-content {
+          margin-top: -100px !important;
+          --padding-start: -100px !important;
+          --background: white;
+          --border-radius: 8px;
+          --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          padding: 8px 0 !important; /* Space around the list */
+        }
+        
+        .popover-content ion-item {
+          --padding-start: 12px;
+          --inner-padding-end: 12px;
+          --border-color: transparent;
+          --background-hover: #f0f0f0; /* Highlight on hover */
+        }
+
+        .custom-popover {
+          
+          height: 100%;
+          margin-top: 10px !important;
+          --offset-x: 0; /* Adjust horizontal offset */
+          --offset-y: 0; /* Adjust vertical offset */
+          --width: 200px; /* Set fixed width for the popover */
+        }
+        
+        .custom-popover::part(content) {
+          right: 2px !important;
+
+          position: fixed; /* Fix the position */
+          top: 58px; /* Position it just below the header (adjust as per your header's height) */
+          right: 16px; /* Align it to the right edge */
+          border-radius: 8px; /* Add rounded corners */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add subtle shadow */
+          background-color: #fff; /* White background for the popover */
+          z-index: 1000; /* Ensure it's on top of other elements */
+        }
+        
+        .custom-popover ion-list {
+          padding: 0; /* Remove extra padding */
+        }
+        
+        .custom-popover ion-item {
+          --inner-padding-start: 12px; /* Add padding inside items */
+          --inner-padding-end: 12px;
+        }
+
+        .custom-item {
+          background: white;
+        }
+        
+        .delete-icon {
+          color: black;
+          font-size: 20px;
+          filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
+        }
+        
+        .delete-label {
+          color: black;
+        }
+
+        .new-overlay-delete {
+          position: fixed;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.7); /* Darker background */
+          display: none; /* Initially hidden */
+          z-index: 10000; /* Ensure it is above other elements */
+      }
+     
+
+      
+
+      .spinner {
+        display: block; /* Ensure it can be displayed */
+        border: 5px solid rgba(255, 255, 255, 0.3) !important; /* Light border */
+        border-top: 5px solid rgb(255, 114, 109) !important; /* Darker border for top */
+        border-radius: 50%; /* Circular shape */
+        width: 20px !important; /* Size of spinner */
+        height: 20px !important; /* Size of spinner */
+        animation: spin 1s linear infinite; /* Spin animation */
+        z-index: 1001; /* Ensure spinner is above overlay */
+    }
+    
+    /* Animation for spinner */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Hide spinner by default */
+    #loadingSpinner {
+        display: none; /* Hidden by default */
+    }
+
+    .toast {
+      visibility: hidden;
+      max-width: 300px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 16px;
+      position: fixed;
+      z-index: 9000000000000000000000000000000001;
+
+      left: 50%;
+      top: 20px;
+      transform: translateX(-50%);
+      font-size: 17px;
+  }
+  
+  .toast.show {
+      visibility: visible;
+      animation: fadeInOut 4s;
+  }
+  
+  @keyframes fadeInOut {
+      0% { top: 0; opacity: 0; }
+      20% { top: 20px; opacity: 1; }
+      80% { top: 20px; opacity: 1; }
+      100% { top: 0; opacity: 0; }
+  }
+  
+  .toast.success {
+      background-color: rgb(22, 217, 22);
+  }
+  
+  .toast.error {
+      background-color: red;
+  }
+
+.custom-input-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white; /* Background color for the input area */
+  padding: 10px; /* Padding for the input area */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+  z-index: 1000; /* Ensure it is above other content */
+}
+
+
+ion-footer.smooth-keyboard-transition {
+  transition: bottom 0.3s ease-in-out;
+  position: fixed; /* Ensure footer is fixed if not already */
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+
+
+
+/* In your CSS */
+ion-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  background: var(--ion-background-color);
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.chat-content {
+  margin-bottom: calc(var(--keyboard-height, 0px) + 60px);
+  transition: margin-bottom 0.2s ease-out;
+}
+
+/* Prevent keyboard from pushing content */
+ion-content.chat-content {
+  --keyboard-offset: 0 !important;
+}
+
+
+
+
+/* Add these CSS rules */
+/* In your CSS file */
+.input-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ion-background-color);
+  padding-bottom: constant(safe-area-inset-bottom); /* iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* iOS >= 11.2 */
+  margin: 0 !important;
+}
+
+
+.input-footer {
+  /* Default padding for non-iOS */
+  padding-bottom: 0;
+  
+  /* iOS specific */
+  @supports (padding-bottom: constant(safe-area-inset-bottom)) {
+    padding-bottom: constant(safe-area-inset-bottom);
+  }
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.input-container {
+  margin: 0;
+  padding: 8px;
+  padding-bottom: 0 !important;
+
+}
+
+
+
+
+:root {
+  --ion-safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+
+/* Prevent content jump */
+ion-content {
+  --keyboard-offset: 0 !important;
+}
+
+
+
+
+.chat-content {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.message-bubble.sent {
+  animation: slideInUp 0.5s forwards; /* Animation for sent messages */
+}
+
+.message-bubble.received {
+  animation: slideInDown 0.5s forwards; /* Animation for received messages */
+}
+
+
+@keyframes slideInUp {
+  0% {
+    transform: translateY(100%); /* Start from below */
+    opacity: 0; /* Start invisible */
+  }
+  100% {
+    transform: translateY(0); /* End at original position */
+    opacity: 1; /* Fully visible */
+  }
+}
+
+/* Keyframes for receiving animation */
+@keyframes slideInDown {
+  0% {
+    transform: translateY(-100%); /* Start from above */
+    opacity: 0; /* Start invisible */
+  }
+  100% {
+    transform: translateY(0); /* End at original position */
+    opacity: 1; /* Fully visible */
+  }
+}
+
+
+
+.containerbubble-1 {
+  position: fixed; /* Use fixed positioning to overlay on everything */
+  top: 0; /* Align to the top */
+  left: 0; /* Align to the left */
+  right: 50%; /* Stretch to the right */
+  bottom: 90%; /* Stretch to the bottom */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Align items to the bottom */
+  z-index: 10000000000000000000000000000000; /* Ensure it's above other content */
+  background-color: rgba(255, 255, 255, 0.0); /* Semi-transparent background */
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
+.bubble-1 {
+  position: absolute;
+  transition: opacity 0.5s ease-out; /* Smooth transition for opacity */
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.9) 10%,
+    rgba(173, 216, 230, 0.4) 50%,
+    rgba(255, 255, 255, 0.2) 90%
+  );
+  box-shadow: inset -10px -10px 20px rgba(255, 255, 255, 0.6),
+    inset 10px 10px 20px rgba(173, 216, 230, 0.4), 0 0 40px rgba(173, 216, 230, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  animation: float3D 3s forwards;
+  min-width: 10px;
+  min-height: 10px;
+  transform-style: preserve-3d;
+  pointer-events: auto; /* Allow interaction with the bubble */
+  margin-bottom: 50%; /* Adjust this value to position the bubble above the center */
+}
+
+.bubble-1::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.4) 10%,
+    transparent 60%
+  );
+  mix-blend-mode: overlay;
+  border-radius: 50%;
+}
+
+.bubble-1 img {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: brightness(1.1) contrast(1.1);
+  opacity: 0.95;
+  mask-image: radial-gradient(circle at center, white 70%, transparent 100%);
+  transform: translateZ(20px);
+}
+
+@keyframes float3D {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(-150px);
+    opacity: 0;
+  }
+}
+
+.fade-in {
+    opacity: 1; /* Fully visible */
+}
+
+.fade-out {
+    opacity: 0; /* Fade out */
+}
+
+ion-router-outlet {
+  background: var(--ion-background-color) !important;
+}
+
+ion-page {
+  background: var(--ion-background-color) !important;
+}
+
+
+.message-container-html {
+  position: fixed;
+  bottom: 60px;
+  z-index: -10 !important;
+  padding: 10px;
+  background: #FFF;
+  max-height: 200px !important;
+  --height: 200px !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow-y: auto;
+  padding-bottom: calc(var(--keyboard-height, 0px)); /* Footer height + keyboard */
+  box-sizing: border-box;
+  overflow-anchor: auto !important; /* Enable scroll anchoring */
+
+}
+
+.new-overlay-html {
+
+  width: 100%;
+  height: 100%;
+  background: rgba(249, 247, 247, 0.9); /* Darker background */
+  display: none; /* Initially hidden */
+  z-index: 10000; /* Ensure it is above other elements */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
+
+}
+
+
+
+.html-render {
+  overflow-y: auto;
+  background: #FFF;
+  margin: 10px 10px 260px 10px;
+  height: 70%;
+  width: calc(100vw - 20px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Elevation */
+  border: 1px solid #e0e0e0;
+  background: rgba(173, 216, 230, 0.3); /* Light blue background */
+  border: 2px solid rgba(135, 206, 235, 0.5); /* Slightly darker border */
+  border-radius: 5%;
+}
+
+.popup-modal-html {
+  position: relative;
+  width: 90%;
+  height: 70%;
+  max-width: 450px;
+  background: rgba(173, 216, 230, 0.3); /* Light blue background */
+  border: 2px solid rgba(135, 206, 235, 0.5); /* Slightly darker border */
+  border-radius: 5%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s, visibility 0.4s;
+  z-index: 10;
+  margin-bottom: 10%;
+  overflow: hidden; /* Ensures the effect stays inside the modal */
+}
+
+/* Shine effect */
+.popup-modal-html::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-30deg);
+  animation: shine 2s infinite linear;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.wrapper{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  display: flex;
+}
+.popup-modal-html.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.close-btn-html{
+  height: 50px !important;
+  width: 50px !important;
+  border-radius: 100% !important;
+  background-color: #EDEDED;
+  margin-bottom: 10px;
+  margin-left: 4px;
+  margin-right: 4px;
+  align-items: center;
+  justify-content: center;
+  
+  
+}
+
+
+
+.close-btn-html ion-icon {
+  margin-top: 3px !important;
+}
+
+
+.close-btn {
+  background-color: #87CEEB;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+.new-overlay-html {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(249, 247, 247, 0.9);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1.02); /* Initial scaled state */
+}
+
+.new-overlay-html.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  animation: overlayAppear 0.4s ease-out;
+}
+
+@keyframes overlayAppear {
+  0% {
+    backdrop-filter: blur(0px);
+    background: rgba(249, 247, 247, 0);
+  }
+  100% {
+    backdrop-filter: blur(5px);
+    background: rgba(249, 247, 247, 0.9);
+  }
+}
+
+.popup-modal-html {
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s; /* Delay for staggered animation */
+}
+
+.popup-modal-html.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+
+.new-overlay-html {
+  /* ... existing styles ... */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease-out, visibility 0.4s linear;
+}
+
+.new-overlay-html.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-modal-html {
+  /* ... existing styles ... */
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.popup-modal-html.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 900000000000000000000000000000000;
+  backdrop-filter: blur(3px);
+}
+
+.loading-content {
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner {
+  margin-left: 40%;
+  width: 48px;
+  height: 48px;
+  --color: var(--ion-color-primary);
+}
+
+.share-button {
+  margin-top: 24px;
+  transition: transform 0.2s ease;
+}
+
+.share-button:hover {
+  transform: scale(0.98);
+}
+
+.play-button {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1.2em;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.play-button-2 {
+  position: absolute;
+  bottom: 8px;
+  right: 60px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1.2em;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.play-button:hover {
+  opacity: 1;
+}
+
+.button-circle{
+  border: 2px solid rgba(135, 206, 235, 0.5) !important;
+
+}
+
+.bot-message-content {
+  padding: 10px;
+  background: rgba(173, 216, 230, 0.3); /* Light blue background */
+  border: 2px solid rgba(135, 206, 235, 0.5); /* Slightly darker border */
+  border-radius: 5%;
+  max-height: 300px; /* Set a max height for the content */
+  overflow-y: auto; /* Enable scrolling if content exceeds max height */
+}

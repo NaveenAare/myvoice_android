@@ -9,7 +9,7 @@ const MenuCards: React.FC = () => {
     const [characters, setCharacters] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
  const router = useIonRouter();
-const emojis: string[] = ["All", "Unread", "Groups", "Popular"]; // Emoji list
+const emojis: string[] = ["All", "Unread", "Groups"]; // Emoji list
 const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
   // Don't set initial state
   const [activeFilter, setActiveFilter] = useState<string>('');
@@ -41,11 +41,11 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
 
     async function updateHamCards() {
         try {
-            const authToken = "eyJ1c2VySWQiOiAxLCAibWFpbCI6ICJhYXJlbmF2ZWVudmFybWFAZ21haWwuY29tIiwgIm5hbWUiOiAiTmF2ZWVuIHZhcm1hIEFhcmUiLCAicHJvZmlsZV9waWMiOiAiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSTZQa3BFSGJkdGZoQTFETFp5OHVCcnZrejRIaDhTVjhMQmtzajRYRjdTVlB2OEllRDU9czk2LWMifTAxODYzNTczMDA3ODJiMmRjOTFjZWNlZDBiZGM0OWNiMWNjZDZmODIzZDM2ZTcyMzY0N2EwZjIwZjVkZTgyOTc=";
+            const authToken = localStorage.getItem('authToken') || '';
             const formData = new FormData();
             formData.append('authToken', authToken || '');
 
-            const response = await fetch('https://speakingcharacter.ai/user/history', {
+            const response = await fetch('https://speakingcharacter.ai/user/history/mobile', {
                 method: 'POST',
                 body: formData,
             });
@@ -136,7 +136,12 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
                 notificationContainer.appendChild(notificationBadge); // Append badge to the container
 
                 menuCard.addEventListener('click', () => {
-                    router.push(`/character-chat/${character.charc_id}`, 'forward', 'push');
+                    if(character.chat_category == 'character_chat'){
+                        router.push(`/character-chat/${character.charc_id}`, 'forward', 'push');
+                    } else{
+                        router.push(`/group-chat/${character.group_id}`, 'forward', 'push');
+                    }
+                    
                 });
                 cardText.appendChild(title);
                 cardText.appendChild(description);
@@ -171,7 +176,7 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
             if (emoji === 'Unread') {
                 return character.unseen_messages_count > 0; // Show only characters with unseen messages
             } else if (emoji === 'Groups') {
-                return character.isGroup; // Assuming there's a property to identify group characters
+                return character.chat_category == 'group'; // Assuming there's a property to identify group characters
             } else if (emoji === 'Popular') {
                 return character.isPopular; // Assuming there's a property to identify popular characters
             } else if (emoji === 'All') {

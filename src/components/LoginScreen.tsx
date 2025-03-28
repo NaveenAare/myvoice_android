@@ -1,9 +1,9 @@
 // LoginPage.tsx
-import { IonContent, IonPage, IonButton, IonIcon, IonSpinner, useIonRouter, IonModal } from '@ionic/react';
+import { IonContent, IonPage, IonButton, IonIcon, IonSpinner, useIonRouter, IonModal, IonToast } from '@ionic/react';
 import { logoGoogle, logoApple } from 'ionicons/icons';
 
 import { Capacitor } from '@capacitor/core';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './LoginPage.css';
 
 
@@ -26,172 +26,226 @@ import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { OAuthProvider, updateProfile } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore'; // Add Firestore
 
-
+import { SplashScreen } from '@capacitor/splash-screen'; // Import SplashScreen directly
 
 const LoginPage: React.FC = () => {
-  const [loading, setLoading] = useState<'google' | 'apple' | null>(null);
-      const router = useIonRouter();
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
+  const [apiLoading, setApiLoading] = useState(false);
+  const router = useIonRouter();
 
-      const { user, signInWithGoogle } = useAuth();
+  const { user, signInWithGoogle } = useAuth();
+  
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState(false);
 
-      React.useEffect(() => {
-        if (user) {
-          router.push('/home');
-        }
-      }, [user, history]);
-    
-      const handleGoogleSignIn = async () => {
-        try {
-          const user = await GoogleAuth.signIn();
-          console.log('Google user:', user);
-        } catch (error) {
-          console.error('Error signing in:', error);
-        }
-      };
-
-
-
-
-
-
-
- 
-      const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Sign-In Timeout!")), 10000) // 10s timeout
-    );
-    
-
-    
-    
-    const appleSignIn = async () => {
-      try {
-        // ✅ Use the correct method name: authorize()
-        const result = await SignInWithApple.authorize();
-    
-        // Create Firebase credential
-        const provider = new OAuthProvider('apple.com');
-        const credential = provider.credential({
-          idToken: result.response.identityToken // From Apple response
-        });
-    
-        // Sign in to Firebase
-        await signInWithCredential(auth, credential);
-      } catch (error) {
-        console.error('Apple Sign-In Error:', error);
-      }
-    };
-
-    const appleSignIn2 = async () => {
-      try {
-        const result = await SignInWithApple.authorize({
-          scopes: 'email name',
-          clientId: 'com.ain-hub.speakingcharacter',
-          redirectURI: 'https://videos-downloader-13024.firebaseapp.com/__/auth/handler'
-        });
-    
-        const { identityToken, email, givenName, familyName } = result.response;
-    
-        // 1. Create Firebase credential
-        const provider = new OAuthProvider('apple.com');
-        const credential = provider.credential({ idToken: identityToken! });
-    
-        // 2. Sign in to Firebase
-        const userCredential = await signInWithCredential(auth, credential);
-        const user = userCredential.user;
-
-        const isNewUser = user.metadata.creationTime === user.metadata.lastSignInTime;
-    
-      if (isNewUser) {
-        const displayName = `${givenName} ${familyName}`.trim();
-        if (displayName) await updateProfile(user, { displayName });
-      }
-    
-        console.log("user:", user);
-
-        console.log("familyName::::::", familyName);
-        console.log("email::::::", email);
-        console.log("givenName::::::", givenName);
-
-    
-      } catch (error) {
-        console.error('Apple Sign-In Error:', error);
-      }
-    };
-
-
- 
-
-
-
-
-    const signIn = async () => {
-      const provider = new GoogleAuthProvider();
-      try {
-        await signInWithRedirect(auth, provider);
-      } catch (error) {
-        console.error("Error during sign-in:", error);
-      }
-    };
-
-
-
-     
-  const config: CapacitorConfig = {
-    appId: "com.ain-hub.speakingcharacter",
-    appName: "Speaking Character",
-    webDir: "build",
-    plugins: {
-      GoogleAuth: {
-        scopes: ["profile", "email"],
-        serverClientId: "722483342463-8p84ja4pbeh2i2r0cbqqdp0q6bqd6uo2.apps.googleusercontent.com",
-        forceCodeForRefreshToken: true,
-      },
-    },
+  const showToastMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
   };
 
-
-
-
-
-  
-  useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result) {
-          const user = result.user;
-          console.log("User signed in:", user);
-        }
-      })
-      .catch((error) => {
-        console.error("Error handling redirect result:", error);
-      });
-  }, []);
-  
-  
-
-
-
-
-
-
-
-  
-
-  // Apple Sign-In (iOS only)
-  const appleLogin = async () => {
-    if (!Capacitor.isNativePlatform()) return;
-    
+  const handleGoogleSignIn = async () => {
     try {
-      setLoading('apple');
-    //  const result = await FirebaseAuthentication.signInWithApple({
-     //   skipNativeAuth: false,
-   //     scopes: ['name', 'email']
-    //  });
-   //   console.log('Apple auth success:', result);
+      setGoogleLoading(true);
+      const user = await GoogleAuth.signIn();
+      console.log('Google user:', user);
+      
+      await sendGoogleDataToApi(user);
+      
     } catch (error) {
-      console.error('Apple auth error:', error);
+      console.error('Error signing in:', error);
+      showToastMessage('Error signing in with Google. Please try again.');
     } finally {
-      setLoading(null);
+      setGoogleLoading(false);
+    }
+  };
+
+  const sendGoogleDataToApi = async (user: any) => {
+    setApiLoading(true);
+    const { name, email, imageUrl } = user;
+
+    const response = await fetch('https://speakingcharacter.ai/ios/googleSignin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        name: name,
+        email: email,
+        profile_pic: imageUrl,
+      }).toString(),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('authToken', data.token);
+      console.log('Token stored:', data.token);
+      
+      // Show the default splash screen
+      SplashScreen.show(); // Show the default splash screen
+
+      SplashScreen.hide(); // Hide the splash screen
+      router.push('/home'); // Navigate to the home page
+    
+      
+    } else {
+      console.error('API error:', response.statusText);
+      showToastMessage('Error sending Google data. Please try again.');
+    }
+    setApiLoading(false);
+  };
+
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Sign-In Timeout!")), 10000) // 10s timeout
+  );
+  
+
+  
+  
+  const appleSignIn = async () => {
+    try {
+      // ✅ Use the correct method name: authorize()
+      const result = await SignInWithApple.authorize();
+  
+      // Create Firebase credential
+      const provider = new OAuthProvider('apple.com');
+      const credential = provider.credential({
+        idToken: result.response.identityToken // From Apple response
+      });
+  
+      // Sign in to Firebase
+      await signInWithCredential(auth, credential);
+    } catch (error) {
+      console.error('Apple Sign-In Error:', error);
+    }
+  };
+
+  const sendAppleDataToApi = async (userData: { name: string; email: string; imageUrl: string; token: string }) => {
+    setApiLoading(true);
+    try {
+      console.log("Inside the Api hitting");
+      const { name, email, imageUrl, token } = userData;
+
+      const response = await fetch('https://speakingcharacter.ai/ios/appleSignin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          name: name,
+          email: email,
+          profile_pic: imageUrl,
+          token: token, // Include the token if needed
+        }).toString(),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('authToken', data.token);
+        console.log('Token stored:', data.token);
+        
+        // Show the default splash screen
+        SplashScreen.show(); // Show the default splash screen
+        SplashScreen.hide(); // Hide the splash screen
+        router.push('/home'); // Navigate to the home page
+      } else {
+        console.error('API error:', response.statusText);
+        showToastMessage('Error sending Apple data. Please try again.');
+      }
+    } catch (error) {
+      console.error('Apple Sign-In Error:', error);
+      showToastMessage('Error sending Apple data. Please try again.');
+    } finally {
+      setApiLoading(false);
+    }
+  };
+
+  const sendAppleNullDataToApi = async (userData: {token: string }) => {
+    try{
+      console.log("Inside the Api hitting")
+    setApiLoading(true);
+    const {token } = userData;
+
+    const response = await fetch('https://speakingcharacter.ai/ios/appleSignin/with/null/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        token: token
+      }).toString(),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('authToken', data.token);
+      console.log('Token stored:', data.token);
+      
+      // Show the default splash screen
+      SplashScreen.show(); // Show the default splash screen
+      SplashScreen.hide(); // Hide the splash screen
+      router.push('/home'); // Navigate to the home page
+    } else {
+      console.error('API error:', response.statusText);
+    }
+    setApiLoading(false);
+  } catch (error) {
+    console.error('Apple Sign-In Error:', error);
+  }
+  };
+
+  const appleSignIn2 = async () => {
+    console.log("Inside the Apple Log In");
+    try {
+      setAppleLoading(true);
+      const result = await SignInWithApple.authorize({
+        scopes: 'email name',
+        clientId: 'com.ain-hub.speakingcharacter',
+        redirectURI: 'https://videos-downloader-13024.firebaseapp.com/__/auth/handler'
+      });
+
+      console.log("Response from apple login :::: ", result.response);
+
+      const { identityToken, email, givenName, familyName, user } = result.response;
+
+      const displayName = `${givenName} ${familyName}`.trim();
+
+
+      // Check if email is not null and send data to API
+      if (email && user) {
+        console.log("EMail ::::::::::", email)
+        const profilePicUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(givenName)}&background=random`;
+
+        // Call the sendAppleDataToApi function
+        await sendAppleDataToApi({
+          name: displayName,
+          email: email || '',
+          imageUrl: profilePicUrl,
+          token: user // Pass the token if needed
+        });
+
+        // Show the default splash screen
+        SplashScreen.show(); // Show the default splash screen
+        SplashScreen.hide(); // Hide the splash screen
+        router.push('/home'); // Navigate to the home page
+      }
+      else{
+        if(user)
+          {sendAppleNullDataToApi({token: user})}
+        else{
+          showToastMessage('Error signing in with Apple. Please try again.');
+        }
+      }
+
+      console.log("familyName::::::", familyName);
+      console.log("email::::::", email);
+      console.log("givenName::::::", givenName);
+
+    } catch (error) {
+      console.error('Apple Sign-In Error:', error);
+      showToastMessage('Error signing in with Apple. Please try again.');
+    } finally {
+      setAppleLoading(false);
     }
   };
 
@@ -201,13 +255,75 @@ const LoginPage: React.FC = () => {
 
 
 
-  return (
-    <IonPage>
-      <IonContent fullscreen className="login-content"  forceOverscroll={false} scrollY={false}>
-        <div className="auth-container">
-          <div className="header-section">
-            <h1 className="welcome-text">Step into conversations that sound real🚀🎙️</h1>
-          </div>
+  const signIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithRedirect(auth, provider);
+    } catch (error) {
+      console.error("Error during sign-in:", error);
+    }
+  };
+
+   
+const config: CapacitorConfig = {
+  appId: "com.ain-hub.speakingcharacter",
+  appName: "Speaking Character",
+  webDir: "build",
+  plugins: {
+    GoogleAuth: {
+      scopes: ["profile", "email"],
+      serverClientId: "722483342463-8p84ja4pbeh2i2r0cbqqdp0q6bqd6uo2.apps.googleusercontent.com",
+      forceCodeForRefreshToken: true,
+    },
+  },
+};
+
+useEffect(() => {
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result) {
+        const user = result.user;
+        console.log("User signed in:", user);
+      }
+    })
+    .catch((error) => {
+      console.error("Error handling redirect result:", error);
+    });
+}, []);
+  
+  
+
+// Apple Sign-In (iOS only)
+const appleLogin = async () => {
+  if (!Capacitor.isNativePlatform()) return;
+  
+  try {
+    setAppleLoading(true);
+  //  const result = await FirebaseAuthentication.signInWithApple({
+   //   skipNativeAuth: false,
+ //     scopes: ['name', 'email']
+  //  });
+ //   console.log('Apple auth success:', result);
+  } catch (error) {
+    console.error('Apple auth error:', error);
+  } finally {
+    setAppleLoading(false);
+  }
+};
+
+
+
+
+
+
+
+return (
+  <IonPage>
+    <IonContent fullscreen className="login-content"  forceOverscroll={false} scrollY={false}>
+      <div className="auth-container">
+        <div className="header-section">
+          <h1 className="welcome-text">Step into conversations that sound real🎙️</h1>
+        </div>
 
 <div className="graphic-section">
   <div className="animated-blob"></div>
@@ -318,50 +434,55 @@ const LoginPage: React.FC = () => {
   </div>
 </div>
 
-          <div className="auth-buttons">
-            { (
-              <IonButton 
-                expand="block" 
-                className="apple-btn"
-                onClick={appleSignIn2}
-                disabled={!!loading}
-              >
-                {loading === 'apple' ? (
-                  <IonSpinner name="crescent" />
-                ) : (
-                  <>
-                    <IonIcon icon={logoApple} slot="start" />
-                    Continue with Apple
-                  </>
-                )}
-              </IonButton>
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={2000}
+        />
+
+        <div className="auth-buttons">
+          <IonButton 
+            expand="block" 
+            className="apple-btn"
+            onClick={appleSignIn2}
+            disabled={appleLoading || apiLoading}
+          >
+            {appleLoading ? (
+              <IonSpinner name="crescent" />
+            ) : (
+              <>
+                <IonIcon icon={logoApple} slot="start" />
+                Continue with Apple
+              </>
             )}
+          </IonButton>
 
-            <IonButton 
-              expand="block" 
-              className="google-btn"
-              onClick={handleGoogleSignIn}
-              disabled={!!loading}
-            >
-              {loading === 'google' ? (
-                <IonSpinner name="crescent" />
-              ) : (
-                <>
-                  <IonIcon icon={logoGoogle} slot="start" />
-                  Continue with Google
-                </>
-              )}
-            </IonButton>
+          <IonButton 
+            expand="block" 
+            className="google-btn"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading || apiLoading}
+          >
+            {googleLoading ? (
+              <IonSpinner name="crescent" />
+            ) : (
+              <>
+                <IonIcon icon={logoGoogle} slot="start" />
+                Continue with Google
+              </>
+            )}
+          </IonButton>
 
-            
-          </div>
           
         </div>
+        
+      </div>
 
 
-      </IonContent>
-    </IonPage>
-  );
+    </IonContent>
+  </IonPage>
+);
 };
 
 export default LoginPage;

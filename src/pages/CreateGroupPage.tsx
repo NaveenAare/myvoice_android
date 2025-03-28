@@ -299,6 +299,8 @@ const CreateGroupPage: React.FC = () => {
           throw new Error('Failed to create group');
         }
 
+        const data = await response.json();
+
         // Show success toast
         setToastMessage('Group created successfully!');
         setToastColor('success');
@@ -306,7 +308,7 @@ const CreateGroupPage: React.FC = () => {
 
         // Navigate to home after a short delay
         setTimeout(() => {
-          router.push('/home', 'root');
+          router.push(`/group-chat/${data.groupCode}`)
         }, 1500);
 
       } catch (error) {
