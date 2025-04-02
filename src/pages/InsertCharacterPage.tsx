@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useIonRouter, IonContent, IonPage, IonHeader } from '@ionic/react';
 import './InsertCharacter.css';
+import { faBold } from '@fortawesome/free-solid-svg-icons';
 
 const InsertCharacterPage: React.FC = () => {
   const router = useIonRouter();
@@ -20,8 +21,8 @@ const InsertCharacterPage: React.FC = () => {
   const [showTermsPopup, setShowTermsPopup] = useState(false);
   const [formDataToSubmit, setFormDataToSubmit] = useState<FormData | null>(null);
   const [showAudioTermsPopup, setShowAudioTermsPopup] = useState(false);
-
-
+  const [isMultilingual, setIsMultilingual] = useState(false);
+  const [isPopupLoading, setIsPopupLoading] = useState(false);
 
   const fetchAudioOptions = async () => {
     if (audioOptionsFetched || isLoadingAudios) return;
@@ -72,20 +73,15 @@ const InsertCharacterPage: React.FC = () => {
   };
 
   const openDescriptionPopup = () => {
-
-    console.error("open popup")
     const popup = document.getElementById('popup');
     const overlay = document.getElementById('overlay');
     if (popup && overlay) {
-      popup.style.display = 'block';
-      overlay.style.display = 'block';
-      overlay.style.zIndex = '100000';
-      popup.style.zIndex = '100001';
-      document.body.style.overflow = 'hidden';
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     }
   };
   
-  // Add this function to handle closing the description popup
   const closeDescriptionPopup = () => {
     const popup = document.getElementById('popup');
     const overlay = document.getElementById('overlay');
@@ -135,7 +131,6 @@ const InsertCharacterPage: React.FC = () => {
       document.body.style.overflow = 'auto';
       setShowAudioCloneTips(false);
 
-      // Show the audio upload section after closing tips
       if (audioFileUpload) {
         audioFileUpload.style.display = 'block';
       }
@@ -150,79 +145,92 @@ const InsertCharacterPage: React.FC = () => {
     const selectedOption = event.target.value;
     const audioUpload = document.getElementById('audioFileUpload');
     const audioUrlField = document.getElementById('AudioUrl');
-    
+
     if (selectedOption === 'new') {
-      // Show the audio clone tips popup first
-      openAudioCloneTips();
-      // The audio upload section will be shown after closing the tips popup
+        openAudioCloneTips();
     } else if (audioUpload && audioUrlField) {
-      // Handle existing audio selection
-      audioUpload.style.display = 'none';
-      const selectedElement = event.target.options[event.target.selectedIndex];
-      const audioUrl = selectedElement.getAttribute('data-url') || '';
-      const dataTrans = selectedElement.getAttribute('data-trans') || '';
-      audioUrlField.value = audioUrl;
-      audioUrlField.style.display = 'block';
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        localStorage.setItem(`${token}_Character_audio_trans`, dataTrans);
-      }
+        audioUpload.style.display = 'none';
+        const selectedElement = event.target.options[event.target.selectedIndex];
+        const audioUrl = selectedElement.getAttribute('data-url') || '';
+        const dataTrans = selectedElement.getAttribute('data-trans') || '';
+        audioUrlField.value = audioUrl;
+        audioUrlField.style.display = 'block';
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            localStorage.setItem(`${token}_Character_audio_trans`, dataTrans);
+        }
     }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
-    // Validate form
     const form = event.target as HTMLFormElement;
     const imageInput = form.querySelector<HTMLInputElement>('#imageInput');
     const audioSelection = form.querySelector<HTMLSelectElement>('#audioSelection');
     const audioFileInput = form.querySelector<HTMLInputElement>('#audioFile');
-    
-    if (!imageInput?.files?.[0]) {
-      showToast('Please upload an image!', 'error');
-      return;
-    }
-    
-    if (!audioSelection?.value) {
-      showToast('Please select audio!', 'error');
-      return;
-    }
-    
-    if (audioSelection.value === 'new' && !audioFileInput?.files?.[0]) {
-      showToast('Please upload an audio file!', 'error');
-      return;
+
+    // Check if image input exists and has a file
+    if (!imageInput || !imageInput.files || imageInput.files.length === 0) {
+        showToast('Please upload an image!', 'error');
+        return;
     }
 
-    // Prepare form data
+    // If not multilingual, check audio selection and audio file
+    if (!isMultilingual) {
+        if (!audioSelection) {
+            showToast('Audio selection element not found!', 'error');
+            return;
+        }
+        if (!audioSelection.value) {
+            showToast('Please select audio!', 'error');
+            return;
+        }
+
+        if (audioSelection.value === 'new' && (!audioFileInput || !audioFileInput.files || audioFileInput.files.length === 0)) {
+            showToast('Please upload an audio file!', 'error');
+            return;
+        }
+    }
+
     const formData = new FormData();
     const title = form.querySelector<HTMLInputElement>('#title')?.value;
     const tagline = form.querySelector<HTMLInputElement>('#tagline')?.value;
     const description = form.querySelector<HTMLTextAreaElement>('#description')?.value;
-    const audioSelect = audioSelection.value;
+    const audioSelect = audioSelection?.value; // Use optional chaining
     const audioUrl = form.querySelector<HTMLTextAreaElement>('#AudioUrl')?.value;
 
     if (selectedImage) {
-      formData.append('image', selectedImage);
+        formData.append('image', selectedImage);
     }
     if (title) formData.append('title', title);
     if (tagline) formData.append('tagline', tagline);
     if (description) formData.append('description', description);
-    if (audioSelect) formData.append('audio', audioSelect);
-    if (audioUrl) formData.append('Audio_url', audioUrl);
-
-    if (audioSelect === 'new' && selectedAudioFile) {
-      formData.append('audioFile', selectedAudioFile);
-      const token = localStorage.getItem('authToken');
-      const trans = localStorage.getItem(`${token}_Character_audio_trans`);
-      formData.append('trans_scribe', trans || '');
+    
+    // Handle audio selection
+    if (isMultilingual) {
+        // Set audio and audio URL to null for multilingual
+        formData.append('audio', null);
+        formData.append('Audio_url', null);
+        formData.append('trans_scribe', null); // Set transcription text to null
+        formData.append('lang_type', "Multi"); // Set transcription text to null
+    } else {
+        if (audioSelect) formData.append('audio', audioSelect);
+        if (audioUrl) formData.append('Audio_url', audioUrl);
+        formData.append('lang_type', "English"); 
+        
+        if (audioSelect === 'new' && selectedAudioFile) {
+            formData.append('audioFile', selectedAudioFile);
+            const token = localStorage.getItem('authToken');
+            const trans = localStorage.getItem(`${token}_Character_audio_trans`);
+            formData.append('trans_scribe', trans || '');
+        }
     }
 
-    // Show terms popup with overlay
     const overlay = document.getElementById('overlay');
     if (overlay) {
-      overlay.style.display = 'block';
-      overlay.classList.add('active');
+        overlay.style.display = 'block';
+        overlay.classList.add('active');
     }
     setFormDataToSubmit(formData);
     setShowTermsPopup(true);
@@ -232,12 +240,10 @@ const InsertCharacterPage: React.FC = () => {
   const handleAudioSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
-    // Store form data and show terms popup
     const formData = new FormData(document.getElementById('contentForm-audio') as HTMLFormElement);
     setFormDataToSubmit(formData);
     setShowAudioTermsPopup(true);
     
-    // Show overlay
     const overlay = document.getElementById('overlay');
     if (overlay) {
       overlay.style.display = 'block';
@@ -246,12 +252,10 @@ const InsertCharacterPage: React.FC = () => {
     document.body.style.overflow = 'hidden';
   };
   
-  // Update closeAudioTermsPopup function
   const closeAudioTermsPopup = () => {
     setShowAudioTermsPopup(false);
     setFormDataToSubmit(null);
     
-    // Hide overlay
     const overlay = document.getElementById('overlay');
     if (overlay) {
       overlay.style.display = 'none';
@@ -265,51 +269,47 @@ const InsertCharacterPage: React.FC = () => {
     setIsLoading(true);
     const loadingSpinner = document.getElementById('loadingSpinner-audio');
     if (loadingSpinner) {
-      loadingSpinner.style.display = 'block';
+        loadingSpinner.style.display = 'block';
     }
-  
+
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch('https://speakingcharacter.ai/get/insert/audio/' + token, {
-        method: 'POST',
-        body: formDataToSubmit
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to create audio');
-      }
-  
-      const data = await response.json();
-      
-      if (data.error) {
-        showToast('Error: ' + data.error, 'error');
-      } else {
-        showToast('Audio created successfully!', 'success');
-        setTimeout(() => {
-          router.push('/viewprofile');
-        }, 1500);
-      }
-  
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('https://speakingcharacter.ai/get/insert/audio/' + token, {
+            method: 'POST',
+            body: formDataToSubmit
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create audio');
+        }
+
+        const data = await response.json(); // Parse the JSON response
+
+        if (data.error) {
+            showToast('Error: ' + data.error, 'error');
+        } else {
+            showToast('Audio created successfully!', 'success');
+            setTimeout(() => {
+                router.push('/character-chat/' + data.code, 'back', 'push'); // Access code from data
+            }, 1500);
+        }
+
     } catch (error) {
-      console.error('Error creating audio:', error);
-      showToast('Failed to create audio. Please try again.', 'error');
+        console.error('Error creating audio:', error);
+        showToast('Failed to create audio. Please try again.', 'error');
     } finally {
-      setIsLoading(false);
-      setShowAudioTermsPopup(false);
-      // Hide overlay
-      const overlay = document.getElementById('overlay');
-      if (overlay) {
-        overlay.style.display = 'none';
-      }
-      if (loadingSpinner) {
-        loadingSpinner.style.display = 'none';
-      }
-      document.body.style.overflow = 'auto';
+        setIsLoading(false);
+        setShowAudioTermsPopup(false);
+        const overlay = document.getElementById('overlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
     }
   };
   
-
-
   const showToast = (message: string, type: 'success' | 'error') => {
     const toast = document.getElementById('toast');
     if (toast) {
@@ -322,7 +322,7 @@ const InsertCharacterPage: React.FC = () => {
   };
 
   const goHome = () => {
-    router.push('/home');
+    router.push('/home', 'back', 'push');
   };
 
   const showCharacterFormContainerFunc = () => {
@@ -398,6 +398,7 @@ const InsertCharacterPage: React.FC = () => {
   const handleTermsAccept = async () => {
     if (!formDataToSubmit) return;
     
+    setIsPopupLoading(true);
     setIsLoading(true);
     const loadingSpinner = document.getElementById('loadingSpinner');
     if (loadingSpinner) {
@@ -422,13 +423,24 @@ const InsertCharacterPage: React.FC = () => {
 
       if (!response.ok) throw new Error('Failed to create character');
       
-      showToast('Character created successfully!', 'success');
-      router.push('/home');
+      
+
+      const data = await response.json(); // Parse the JSON response
+        if (data.error) {
+            showToast('Error: ' + data.error, 'error');
+        } else {
+          showToast('Character created successfully!', 'success');
+            setTimeout(() => {
+                router.push('/character-chat/' + data.code, 'back', 'push'); // Access code from data
+            }, 1500);
+        }
+      
       
     } catch (error) {
       console.error('Error creating character:', error);
       showToast('Failed to create character. Please try again.', 'error');
     } finally {
+      setIsPopupLoading(false);
       setIsLoading(false);
       setShowTermsPopup(false);
       document.body.style.overflow = 'auto';
@@ -460,9 +472,8 @@ const InsertCharacterPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch immediately if component is mounted
     fetchAudioOptions();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   const generatePrompt = () => {
     const characterName = (document.getElementById('characterName') as HTMLInputElement)?.value;
@@ -482,13 +493,11 @@ const InsertCharacterPage: React.FC = () => {
 
     const prompt = `My character's name is ${characterName}, a ${characterAge} year old ${characterGender} who works as a ${characterOccupation}. They are ${characterHeight} tall with ${characterHair} hair and ${characterEyes} eyes. They are known for being ${characterPersonality}, with strengths like ${characterStrength} and weaknesses such as ${characterWeakness}. Originally from ${characterOrigin}, their journey includes ${characterBackground}. They love to ${characterHobby}, and their main goal is to ${characterGoal}.`;
 
-    // Update the description textarea
     const descriptionTextarea = document.getElementById('description') as HTMLTextAreaElement;
     if (descriptionTextarea) {
       descriptionTextarea.value = prompt;
     }
 
-    // Close the popup and overlay
     const popup = document.getElementById('popup');
     const overlay = document.getElementById('overlay');
     if (popup && overlay) {
@@ -498,13 +507,19 @@ const InsertCharacterPage: React.FC = () => {
     }
   };
 
+  const handleLanguageToggle = () => {
+    setIsMultilingual(!isMultilingual);
+    if (!isMultilingual) {
+        showToast('Multilingual voice clone is not supported.', 'success');
+    }
+  };
+
   return (
     <IonPage>
-      <IonContent fullscreen>
+      <IonContent>
         <div className="insert-character-page">
           <div className="overlay" id="overlay"></div>
 
-          {/* Audio Clone Tips Popup */}
           <div className="audio_clone_tips-container" id="audioCloneTipsPopup">
             <h2 style={{ color: '#808080' }}>Upload Clear Audio ˓ 🎧 ˒</h2>
             <p style={{ color: '#808080', fontFamily: 'sans-serif' }}>
@@ -565,15 +580,8 @@ const InsertCharacterPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Back Button */}
-          <button className="back-arrow-btn" onClick={goHome}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="36px" height="36px" className="arrow-icon">
-              <path d="M0 0h24v24H0z" fill="none"/>
-              <path d="M12 4L10.59 5.41 16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-            </svg>
-          </button>
+       
 
-          {/* Terms Popup */}
           <div className="pop" id="delete-popup" style={{ display: showTermsPopup ? 'block' : 'none' }}>
             <div className="pop-content">
               <p className="pop-heading">⚠ Important Notice for Users ⚠</p>
@@ -604,13 +612,13 @@ const InsertCharacterPage: React.FC = () => {
             </div>
 
             <div className="pop-button-wrapper">
-              <button className="pop-button secondary" onClick={closeTermsPopup}>
+              <button className="pop-button secondary" onClick={closeTermsPopup} disabled={isPopupLoading}>
                 Cancel
               </button>
               <button 
                 className="pop-button primary" 
                 onClick={handleTermsAccept}
-                disabled={isLoading}
+                disabled={isPopupLoading || isLoading}
               >
                 Accept & Create
               </button>
@@ -628,7 +636,6 @@ const InsertCharacterPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Choose Popup */}
           <div className="choose-pop" id="choose-pop">
             <div className="choose-pop-button-wrapper">
               <button className="choose-pop-button primary" id="create-character">
@@ -642,7 +649,13 @@ const InsertCharacterPage: React.FC = () => {
 
           <div className="loading-bar" id="loading-bar-2"></div>
 
-          {/* Character Form */}
+          <button className="back-arrow-btn" onClick={goHome}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="36px" height="36px" className="arrow-icon">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M12 4L10.59 5.41 16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+            </svg>
+          </button>
+
           <div className="form-container" style={{ display: 'none' }}>
             <div className="form-title">Create New Character</div>
             <form id="contentForm" encType="multipart/form-data" method="POST" onSubmit={handleSubmit}>
@@ -686,56 +699,80 @@ const InsertCharacterPage: React.FC = () => {
                 ></textarea>
               </div>
 
-              <div className="form-group" style={{ position: 'relative' }}>
-                <label htmlFor="audioSelection">Select Audio:</label>
-                <div id="loadingSpinner-list" style={{ display: isLoadingAudios ? 'block' : 'none' }}>
-                  🔄 Loading...
+              <label htmlFor="audioSelection" style={{ color: "green" }}>
+                Character Language: (Only English voice clone supported)
+              </label>
+
+
+              <div className="language-toggle">
+                
+                <div className={`tab ${!isMultilingual ? 'active' : ''}`} onClick={() => setIsMultilingual(false)}>
+                  English
                 </div>
-                <select 
-                  id="audioSelection" 
-                  name="audio"
-                  defaultValue=""
-                  onChange={handleAudioSelection}
-                  onFocus={() => {
-                    // Try to fetch again if previous attempt failed
-                    if (!audioOptionsFetched) {
-                      fetchAudioOptions();
-                    }
-                  }}
-                  disabled={isLoadingAudios}
-                >
-                  <option value="" disabled>Select Audio</option>
-                  <option value="new" style={{ color: 'blue', fontWeight: 'bold' }}>
-                    Upload New Audio
-                  </option>
-                  {audioOptions.map((audio, index) => (
-                    <option 
-                      key={index} 
-                      value={audio.name} 
-                      data-url={audio.voice_url} 
-                      data-trans={audio.transcribe_text}
-                    >
-                      {audio.name}
-                    </option>
-                  ))}
-                </select>
+                <div className={`tab ${isMultilingual ? 'active' : ''}`} onClick={() => {
+                    setIsMultilingual(true);
+                    showToast('Multilingual voice clone is not supported.', 'success');
+                }}>
+                  Multilingual
+                </div>
               </div>
 
-              <div className="audio-upload" id="audioFileUpload">
-                <label htmlFor="audioFile">Click to Upload Audio File</label>
-                <input 
-                  type="file" 
-                  id="audioFile" 
-                  name="audioFile" 
-                  accept=".mp3, .wav, .aac, .ogg, .flac, .m4a" 
-                  onChange={handleAudioChange}
-                />
-                <p id="audioFileName">{audioFileName}</p>
-              </div>
+              {!isMultilingual && (
+                <div className="form-group" style={{ position: 'relative' }}>
+                  <label htmlFor="audioSelection">Select Audio:</label>
+                  <div id="loadingSpinner-list" style={{ display: isLoadingAudios ? 'block' : 'none' }}>
+                    🔄 Loading...
+                  </div>
+                  <select 
+                    id="audioSelection" 
+                    name="audio"
+                    defaultValue=""
+                    onChange={handleAudioSelection}
+                    onFocus={() => {
+                      if (!audioOptionsFetched) {
+                        fetchAudioOptions();
+                      }
+                    }}
+                    disabled={isLoadingAudios}
+                  >
+                    <option value="" disabled>Select Audio</option>
+                    <option value="new" style={{ color: 'blue', fontWeight: 'bold' }}>
+                      Upload New Audio
+                    </option>
+                    {audioOptions.map((audio, index) => (
+                      <option 
+                        key={index} 
+                        value={audio.name} 
+                        data-url={audio.voice_url} 
+                        data-trans={audio.transcribe_text}
+                      >
+                        {audio.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {!isMultilingual && (
+                <div className="audio-upload" id="audioFileUpload">
+                  <label htmlFor="audioFile">Click to Upload Audio File</label>
+                  <input 
+                    type="file" 
+                    id="audioFile" 
+                    name="audioFile" 
+                    accept=".mp3, .wav, .aac, .ogg, .flac, .m4a" 
+                    onChange={handleAudioChange}
+                  />
+                  <p id="audioFileName">{audioFileName}</p>
+                </div>
+              )}
+
+            {!isMultilingual && (
 
               <div className="form-group">
                 <textarea style={{ color: '#D3D3D3' }} id="AudioUrl" name="Audio_url" placeholder="Enter title" required readOnly></textarea>
               </div>
+              )}
 
               <button type="submit" className="submit-btn" disabled={isLoading}>
                 {isLoading ? 'Creating...' : 'Submit'}
@@ -743,7 +780,6 @@ const InsertCharacterPage: React.FC = () => {
             </form>
           </div>
 
-          {/* Audio Form */}
           <div className="form-container-audio" style={{ display: 'none' }}>
           <div className="pop-audio" id="audio-terms-popup" style={{ display: showAudioTermsPopup ? 'block' : 'none' }}>
     <div className="pop-content-audio">
@@ -829,7 +865,6 @@ const InsertCharacterPage: React.FC = () => {
             </form>
             </div>
 
-          {/* Character Description Popup */}
           <div className="popup" id="popup">
             <h3>Describe Your Character</h3>
             <div className="description-text">

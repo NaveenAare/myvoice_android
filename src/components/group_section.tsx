@@ -93,7 +93,7 @@ const GroupSection: React.FC = () => {
 
             const groupNumbers = document.createElement('h3');
             groupNumbers.classList.add('group-card-sub-title');
-            groupNumbers.textContent = "4 Members";
+            groupNumbers.textContent = character.summary2;
 
             // Append icon and text to the container
             groupContainer.appendChild(groupIcon);

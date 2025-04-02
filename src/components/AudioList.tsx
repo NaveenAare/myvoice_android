@@ -55,7 +55,7 @@ const PopularAudiosSection: React.FC = () => {
                     const audio = new Audio(character.voice_url);
                     return (
                         <div key={index} className="special-card">
-                            <img src="shrimmer.png" alt={`Character ${index + 1}`} />
+                            <img src="assets/shrimmer.png" alt={`Character ${index + 1}`} />
                             <div className="special-card-content">
                                 <h3 className="shimmer-title">{character.name}</h3>
                                 <p>{character.description}</p>

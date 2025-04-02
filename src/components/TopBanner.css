@@ -115,7 +115,7 @@ ion-img.carousel-image {
 /* Adjust image positioning for Ionic environment */
 ion-img.carousel-image:nth-child(3)::part(image) {
     transform: translateX(0px) scale(1.2);
-    z-index: 3;
+    z-index: 31 !important;
     opacity: 1;
 }
 

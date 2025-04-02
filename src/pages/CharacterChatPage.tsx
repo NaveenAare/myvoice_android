@@ -404,7 +404,6 @@ const scrollToBottomFromSendMessage = () => {
 
 
   const sendMessage = async () => {
-
     console.error("Send Button is pressed :::::::")
     if (!message.trim()) return; // Prevent sending empty messages or if already loading
 
@@ -428,12 +427,8 @@ const scrollToBottomFromSendMessage = () => {
 
         localStorage.setItem(id, JSON.stringify(updatedMessages)); // Store only essential data
 
-    
-
         return updatedMessages;
     });
-
-
 
     setMessage(''); // Clear input field
     setIsLoadingBotMessage(true);// Set loading state for bot message
@@ -445,13 +440,16 @@ const scrollToBottomFromSendMessage = () => {
     // Prepare data for the request
     const authToken = localStorage.getItem('authToken') || ''; // Get auth token
 
+    // Check if the character voice data is valid
+    const isVoiceDataValid = localStorage.getItem(`${id}_char_voice_name`)?.toLowerCase() !== "null" &&
+                             localStorage.getItem(`${id}_char_voice_trans`)?.toLowerCase() !== "null" &&
+                             localStorage.getItem(`${id}_char_voice_url`)?.toLowerCase() !== "null";
+
     // Append the user message to the conversation history
     const conversationHistory = JSON.stringify([
         ...messages.map(msg => ({ role: msg.role, content: msg.content })), // Existing messages
         userMessage // Append the new user message
     ]);
-
-
 
     const summary1 = localStorage.getItem(`${id}_char_sub_name`) || ''; // Replace with actual summary1 if available
     const summary2 = localStorage.getItem(`${id}_char_sub_name`) || ''; // Replace with actual summary2 if available
@@ -462,7 +460,8 @@ const scrollToBottomFromSendMessage = () => {
     const audioName = localStorage.getItem(`${id}_char_audio_name`) || '';  // Replace with actual audio name if available
     const transcribeText = localStorage.getItem(`${id}_char_voice_trans`) || '';  // Replace with actual transcribe text if available
 
-
+    // Determine the endpoint based on voice data validity
+    const endpoint = isVoiceDataValid ? 'https://speakingcharacter.ai/send_message' : 'https://speakingcharacter.ai/send_message_multi_lang';
 
     // Create URL-encoded body
     const body = new URLSearchParams({
@@ -479,11 +478,9 @@ const scrollToBottomFromSendMessage = () => {
         transcibe_text: transcribeText,
     }).toString();
 
-    
-
     // Send message to the server
     try {
-        const response = await fetch('https://speakingcharacter.ai/send_message', {
+        const response = await fetch(endpoint, { // Use the determined endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -495,30 +492,29 @@ const scrollToBottomFromSendMessage = () => {
             throw new Error('Failed to send message');
         }
 
-      const responseText = await response.text();
-      const botMessage = {
-        role: 'bot',
-        content: responseText || 'No response received.',
-        loading: false,
-      };
+        const responseText = await response.text();
+        const botMessage = {
+            role: 'bot',
+            content: responseText || 'No response received.',
+            loading: false,
+        };
 
-      // Update local state and local storage for bot message
-      setMessages((prevMessages) => {
-        const updatedMessages = prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1 ? botMessage : msg
-        );
-        localStorage.setItem(id, JSON.stringify(updatedMessages));
-      
-        return updatedMessages;
-      });
+        // Update local state and local storage for bot message
+        setMessages((prevMessages) => {
+            const updatedMessages = prevMessages.map((msg, index) =>
+                index === prevMessages.length - 1 ? botMessage : msg
+            );
+            localStorage.setItem(id, JSON.stringify(updatedMessages));
+            return updatedMessages;
+        });
 
     } catch (error) {
         console.error('Error sending message:', error);
         displayToast('Error sending message:', 'error');
     } finally {
-      setTimeout(() => {
-        inputRef.current?.setFocus();
-      }, 100);
+        setTimeout(() => {
+            inputRef.current?.setFocus();
+        }, 100);
         setIsLoadingBotMessage(false); // Ensure loading is disabled after the request is complete
     }
 
@@ -544,7 +540,6 @@ const displayToast = (message: string, type: string) => {
 
 
 const hardReloadMessages = async () => {
-
   console.log("  in ::::: hard reload:::::")
   setIsLoadingMessages(true);
   
@@ -555,65 +550,96 @@ const hardReloadMessages = async () => {
       if(storedCharData){
         console.log("In if ::::::")
         const characterData = JSON.parse(storedCharData);
+        
+        // Check for null values in character voice data immediately after fetching
+        if (
+          characterData.char_voice_name.toLowerCase() === "null" ||
+          characterData.char_voice_trans.toLowerCase() === "null" ||
+          characterData.char_voice_url.toLowerCase() === "null"
+        ) {
+          setIsVolumeHigh(false); // Mute the volume
+          localStorage.setItem(`${id}_audio_status`, 'false'); // Set audio status to false
+          //displayToast("For multilanguage character voice clone is not supported", "error"); // Show toast message
+        } else {
+          setIsVolumeHigh(true); // Ensure volume is enabled if data is valid
+        }
+
         setCharacterData(characterData);
         setisLoadingHeaderContent(false);
       } else{
         console.log("In Else ::::::")
         setisLoadingHeaderContent(true)
       }
+      
       const fcm = localStorage.getItem('fcmToken');
 
+      // If no messages or character data in local storage, fetch from API
+      const response = await fetch(`https://speakingcharacter.ai/get_messages?authToken=${authToken}&charId=${id}`, {
+        method: "GET",
+        headers: {
+            "device": "ios",
+            "nottoken": `${fcm}`
+        }
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to fetch messages');
+      }
+
+      const data = await response.json();
       
-          // If no messages or character data in local storage, fetch from API
-          const response = await fetch(`https://speakingcharacter.ai/get_messages?authToken=${authToken}&charId=${id}`, {
-            method: "GET",
-            headers: {
-                "device": "ios",
-                "nottoken": `${fcm}`
-            }
-        });
+      // Check for null values in character voice data after fetching messages
+      if (
+        data.char_data.char_voice_name.toLowerCase() === "null" ||
+        data.char_data.char_voice_trans.toLowerCase() === "null" ||
+        data.char_data.char_voice_url.toLowerCase() === "null"
+      ) {
+        setIsVolumeHigh(false); // Mute the volume
+        localStorage.setItem(`${id}_audio_status`, 'false'); // Set audio status to false
+        //displayToast("For multilanguage character voice clone is not supported", "error"); // Show toast message
+      } else {
+        setIsVolumeHigh(true); // Ensure volume is enabled if data is valid
+      }
 
+      // Update messages
+      const formattedMessages = data.chats.map((msg: any) => ({
+          content: msg.text,
+          role: msg.is_user ? 'user' : 'bot',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }));
+      setMessages(formattedMessages);
 
-          if (!response.ok) {
-              throw new Error('Failed to fetch messages');
-          }
+      // Store messages and character data in localStorage after fetching from API
+      localStorage.setItem(id, JSON.stringify(formattedMessages));
+      localStorage.setItem(`${id}_char_data`, JSON.stringify(data.char_data)); // Store character data
+      localStorage.setItem(`${id}_char_name`, data.char_data.name);
+      localStorage.setItem(`${id}_char_sub_name`, data.char_data.summary1);
+      localStorage.setItem(`${id}_char_sub_name_2`, data.char_data.summary2);
+      localStorage.setItem(`${id}_char_voice_name`, data.char_data.voice);
+      localStorage.setItem(`${id}_char_image_url`, data.char_data.image_url);
+      localStorage.setItem(`${id}_char_audio_name`, data.char_data.char_voice_name);
+      localStorage.setItem(`${id}_char_audio_url`, data.char_data.char_voice_url);
+      localStorage.setItem(`${id}_char_audio_code`, data.char_data.char_voice_code);
+      localStorage.setItem(`${id}_char_voice_trans`, data.char_data.char_voice_trans);
 
-          const data = await response.json();
-          
-          // Update messages
-          const formattedMessages = data.chats.map((msg: any) => ({
-              content: msg.text,
-              role: msg.is_user ? 'user' : 'bot',
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          }));
-          setMessages(formattedMessages);
-
-          // Store messages and character data in localStorage after fetching from API
-          localStorage.setItem(id, JSON.stringify(formattedMessages));
-          localStorage.setItem(`${id}_char_data`, JSON.stringify(data.char_data)); // Store character data
-          localStorage.setItem(`${id}_char_name`, data.char_data.name);
-          localStorage.setItem(`${id}_char_sub_name`, data.char_data.summary1);
-          localStorage.setItem(`${id}_char_sub_name_2`, data.char_data.summary2);
-          localStorage.setItem(`${id}_char_voice_name`, data.char_data.voice);
-          localStorage.setItem(`${id}_char_image_url`, data.char_data.image_url);
-          localStorage.setItem(`${id}_char_audio_name`, data.char_data.char_voice_name);
-          localStorage.setItem(`${id}_char_audio_url`, data.char_data.char_voice_url);
-          localStorage.setItem(`${id}_char_audio_code`, data.char_data.char_voice_code);
-          localStorage.setItem(`${id}_char_voice_trans`, data.char_data.char_voice_trans);
-
+          // Set character data in state
           // Set character data in state
 
           
 
-          setCharacterData(data.char_data);
-          character_image = data.char_data.image_url;
+      // Set character data in state
+
+          
+
+      setCharacterData(data.char_data);
+      character_image = data.char_data.image_url;
       
   } catch (error) {
       console.error('Error loading messages:', error);
       // You might want to add error handling UI here
   } finally {
       setIsLoadingMessages(false);
-      setisLoadingHeaderContent(false)
+      setisLoadingHeaderContent(false);
   }
 };
 
@@ -685,7 +711,24 @@ const loadMessages = async () => {
 };
 
   const toggleVolume = () => {
-    setIsVolumeHigh(prevState => !prevState); // Toggle the volume state
+
+    // Check if the character voice data is valid
+    const isVoiceDataValid = localStorage.getItem(`${id}_char_voice_name`)?.toLowerCase() !== "null" &&
+                             localStorage.getItem(`${id}_char_voice_trans`)?.toLowerCase() !== "null" &&
+                             localStorage.getItem(`${id}_char_voice_url`)?.toLowerCase() !== "null";
+
+    // If the voice data is invalid, show a toast message and prevent toggling
+
+
+    
+    if (!isVoiceDataValid) {
+      displayToast("For multilanguage character voice clone is not supported", "error"); // Show toast message
+      return; // Prevent toggling if voice data is invalid
+    } else{
+        setIsVolumeHigh(prevState => !prevState);
+    }
+
+    
   };
 
   
@@ -1233,11 +1276,13 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
                 left: `${window.innerWidth / 2 - 50}px`,
                 top: `${window.innerHeight / 2 - 50}px`,
                 opacity: 0, // Start fully visible
-                transition: 'opacity 0.5s ease-out', // Smooth fade out
+                transition: 'opacity 1.0s ease-out', // Smooth fade out
             }}
+            onClick={() => handleBubbleImageClick("https://storage.googleapis.com/videos-downloader-13024.appspot.com/20241208_061227_526447_911a2f85-18fc-4936-a9ba-4787e4ca4f74.jpeg")} 
         >
             <img
-                src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE"
+                //src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE"
+                src = "https://storage.googleapis.com/videos-downloader-13024.appspot.com/20241208_061227_526447_911a2f85-18fc-4936-a9ba-4787e4ca4f74.jpeg"
                 alt="Bubble Content"
             />
         </div>
@@ -1249,6 +1294,16 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
     setTimeout(() => {
         setBubbles((prevBubbles) => prevBubbles.filter(bubble => bubble.key !== newBubble.key)); // Remove the bubble
     }, 3000); // Adjust the duration as needed
+  };
+
+  // Add state to manage the image popup visibility and the selected image
+  const [isImagePopupVisible, setIsImagePopupVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // Function to handle bubble image click
+  const handleBubbleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    setIsImagePopupVisible(true);
   };
 
   return (
@@ -1297,7 +1352,12 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
                   className={`message ${msg.role === 'user' ? 'sent' : 'received'}`}
                 >
                   {msg.role !== 'user' && ( // Show avatar only for received messages
-                    <img src = {localStorage.getItem(`${id}_char_image_url`) || ""} alt="Bot Avatar" className="message-avatar" />
+                    <img 
+                        src={localStorage.getItem(`${id}_char_image_url`) || ""} 
+                        alt="Bubble Image" 
+                        className="message-avatar" 
+                        onClick={() => handleBubbleImageClick(localStorage.getItem(`${id}_char_image_url`) || "")} // Handle bubble image click
+                    />
                   )}
                   <div className={`message-bubble ${msg.role === 'user' ? 'sent' : 'received'}`}>
                     <p>{msg.content}</p>
@@ -1478,15 +1538,28 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
 
 
 {showInfoModal && (
-        <CharacterInfoModal
-          characterImage={localStorage.getItem(`${id}_char_image_url`) || "Character Bio"}
-          characterName= {localStorage.getItem(`${id}_char_name`) || "Character Name"}
-          characterBio= {localStorage.getItem(`${id}_char_image_url`) || "Character Bio"}
-          welcomeMessage= {localStorage.getItem(`${id}_char_sub_name_2`) || "Character Bio"}
-          onAddToGroup={() => handleAddToGroup()}
-          onDeleteChat={() => console.log('Delete chat')}
-          onClose={() => setShowInfoModal(false)} // This controls visibility
-        />
+        <>
+          <div className="character-info-overlay" onClick={() => setShowInfoModal(false)}></div>
+          <CharacterInfoModal
+            characterImage={localStorage.getItem(`${id}_char_image_url`) || "Character Bio"}
+            characterName={localStorage.getItem(`${id}_char_name`) || "Character Name"}
+            characterBio={localStorage.getItem(`${id}_char_image_url`) || "Character Bio"}
+            welcomeMessage={localStorage.getItem(`${id}_char_sub_name_2`) || "Character Bio"}
+            onAddToGroup={() => handleAddToGroup()}
+            onDeleteChat={() => console.log('Delete chat')}
+            onClose={() => setShowInfoModal(false)} // This controls visibility
+          />
+        </>
+      )}
+
+      {/* Image Popup */}
+      {isImagePopupVisible && (
+          <div className="image-popup">
+              <div className="popup-content">
+                  <img src={selectedImage || ''} alt="Large View" />
+                  <button className="close-popup" onClick={() => setIsImagePopupVisible(false)}>X</button>
+              </div>
+          </div>
       )}
     </IonPage>
 

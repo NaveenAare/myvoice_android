@@ -900,12 +900,11 @@ import {
     const isPrivate = "";
   
     const confirmDeleteButton = document.getElementById('confirm-delete');
-    const loadingSpinner = document.getElementById('loadingSpinner-2');
-  
-    if (confirmDeleteButton && loadingSpinner) {
+
+    if (confirmDeleteButton && loadingSpinnerRef.current) {
       // Show loading spinner and disable button
       confirmDeleteButton.disabled = true;
-      loadingSpinner.style.display = 'block';
+      loadingSpinnerRef.current.style.display = 'block'; // Use ref to show spinner
   
       try {
         const formData = new FormData();
@@ -919,9 +918,7 @@ import {
         });
   
         if (response.ok) {
-          //showToast("Chat deleted successfully!", "success");
-         // location.reload();
-         displayToast("Chat Cleared successfully", "success");
+          displayToast("Chat Cleared successfully", "success");
           hideDeletePopup();
           await hardReloadMessages();
           displayToast("Chat Cleared successfully", "success");
@@ -935,7 +932,7 @@ import {
       } finally {
         // Reset button state and hide spinner
         confirmDeleteButton.disabled = false;
-        loadingSpinner.style.display = 'none';
+        loadingSpinnerRef.current.style.display = 'none'; // Use ref to hide spinner
         hideDeletePopup();
       }
     }
@@ -1312,6 +1309,90 @@ import {
       }
     }, [showGroupInfo]);
   
+    useEffect(() => {
+        const fetchGroupCharacters = async () => {
+            try {
+              const authToken = localStorage.getItem("authToken");
+              if (!authToken || !id) {
+                throw new Error('Missing auth token or group code');
+              }
+      
+              const response = await fetch('https://speakingcharacter.ai/get/group/characters', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  authToken,
+                  groupCode: id // Now 'id' will be the actual group code from the URL
+                })
+              });
+
+                const data = await response.json();
+                const characterInfo = data.map((character: any) => ({
+                    name: character.name,
+                    image_url: character.image_url,
+                }));
+
+                // Store in local storage with the key as `${id}_characterInfo`
+                localStorage.setItem(`${id}_characterInfo`, JSON.stringify(characterInfo));
+
+                console.log("Storing the data :::::::::: ", JSON.stringify(characterInfo));
+            } catch (error) {
+                console.error('Error fetching group characters:', error);
+            }
+        };
+
+        fetchGroupCharacters(); // Call the function to fetch characters
+
+        // Existing code for socket connection and message handling...
+    }, [id]); // Ensure that 'id' is the only dependency
+  
+    const characterInfo = JSON.parse(localStorage.getItem(`${id}_characterInfo`) || '[]');
+
+    // Function to get the image URL based on the character name
+    const getCharacterImageUrl = (name: string) => {
+      const lowerCaseName = name.toLowerCase();
+      
+      let bestMatch: any = null;
+      let bestScore = 0; // Higher score is better
+  
+      characterInfo.forEach((char: any) => {
+          const charNameLower = char.name.toLowerCase();
+          const score = similarityScore(lowerCaseName, charNameLower);
+  
+          if (score > bestScore) {
+              bestScore = score;
+              bestMatch = char;
+          }
+      });
+
+      console.log("Given Name :::::::::::::::::; ", name);
+      console.log("Best match given Name :::::::::::::::::; ",bestMatch.name);
+  
+      // Set a reasonable threshold (e.g., 0.3 for minimum similarity)
+      return bestMatch ? bestMatch.image_url : '/assets/group_png.png';
+  };
+  
+  // Function to calculate string similarity using Dice's Coefficient (bigram approach)
+  const similarityScore = (a: string, b: string): number => {
+      if (a === b) return 1; // Exact match
+  
+      const bigrams = (str: string) => {
+          const pairs = [];
+          for (let i = 0; i < str.length - 1; i++) {
+              pairs.push(str.slice(i, i + 2));
+          }
+          return pairs;
+      };
+  
+      const bigramA = bigrams(a);
+      const bigramB = bigrams(b);
+      
+      const intersection = bigramA.filter(pair => bigramB.includes(pair)).length;
+      return (2.0 * intersection) / (bigramA.length + bigramB.length);
+  };
+
     return (
       <IonPage className='ionPage'>
   
@@ -1372,27 +1453,44 @@ import {
                       if (canSplitMessage) {
                         return characterMessages.map((charMsg, charIndex) => {
                           const parts = charMsg.split('**');
-                          if (parts.length >= 3) {
+
+                        
+                        if (parts.length >= 3) {
+                            const characterName = parts[1]; // Assuming the character name is in the second part
+                            const imageUrl = getCharacterImageUrl(characterName); // Get the image URL based on the name
+
+                            // Check for the specific pattern
+                            
+
                             return (
-                              <div key={`${index}-${charIndex}`} className="message received">
-                                <img src="/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
-                                <div className="message-bubble received">
-                                  <p>
-                                    <span className="character-name">{parts[1]}</span>
-                                    <span className="message-content">{parts[2]}</span>
-                                  </p>
+                                <div key={`${index}-${charIndex}`} className="message received">
+                                    <img src={imageUrl} alt="Character Avatar" className="message-avatar" />
+                                    <div className="message-bubble received">
+                                        <p>
+                                            <span className="character-name">{characterName}</span>
+                                            <span className="message-content">{parts[2]}</span>
+                                        </p>
+                                    </div>
                                 </div>
-                              </div>
                             );
                           }
                           return null;
                         });
                       } else {
                         // Only show non-empty messages
+                        if (msg.content.includes("### New character is")) {
+                          return (
+                            <div key={index} className="message received">
+                              <div className="message-group-add">
+                                <p>{msg.content}</p>
+                              </div>
+                            </div>
+                          );
+                      }
                         if (msg.content.trim()) {
                           return (
                             <div key={index} className="message received">
-                              <img src="/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
+                              <img src="assets/group_png.png" alt="Default Avatar" className="message-avatar" />
                               <div className="message-bubble received">
                                 <p>{msg.content}</p>
                               </div>
@@ -1406,7 +1504,7 @@ import {
                       if (msg.content.trim()) {
                         return (
                           <div key={index} className="message received">
-                            <img src="/assets/group_png.png" alt="Bot Avatar" className="message-avatar" />
+                            <img src="assets/group_png.png" alt="Default Avatar" className="message-avatar" />
                             <div className="message-bubble received">
                               <p>{msg.content}</p>
                             </div>
@@ -1581,11 +1679,11 @@ import {
                       <p className="pop-description">Are you sure you want to delete this character / Audio?</p>
                   </div>
                   <div className="pop-button-wrapper">
-                      <button className="pop-button secondary" id="cancel-delete">Cancel</button>
-                      <button className="pop-button primary" id="confirm-delete">Delete</button>
-                      <div id="loadingSpinner-2" ref={loadingSpinnerRef} style={{ display: 'none' }} className="spinner"></div>
+                      <button className="pop-button secondary" id="cancel-delete" onClick={hideDeletePopup}>Cancel</button>
+                      <button className="pop-button primary" id="confirm-delete" onClick={deleteCharacter}>Delete</button>
+                      <div ref={loadingSpinnerRef} style={{ display: 'none' }} className="spinner"></div>
                   </div>
-                  <button className="exit-button" id="close-popup">
+                  <button className="exit-button" id="close-popup" onClick={hideDeletePopup}>
                       <svg height="20px" viewBox="0 0 384 512">
                           <path
                               d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"

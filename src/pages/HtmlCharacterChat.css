@@ -1218,3 +1218,7 @@ ion-page {
   max-height: 300px; /* Set a max height for the content */
   overflow-y: auto; /* Enable scrolling if content exceeds max height */
 }
+
+.popup-modal-iframe{
+  height: 10% !important;
+}

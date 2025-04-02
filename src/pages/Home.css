@@ -57,3 +57,72 @@ ion-tab-bar {
 .ios-content::part(scroll) {
   padding-top: 0 !important;
 }
+/* Add this to your Home.css or a separate CSS file */
+/* Add this to your Home.css */
+.overlayss {
+  position: fixed; /* Fixed positioning to cover the entire screen */
+  top: 0; /* Align to the top */
+  left: 0; /* Align to the left */
+  width: 100vw; /* Full width of the viewport */
+  height: 100vh; /* Full height of the viewport */
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+  z-index: 999999999999999999999999; /* High z-index to ensure it appears above all other elements */
+}
+
+.tour-popup {
+  position: fixed; /* Fixed positioning to overlay on the screen */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for the element's own size */
+  background-color: white; /* Background color */
+  border: 1px solid #ccc; /* Border for visibility */
+  z-index: 9999999999999999999999999999999999999; /* Higher z-index to ensure it appears above the overlay */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7); /* Shadow for depth */
+  display: flex; /* Flexbox for layout */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  height: 70%; /* Adjust height as needed */
+  width: 80%;
+  padding: 1px;
+  border-radius: 20px;
+}
+
+.tour-popup img {
+  width: 100%; /* Full width of the popup */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 100%; /* Limit the height to 80% of the popup */
+
+  border-radius: 20px; /* Rounded corners */
+}
+
+.tour-controls {
+  z-index: 99999999999999999999999999999999999999; /* Ensure it appears above the overlay */
+  margin-top: 10px; /* Space above the controls */
+  display: flex; /* Flexbox for controls */
+  justify-content: center; /* Center the buttons */
+  margin-bottom: 20px; /* Margin below controls */
+  width: 100%; /* Full width for buttons */
+}
+
+.tour-controls-button {
+  width: 80px; /* Width of the button */
+  height: 40px; /* Height of the button */
+  border-radius: 20px; /* Rounded corners */
+  margin-right: 10px; /* Space between buttons */
+  background: linear-gradient(90deg, #42A5F5, #26C6DA); /* Gradient background */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  display: flex; /* Flexbox for centering text */
+  align-items: center; /* Center text vertically */
+  justify-content: center; /* Center text horizontally */
+}
+
+.tour-controls-button-2{
+  width: 80px;
+  height: 40px;
+  margin-left: 10px;
+  border-radius: 20px;
+}
+

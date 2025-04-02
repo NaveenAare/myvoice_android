@@ -5,6 +5,7 @@
   background-color: #FFF;
   background: #FFFFFF;
   z-index: 990002;
+  
   flex: 1; /* Allows the input to grow and take up available space */
 
 }
@@ -17,6 +18,7 @@
 
   align-items: center;
   z-index: 990001;
+  border-radius: 20px !important;
   margin-top: env(safe-area-inset-top, 0)
 
 }
@@ -222,8 +224,9 @@ ul {
   }
 }
 
-.search-input-wrapper{
+.search-input-wrapper {
   position: relative;
   z-index: 990003;
   background: #FFF;
+  border-radius: 20px;
 }

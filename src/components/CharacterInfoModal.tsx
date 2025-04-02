@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import './CharacterInfoModal.css';
 
 interface CharacterInfoModalProps {
@@ -20,11 +20,27 @@ const CharacterInfoModal: React.FC<CharacterInfoModalProps> = ({
   onDeleteChat,
   onClose,
 }) => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose(); // Close the modal if clicked outside
+      }
+    };
+
+    // Add event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="character-info-overlay">
-      <div className="character-info-modal">
+      <div className="character-info-modal" ref={modalRef}>
         {/* Header with close button */}
         <div className="character-info-header">
           <button className="close-button" onClick={onClose}>

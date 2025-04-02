@@ -846,6 +846,8 @@ ion-content {
   z-index: 10000000000000000000000000000000; /* Ensure it's above other content */
   background-color: rgba(255, 255, 255, 0.0); /* Semi-transparent background */
   pointer-events: none; /* Allow clicks to pass through */
+  width: 120px !important;
+  height: 120px !important;
 }
 
 .bubble-1 {
@@ -864,12 +866,14 @@ ion-content {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  animation: float3D 3s forwards;
+  animation: float3D 5s forwards;
   min-width: 10px;
   min-height: 10px;
   transform-style: preserve-3d;
   pointer-events: auto; /* Allow interaction with the bubble */
   margin-bottom: 50%; /* Adjust this value to position the bubble above the center */
+  width: 120px !important;
+  height: 120px !important;
 }
 
 .bubble-1::before {
@@ -1272,5 +1276,41 @@ ion-page {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000000000000000000000000000000; /* Ensure it's above other content */
   padding: 20px;
+}
+
+.image-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.popup-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.popup-content img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px; /* Optional: Add some styling */
+}
+
+.close-popup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 

@@ -104,7 +104,6 @@ const CreateGroupPage: React.FC = () => {
 
   const router = useIonRouter();
 
-
   // Debounce logic
   const debounce = (func: (...args: any[]) => void, delay: number) => {
     let timer: NodeJS.Timeout;
@@ -131,7 +130,6 @@ const CreateGroupPage: React.FC = () => {
       document.removeEventListener('ionBackButton', preventSwipeBack);
     };
   }, [router]);
-
 
   const useSwipeBack = (threshold = 100) => {
     let touchStartX = 0;
@@ -163,9 +161,6 @@ const CreateGroupPage: React.FC = () => {
 
   useSwipeBack();
 
-
-
-
   useEffect(() => {
     const preventBack = (ev: Event) => {
       ev.preventDefault();
@@ -180,19 +175,12 @@ const CreateGroupPage: React.FC = () => {
     };
   }, [router]);
 
-
   useIonViewWillEnter(() => {
     document.addEventListener('ionBackButton', (ev) => {
       ev.preventDefault();
       console.log('Back gesture blocked on this page');
     });
   });
-
-  
-
-
-
-
 
   // Add a new function to fetch all characters
   const fetchAllCharacters = async () => {
@@ -221,8 +209,7 @@ const CreateGroupPage: React.FC = () => {
 
   const fetchCharacters = async (searchQuery: string) => {
     if (!searchQuery) {
-      // Instead of setting empty array, fetch all characters
-      fetchAllCharacters();
+      fetchAllCharacters(); // Fetch all characters if search query is empty
       return;
     }
 
@@ -244,12 +231,10 @@ const CreateGroupPage: React.FC = () => {
     }
   };
 
-  const debouncedFetch = useCallback(debounce(fetchCharacters, 500), []);
-
   const handleSearchChange = (e: CustomEvent) => {
     const value = e.detail.value!;
     setSearchText(value);
-    debouncedFetch(value);
+    fetchCharacters(value); // Call fetchCharacters directly for real-time search
   };
 
   const handleCharacterSelect = (character: Character) => {
@@ -308,7 +293,7 @@ const CreateGroupPage: React.FC = () => {
 
         // Navigate to home after a short delay
         setTimeout(() => {
-          router.push(`/group-chat/${data.groupCode}`)
+          router.push(`/group-chat/${data.groupCode}`, 'forward', 'push')
         }, 1500);
 
       } catch (error) {
@@ -386,10 +371,6 @@ const CreateGroupPage: React.FC = () => {
     setShowModal(false); // Close the modal
   };
 
-
-
-  
-
   return (
     <IonPage className="create-group-page">
       <IonHeader>
@@ -453,9 +434,8 @@ const CreateGroupPage: React.FC = () => {
 
           <IonSearchbar
             value={searchText}
-            onIonChange={handleSearchChange}
+            onIonInput={handleSearchChange}
             placeholder="Search characters"
-            debounce={300}
           />
 
           <IonSegment value={activeTab} onIonChange={e => setActiveTab(e.detail.value as 'public' | 'private')}>

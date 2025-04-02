@@ -38,10 +38,13 @@ const handleClick = (tab: string) => () => {
       <IonTabButton
         tab="TTS"
         className={activeTab === 'TTS' ? 'active-tab' : ''}
+        routerDirection="none"
         onClick={handleClick('TTS')}
+
       >
         <IonIcon icon={language} />
         <IonLabel>TTS</IonLabel>
+
       </IonTabButton>
 
       <IonTabButton

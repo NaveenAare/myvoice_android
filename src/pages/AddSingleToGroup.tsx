@@ -378,7 +378,7 @@ const AddSingleToGroup: React.FC = () => {
 
   const goToHome = () => {
     console.log("Navigating back to the previous page..."); // Debugging log
-    router.push("/group-chat/" + id , "back", "push");
+    router.push("/group-chat/" + id , "forward", "push");
   };
 
   const handleCloseModal = () => {

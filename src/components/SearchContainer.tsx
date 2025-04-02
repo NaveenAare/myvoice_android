@@ -3,6 +3,7 @@ import './SearchContainer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Keyboard } from '@capacitor/keyboard';
+import { IonIcon, IonItem, useIonRouter } from '@ionic/react';
 
 interface Character {
   category: string;
@@ -20,6 +21,8 @@ const SearchCharacters: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
   const [showResults, setShowResults] = useState<boolean>(false);
+
+  const router = useIonRouter();
 
   // Debounce logic
   const debounce = (func: (...args: any[]) => void, delay: number) => {
@@ -94,6 +97,16 @@ const SearchCharacters: React.FC = () => {
     };
   }, [showResults]); // Re-run effect when showResults changes
 
+
+  const handleSearchClick = (charc_id: string) => {
+      if(charc_id.toLowerCase().includes('html')){
+          router.push(`/character-chat-4/${charc_id}`, 'forward', 'push');
+      } else {
+          router.push(`/character-chat/${charc_id}`, 'forward', 'push');
+      }
+      
+  }
+
   return (
     <div className={`search-container-main-page ${showOverlay ? 'overlay-active' : ''}`}>
       {showOverlay && <div className="search-overlay" onClick={clearSearch}></div>}
@@ -120,7 +133,8 @@ const SearchCharacters: React.FC = () => {
         <ul className="search-results-dropdown">
           {results.map((character) => (
             <li key={character.id} className="search-result-item" onClick={() => {
-              Keyboard.dismiss();
+              handleSearchClick(character.id);
+              //Keyboard.dismiss();
             }}>
               <img
                 src={character.image_url}

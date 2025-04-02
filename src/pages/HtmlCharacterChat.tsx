@@ -266,6 +266,7 @@ import ShadowViewer from './ShadowContainer'
   
   
     const sendMessage = async () => {
+      Keyboard.hide();
   
       console.error("Send Button is pressed :::::::")
       if (!message.trim()) return; // Prevent sending empty messages or if already loading
@@ -378,6 +379,7 @@ import ShadowViewer from './ShadowContainer'
               
                 toggleAudioPopup();
                 
+                
 
                 //setHtmlContent(lastBotMessagess);
 
@@ -399,7 +401,7 @@ import ShadowViewer from './ShadowContainer'
       }
   
       // Call createBubble at the end of the function
-      createBubble(); // This will create a bubble after sending the message
+      //createBubble(); // This will create a bubble after sending the message
   };
   
   
@@ -586,62 +588,50 @@ import ShadowViewer from './ShadowContainer'
   
     // Function to toggle audio selection popup
     const toggleAudioPopup = () => {
+        // Dismiss the keyboard
+        Keyboard.hide(); // Dismiss the keyboard
 
-      setHtmlContent('');
+        setHtmlContent('');
 
+        if (isAudioPopupActive) {
+            // Trigger closing animation
+            document.getElementById("popupModal")?.classList.remove("active");
+            document.getElementById("new-overlay")?.classList.remove("active");
 
-      if (isAudioPopupActive) {
-        // Trigger closing animation
-        document.getElementById("popupModal")?.classList.remove("active");
-        document.getElementById("new-overlay")?.classList.remove("active");
+            // Wait for animation to finish before updating state
+            setTimeout(() => {
+                setIsAudioPopupActive(false);
 
-        
-        
-        // Wait for animation to finish before updating state
-        setTimeout(() => {
-          setIsAudioPopupActive(false);
+                setMessages((prevMessages) => {
+                    const lastBotMessagess = prevMessages
+                        .filter(msg => msg.role === 'bot')
+                        .slice(-1)[0].content; // Gets the last bot message
 
-          setMessages((prevMessages) => {
-    
-            const lastBotMessagess = prevMessages
-                  .filter(msg => msg.role === 'bot')
-                  .slice(-1)[0].content; // Gets the last bot message
-    
-                  setHtmlContent(lastBotMessagess);
-          
-            return prevMessages;
-          });
+                    setHtmlContent(lastBotMessagess);
+                    return prevMessages;
+                });
+            }, 400); // Match CSS transition duration
+        } else {
+            // Prepare new content before showing
+            setIsAudioPopupActive(true);
 
+            setTimeout(() => {
+                setMessages((prevMessages) => {
+                    const lastBotMessagess = prevMessages
+                        .filter(msg => msg.role === 'bot')
+                        .slice(-1)[0].content; // Gets the last bot message
 
-        }, 400); // Match CSS transition duration
-      } else {
-        // Prepare new content before showing
-        // setHtmlContent(yourNewContentHere);
-        
-        // Update state first, then trigger animation
-        setIsAudioPopupActive(true);
+                    setHtmlContent(lastBotMessagess);
+                    return prevMessages;
+                });
+            }, 400); // Match CSS transition duration
 
-        setTimeout(() => {
-
-          setMessages((prevMessages) => {
-            const lastBotMessagess = prevMessages
-                  .filter(msg => msg.role === 'bot')
-                  .slice(-1)[0].content; // Gets the last bot message
-    
-                  setHtmlContent(lastBotMessagess);
-          
-            return prevMessages;
-          });
-
-
-        }, 400); // Match CSS transition duration
-        
-        // Force reflow before adding active class
-        requestAnimationFrame(() => {
-          document.getElementById("popupModal")?.classList.add("active");
-          document.getElementById("new-overlay")?.classList.add("active");
-        });
-      }
+            // Force reflow before adding active class
+            requestAnimationFrame(() => {
+                document.getElementById("popupModal")?.classList.add("active");
+                document.getElementById("new-overlay")?.classList.add("active");
+            });
+        }
     };
     const togglePopup = () => {
       if (isAudioPopupActive) {
@@ -1552,7 +1542,7 @@ const handleShare = async () => {
   srcDoc={htmlContent}
   style={{
     width: "100%",
-    height: "500px",
+    height: "100%",
     border: "none",
   }}
 />

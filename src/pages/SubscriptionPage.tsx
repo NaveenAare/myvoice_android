@@ -8,9 +8,12 @@ import { close, helpCircle } from 'ionicons/icons';
 import React, { useState, useEffect } from 'react';
 import './SubscriptionPage.css';
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
+import { useHistory } from 'react-router-dom';
 
 const SubscriptionPage: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState('yearly');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const history = useHistory();
 
   const API_KEY = "appl_EGBtxzIFRLvGAxBqBwcPorXQGCT"; // Replace with your key
 
@@ -72,7 +75,11 @@ const SubscriptionPage: React.FC = () => {
     <IonPage>
       <IonContent className="subscription-content" fullscreen>
         <div className="top-bar">
-          <IonButton fill="clear" className="close-button">
+          <IonButton 
+            fill="clear" 
+            className="close-button" 
+            onClick={() => history.goBack()}
+          >
             <IonIcon icon={close} />
           </IonButton>
           <div className="header-title">UNLOCK <span className="pro">PRO</span> FEATURES</div>
@@ -106,7 +113,7 @@ const SubscriptionPage: React.FC = () => {
           <IonButton 
             expand="block" 
             className="subscribe-button"
-            onClick={handleSubscribe}
+            onClick={() => setIsModalOpen(true)}
           >
             Continue
           </IonButton>
@@ -121,6 +128,7 @@ const SubscriptionPage: React.FC = () => {
             <a href="#">Terms</a>
           </div>
         </div>
+
       </IonContent>
     </IonPage>
   );

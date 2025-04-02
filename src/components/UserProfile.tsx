@@ -5,7 +5,7 @@ import { chatbubbleOutline,searchOutline, closeCircleOutline, logOutOutline, pla
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'; // Ensure this import is present
 import { SignInWithApple } from '@capacitor-community/apple-sign-in'; // Ensure this import is present
 import { useIonRouter } from '@ionic/react';
-
+import GetSubscriptionButton from './GetSubscriptionButton'; // Import the new component
 // ... existing code ...
 
 <button className="action-button" onClick={() => window.location.href = `/chatbox/chat/${character.code}`}>
@@ -69,11 +69,19 @@ const UserProfile: React.FC = () => {
             const data = await response.json();
             setProfilePic(data.profile_pic || 'https://via.placeholder.com/120');
             setUserName(data.name);
+
+            localStorage.setItem(`user_pic`, data.profile_pic);
+            localStorage.setItem(`user_name`, data.name);
+            localStorage.setItem(`user_sub_status`, data.is_subscribed);
+            localStorage.setItem(`user_sub_exp_date`, data.subscription_end_date);
         } catch (error) {
             console.error('API Fetch error:', error);
             displayToast('Error fetching user details.', 'error');
         }
     };
+
+
+
 
     // Fetch and update characters
     const fetchAndUpdateCharacters = async () => {
@@ -400,6 +408,16 @@ const UserProfile: React.FC = () => {
     };
 
     useEffect(() => {
+        const storedProfilePic = localStorage.getItem('user_pic');
+        const storedUserName = localStorage.getItem('user_name');
+
+        if (storedProfilePic) {
+            console.log("storedUserName ::::::::::::::")
+            setProfilePic(storedProfilePic);
+        }
+        if (storedUserName) {
+            setUserName(storedUserName);
+        }
         fetchApiDetails(); // Fetch user details
         fetchAndUpdateCharacters(); // Fetch characters
         updateAudioCards(); // Fetch audio cards
@@ -418,6 +436,7 @@ const UserProfile: React.FC = () => {
                 <button className="logout-button" onClick={handleLogout} disabled={isLoggingOut}>
                     <IonIcon icon={logOutOutline} /> {/* Add the logout icon */}
                 </button>
+                <GetSubscriptionButton /> {/* Add the subscription button here */}
                 {isLoggingOut && <div className="spinner">Loading...</div>} {/* Show spinner */}
             </header>
 
@@ -446,7 +465,7 @@ const UserProfile: React.FC = () => {
                                         <p className="card-title">{character.name}</p>
                                     </div>
                                     <div className="button-container">
-                                        <button className="action-button" onClick={() => window.location.href = `/chatbox/chat/${character.code}`}>
+                                        <button className="action-button" onClick={() => window.location.href = `/character-chat/${character.code}`}>
                                             <IonIcon icon={chatbubbleOutline} />
                                         </button>
                                         <button className="action-button-2" onClick={() => showDeletePopup(character)}>
@@ -517,7 +536,7 @@ const UserProfile: React.FC = () => {
                                     <div className="button-container">
                                         <button 
                                             className="action-button" 
-                                            onClick={() => router.push(`/group-chat/${group.code}`)}
+                                            onClick={() => router.push(`/group-chat/${group.code}`, 'forward')}
                                         >
                                             <IonIcon icon={chatbubbleOutline} />
                                         </button>

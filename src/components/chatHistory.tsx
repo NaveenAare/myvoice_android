@@ -136,10 +136,12 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
                 notificationContainer.appendChild(notificationBadge); // Append badge to the container
 
                 menuCard.addEventListener('click', () => {
-                    if(character.chat_category == 'character_chat'){
+                    if(character.chat_category == 'character_chat' && !character.charc_id.toLowerCase().includes('html')){
                         router.push(`/character-chat/${character.charc_id}`, 'forward', 'push');
-                    } else{
+                    } else if(character.chat_category == 'group'){
                         router.push(`/group-chat/${character.group_id}`, 'forward', 'push');
+                    }else if (character.charc_id.toLowerCase().includes('html')) {
+                        router.push(`/character-chat-4/${character.charc_id}`, 'forward', 'push');
                     }
                     
                 });
@@ -155,8 +157,16 @@ const whatsappFilters: string[] = ["All", "UnRead"]; // Emoji list
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value);
-        renderCards(characters); // Re-render cards with the updated search term
+        const searchTerm = e.target.value.toLowerCase(); // Convert to lowercase for case-insensitive search
+        setSearchTerm(searchTerm); // Update the search term state
+
+        // Filter the characters based on the search term
+        const filteredCharacters = characters.filter(character => {
+            const fullName = character.character_info.name.toLowerCase(); // Convert name to lowercase
+            return fullName.includes(searchTerm); // Check if the name includes the search term
+        });
+
+        renderCards(filteredCharacters); // Re-render cards with the filtered characters
     };
 
     const clearSearch = () => {

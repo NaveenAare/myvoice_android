@@ -454,7 +454,7 @@ const AddCharacterToGroup: React.FC = () => {
             setToastColor('success');
             setShowToast(true);
             // Navigate to the group chat page with the group code
-            router.push(`/group-chat/${groupCodeFromResponse}`); // Adjust the route as necessary
+            router.push(`/group-chat/${groupCodeFromResponse}`, 'forward', 'push'); // Adjust the route as necessary
         }
     } catch (error) {
         console.error('Error joining character:', error);
