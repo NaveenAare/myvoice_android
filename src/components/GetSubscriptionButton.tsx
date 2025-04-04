@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonButton, IonImg, useIonRouter } from '@ionic/react';
 import './GetSubscriptionButton.css';
+import SubscriptionModal from '../components/newSub'
 
 const GetSubscriptionButton: React.FC = () => {
     const router = useIonRouter();
@@ -10,7 +11,13 @@ const GetSubscriptionButton: React.FC = () => {
 
     const user_sub_status = localStorage.getItem("user_sub_status");
     const user_sub_exp_date = localStorage.getItem("user_sub_exp_date");
+    const [showModal, setShowModal] = useState(false);
 
+    const handlePlanSelection = (plan: 'monthly' | 'yearly') => {
+          console.log('Selected plan:', plan);
+          // Add your payment processing logic here
+          setShowModal(false);
+        };
     
 
     useEffect(() => {
@@ -86,7 +93,7 @@ const GetSubscriptionButton: React.FC = () => {
     }
 
     const goToCreateGroup = () => {
-        router.push('/subscription', 'none'); // Navigate to the subscription page
+        setShowModal(true); // Navigate to the subscription page
     };
 
     return (
@@ -95,6 +102,11 @@ const GetSubscriptionButton: React.FC = () => {
                 <img src="assets/6941697.png" width={10} height={10} alt="Crown Icon" />
                 More Voices, More Fun!
             </button>
+            <SubscriptionModal 
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSelectPlan={handlePlanSelection}
+        />
         </div>
     );
 };

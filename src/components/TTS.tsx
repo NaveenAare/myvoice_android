@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { IonButton, IonIcon, IonTextarea, IonHeader, IonToolbar, IonTitle, IonPage } from "@ionic/react";
+import { IonButton, IonIcon, IonTextarea, IonHeader, IonToolbar, IonTitle, IonPage, IonToast } from "@ionic/react";
 import { play, download, sync, time, arrowForward, globe } from "ionicons/icons";
 import './TTS.css'; // Create a CSS file for styling
 import {IonCard, IonCardContent } from "@ionic/react";
 import AudioPlayerCard from './AudioPlayerCard';
+import SubscriptionModal from '../components/newSub'
 
 
-
+const MAX_AUDIOS_GENERATED = 5; // Set the maximum number of audios allowed
+const AUDIO_COUNT_KEY = 'audioGenerationCount'; // Key for local storage
 
 let audioCtx: AudioContext | null = null; // Initialize audio context
 let currentSource: AudioBufferSourceNode | null = null; // Variable to hold the current audio source
 let audioPlaying: HTMLAudioElement | null = null; // Variable to hold the currently playing audio
 let currentButton: HTMLElement | null = null; // Variable to hold the current button
-
-
-
 
 const TTSComponent: React.FC = () => {
   const [text, setText] = useState<string>("");
@@ -25,6 +24,114 @@ const TTSComponent: React.FC = () => {
   const [isAudioPopupActive, setIsAudioPopupActive] = useState(false); // State for audio popup
   const [activeTab, setActiveTab] = useState('category1'); // State for active tab
 
+  const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null); 
+  const [audioGenerationCount, setAudioGenerationCount] = useState(0); // Add state for audio generation count
+
+  // Toast state
+  const [isToastVisible, setIsToastVisible] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastType, setToastType] = useState<string>(''); // 'success' or 'error'
+
+  const user_sub_status = localStorage.getItem("user_sub_status");
+  const user_sub_exp_date = localStorage.getItem("user_sub_exp_date");
+  const authTokens = localStorage.getItem("authToken");
+  const [showModal, setShowModal] = useState(false);
+
+  const [inputText, setInputText] = useState<string>(''); // State to hold input text
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+        try {
+            /*const response = await fetch('https://speakingcharacter.ai/is/user/subscribed', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    authToken: authTokens || ''
+                }),
+            });
+
+            const data = await response.json();
+            console.log("API Response:", data);*/ // Log the response for debugging
+
+            if(user_sub_exp_date && user_sub_status){
+
+                if (user_sub_status?.toLowerCase() === 'true' && user_sub_exp_date) {
+                    const expirationDate = new Date(user_sub_exp_date);
+                    const currentDate = new Date();
+            
+                    if (expirationDate > currentDate) {
+                        setIsSubscribed(false); // Exit early if already subscribed
+                    }else{
+                        setIsSubscribed(false);
+                    }
+                }else{
+                    setIsSubscribed(false);
+                }
+
+            } else{
+                const response = await fetch('https://speakingcharacter.ai/is/user/subscribed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        authToken: authTokens || ''
+                    }),
+                });
+
+                const data = await response.json();
+                console.log("API Response:", data);
+                if (data.is_subscribed) {
+                    setIsSubscribed(true); // User is subscribed
+                } else {
+                    setIsSubscribed(false); // User is not subscribed
+                }
+            }
+
+            
+            
+        } catch (error) {
+            console.error('Error fetching subscription status:', error);
+            setIsSubscribed(false); // Handle error case
+        }
+    };
+
+    checkSubscription();
+}, [authTokens]); // Add authTokens as a dependency
+
+const handlePlanSelection = (plan: 'monthly' | 'yearly') => {
+  console.log('Selected plan:', plan);
+  // Add your payment processing logic here
+  setShowModal(false);
+};
+
+  // Function to get the current audio generation count from local storage
+  const getAudioGenerationCount = () => {
+    const count = localStorage.getItem(AUDIO_COUNT_KEY);
+    return count ? parseInt(count) : 0;
+  };
+
+  // Function to increment the audio generation count
+  const incrementAudioGenerationCount = () => {
+    const currentCount = getAudioGenerationCount();
+    if (currentCount < MAX_AUDIOS_GENERATED) {
+      localStorage.setItem(AUDIO_COUNT_KEY, (currentCount + 1).toString());
+      return true; // Allow audio generation
+    }
+    return false; // Limit reached
+  };
+
+  // Function to check audio generation count
+  const checkAudioGenerationCount = () => {
+    const count = getAudioGenerationCount(); // Use existing function to get count
+    setAudioGenerationCount(count);
+  };
+
+  useEffect(() => {
+    checkAudioGenerationCount(); // Check audio generation count on component mount
+  }, []);
 
   useEffect(() => {
     const loadVoices = () => {
@@ -39,8 +146,60 @@ const TTSComponent: React.FC = () => {
     loadVoices();
   }, []);
 
-  const speakText = () => {
-    setAudioURL("https://speakingcharacter.ai/static/1.mp3")
+  const speakText = async (text: string) => {
+    // Check if the user can generate audio
+    if (incrementAudioGenerationCount() || isSubscribed) {
+        const endpoint = 'https://api.speakingcharacter.ai/getAudio/sample/ios';
+
+        const TTSAudioCodeName = localStorage.getItem(`TTS_audio_code`) || '';
+        const TTSAudioTrans = localStorage.getItem(`TTS_audio_trans`) || '';
+        const TTSAudioUrl = localStorage.getItem(`TTS_audio_url`) || '';
+
+        // Create the request body as a JSON object
+        const body = JSON.stringify({
+            text: text,
+            TTSAudioCodeName: TTSAudioCodeName,
+            TTSAudioTrans: TTSAudioTrans,
+            TTSAudioUrl: TTSAudioUrl
+        });
+
+        // Send message to the server
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Set content type to JSON
+                },
+                body: body, // Send the JSON body
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send message');
+            }
+
+            const responseData = await response.json(); // Parse the JSON response
+            const audioFileUrl = responseData.link; // Assuming the response contains the audio URL
+
+            setAudioURL("https://api.speakingcharacter.ai/play/" + audioFileUrl); // Set the audio URL from the response
+
+            // Show success toast
+            setToastMessage("Audio generated successfully!");
+            setToastType("success");
+            setIsToastVisible(true);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            // Show error toast
+            setToastMessage("Error generating audio.");
+            setToastType("error");
+            setIsToastVisible(true);
+        }
+    } else {
+        // Show error toast instead of alert
+        setToastMessage("Free limit reached. Please subscribe to generate more audios.");
+        setToastType("error");
+        setIsToastVisible(true);
+        setShowModal(true);
+    }
   };
 
   const handleDownload = async () => {
@@ -49,10 +208,6 @@ const TTSComponent: React.FC = () => {
     const url = URL.createObjectURL(blob);
     setAudioURL(url);
   };
-
- 
-
-
 
   const toggleAudio = (audioUrl: string, button: HTMLElement) => {
     // If an audio is already playing, pause it and reset its button
@@ -120,9 +275,7 @@ const TTSComponent: React.FC = () => {
     });
   }
 
-
   async function fetchVoiceData() {
-    
     setIsLoadingAudio(true); // Set loading state to true
     const loadingSpinner = document.getElementById('loadingSpinner-for-audio');
     //loadingSpinner.style.display = 'block'; // Show spinner
@@ -152,8 +305,6 @@ const TTSComponent: React.FC = () => {
     }
   }
 
-
-
   const toggleAudioPopup = () => {
     setIsAudioPopupActive(prev => !prev);
     fetchVoiceData(); // Fetch voice data when opening the popup
@@ -167,7 +318,6 @@ const TTSComponent: React.FC = () => {
     }
   };
 
-
   const switchTab = (category: string) => {
     setActiveTab(category); // Set the active tab state
     const tabs = document.querySelectorAll('.tab');
@@ -180,7 +330,6 @@ const TTSComponent: React.FC = () => {
     document.querySelector(`[onclick="switchTab('${category}')"]`)?.classList.add('active');
 };
 
-
 const selectName = (name: string, url: string, code: string, trans: string) => {
   const selectedItemText = document.getElementById('toggleAudioName');
   if (selectedItemText) {
@@ -190,9 +339,7 @@ const selectName = (name: string, url: string, code: string, trans: string) => {
   toggleAudioPopup(); // Close the audio selection popup
 };
 
-
 async function updateCharacterVoice(audio: string, voice_url: string, voice_code: string, trans: string) {
-
   setSelectedVoice(audio);
 
   localStorage.setItem(`TTS_audio`, audio);
@@ -202,51 +349,84 @@ async function updateCharacterVoice(audio: string, voice_url: string, voice_code
   localStorage.setItem(`TTS_audio_trans`, trans);
 }
 
+const handleGenerateSpeech = () => {
+  console.log("Current text:", text); // Debugging line to check the current text value
+  if (text.trim()) { // Check if input is not empty
+    console.log("Generating speech for:", text); // Debugging line
+    speakText(text); // Call speakText with the input text
+  } else {
+    setToastMessage("Please enter some text to generate speech.");
+    setToastType("error");
+    setIsToastVisible(true);
+  }
+};
 
   return (
     <IonPage className="home-container-tts">
-
+      {/* Display subscription message if not subscribed */}
+      {!isSubscribed && (
+        <div className="subscription-message">
+          Free limit: {audioGenerationCount} / {MAX_AUDIOS_GENERATED}
+        </div>
+      )}
 
       <h3 className="tts-h3" id="tts-container-selected-audio">Selected Audio: {selectedVoice || "Default"}</h3>
 
       <div className="form-group-2">
-                <textarea 
-                  id="description" 
-                  name="description" 
-                  placeholder="Enter the text to convert to speech.." 
-                  required
-                ></textarea>
-              </div>
+        <IonTextarea 
+          id="description" 
+          name="description" 
+          placeholder="Enter the text to convert to speech.." 
+          required
+          disabled={false}
+          value={text}
+          onIonChange={(e) => {
+            const newValue = e.detail.value!;
+            console.log("Text updated:", newValue); // Debugging line to check the updated value
+            setText(newValue); // Update state on input change
+          }}
+        ></IonTextarea>
+      </div>
 
-        <div className="tts-buttons">
-          <IonButton className="tts-play-button" onClick={speakText}>
-            <IonIcon style={{ marginTop: "5px" }} icon={globe} />
-            <div style={{ width: "5px" }}></div>
+      <div className="tts-buttons">
+        <IonButton className="tts-play-button" onClick={handleGenerateSpeech}>
+          <IonIcon style={{ marginTop: "5px" }} icon={globe} />
+          <div style={{ width: "5px" }}></div>
+          Generate Speech
+        </IonButton>
 
-             Generate Speech
-          </IonButton>
+        <IonButton className="tts-change-audio-button" onClick={toggleAudioPopup}>
+          <IonIcon className='icccon' icon={sync} style={{ marginTop: "5px" }} /> 
+          <div style={{ width: "5px" }}></div>
+          Change Voice   
+        </IonButton>
+      </div>
 
-          <IonButton className="tts-change-audio-button" onClick={toggleAudioPopup}>
-            <IonIcon className = 'icccon' icon={sync} style={{ marginTop: "5px" }}/> 
-            <div style={{ width: "5px" }}></div>
+      <div>
+        <h1 className="tts-h3">Last Generated Audio</h1>
+        <AudioPlayerCard audioUrl={audioURL} />
+      </div>
 
-            Change  Voice   
-          </IonButton>
-        </div>
+      <div style={{ height: "100px" }}></div>
 
+      {/* Toast Notification */}
+      <IonToast
+        isOpen={isToastVisible}
+        onDidDismiss={() => setIsToastVisible(false)}
+        message={toastMessage}
+        duration={4000}
+        color={toastType === 'success' ? 'success' : 'danger'}
+        position="top"
+        cssClass="custom-toast"
+      />
+      <SubscriptionModal 
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSelectPlan={handlePlanSelection}
+        />
 
-
-        <div>
-      <h1 className="tts-h3">Last Generated Audio</h1>
-      <AudioPlayerCard audioUrl={audioURL} />
-    </div>
-
- 
-
-    <div style={{ height: "100px" }}></div>
-
-{/* Audio Selection Popup */}
-{isAudioPopupActive && (
+      {/* Audio Selection Popup */}
+      {isAudioPopupActive && (
         <div className="popup-modal active" id="popupModal">
           <div className="popup-header">
             Select Audio for Character
@@ -269,10 +449,14 @@ async function updateCharacterVoice(audio: string, voice_url: string, voice_code
             </div>
             <button className="close-btn" onClick={toggleAudioPopup}>Close</button>
           </div>
-        </div>
-      )}
 
-      </IonPage>
+          
+
+        </div>
+
+        
+      )}
+    </IonPage>
   );
 };
 

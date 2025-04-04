@@ -20,7 +20,7 @@ import {
 } from '@ionic/react';
 import CharacterInfoModal from '../components/CharacterInfoModal';
 
-import { call, mic, volumeHigh, volumeMute, send, cogSharp, ellipsisVertical, trash, logOut, arrowBack } from 'ionicons/icons'; // Import necessary icons
+import { call, mic, volumeHigh, volumeMute, send, cogSharp, ellipsisVertical, trash, logOut, arrowBack, image, imageOutline, imagesOutline } from 'ionicons/icons'; // Import necessary icons
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import './Chat.css';
@@ -116,7 +116,7 @@ const CharacterChatPage: React.FC = () => {
 
   localStorage.setItem("authToken", "eyJ1c2VySWQiOiAxLCAibWFpbCI6ICJhYXJlbmF2ZWVudmFybWFAZ21haWwuY29tIiwgIm5hbWUiOiAiTmF2ZWVuIHZhcm1hIEFhcmUiLCAicHJvZmlsZV9waWMiOiAiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSTZQa3BFSGJkdGZoQTFETFp5OHVCcnZrejRIaDhTVjhMQmtzajRYRjdTVlB2OEllRDU9czk2LWMifTAxODYzNTczMDA3ODJiMmRjOTFjZWNlZDBiZGM0OWNiMWNjZDZmODIzZDM2ZTcyMzY0N2EwZjIwZjVkZTgyOTc=");
 
-  const socket = io('https://speakingcharacter.ai', {
+  const socket = io('https://api.speakingcharacter.ai', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: 5,
@@ -303,6 +303,12 @@ const CharacterChatPage: React.FC = () => {
           // Optionally resolve or handle the case where there's no audio
         }
       });
+
+
+      socket.on(authToken + uniquePart + 'image_generated', function(image_url) {
+        createBubble(image_url);
+         
+      });
   
 
     return () => {
@@ -460,8 +466,10 @@ const scrollToBottomFromSendMessage = () => {
     const audioName = localStorage.getItem(`${id}_char_audio_name`) || '';  // Replace with actual audio name if available
     const transcribeText = localStorage.getItem(`${id}_char_voice_trans`) || '';  // Replace with actual transcribe text if available
 
+    const show_img = localStorage.getItem(`${id}_show_image`) || 'false';
+
     // Determine the endpoint based on voice data validity
-    const endpoint = isVoiceDataValid ? 'https://speakingcharacter.ai/send_message' : 'https://speakingcharacter.ai/send_message_multi_lang';
+    const endpoint = isVoiceDataValid ? 'https://api.speakingcharacter.ai/send_message_v2' : 'https://speakingcharacter.ai/send_message_multi_lang';
 
     // Create URL-encoded body
     const body = new URLSearchParams({
@@ -476,6 +484,7 @@ const scrollToBottomFromSendMessage = () => {
         audio_url: audioUrl,
         audio_name: audioName,
         transcibe_text: transcribeText,
+        show_image: show_img
     }).toString();
 
     // Send message to the server
@@ -519,7 +528,6 @@ const scrollToBottomFromSendMessage = () => {
     }
 
     // Call createBubble at the end of the function
-    createBubble(); // This will create a bubble after sending the message
 };
 
 
@@ -886,7 +894,8 @@ async function updateCharacterVoice(audio: string, voice_url: string, voice_code
   // Add function to handle call button click
   const handleCallClick = () => {
     const url = `/talking/${id}` 
-    window.location.href = url;
+   // window.location.href = url;
+   router.push(url, 'forward', 'push');
   };
 
   const clearChat = () => {
@@ -1264,37 +1273,37 @@ const fullContainerStyle = {
 
 const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
 
-  const createBubble = () => {
-    // Clear existing bubbles if needed
-    setBubbles([]); // Clear previous bubbles if you want only one at a time
+const createBubble = (imageUrl) => {
+  // Clear existing bubbles if needed
+  setBubbles([]); // Clear previous bubbles if you want only one at a time
 
-    const newBubble = (
-        <div
-            key={Date.now()}
-            className="bubble-1"
-            style={{
-                left: `${window.innerWidth / 2 - 50}px`,
-                top: `${window.innerHeight / 2 - 50}px`,
-                opacity: 0, // Start fully visible
-                transition: 'opacity 1.0s ease-out', // Smooth fade out
-            }}
-            onClick={() => handleBubbleImageClick("https://storage.googleapis.com/videos-downloader-13024.appspot.com/20241208_061227_526447_911a2f85-18fc-4936-a9ba-4787e4ca4f74.jpeg")} 
-        >
-            <img
-                //src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYkqiLNeAiLJP3AHf04h08Iz9lkd1iVbcmHkOob8rTBgtuZ91EdktitjlijeYz26us1s3VvrRIUohHy7pwzygrKnX7idg_c9pJiSQ3XLE"
-                src = "https://storage.googleapis.com/videos-downloader-13024.appspot.com/20241208_061227_526447_911a2f85-18fc-4936-a9ba-4787e4ca4f74.jpeg"
-                alt="Bubble Content"
-            />
-        </div>
-    );
+  const newBubble = (
+      <div
+          key={Date.now()}
+          className="bubble-1"
+          style={{
+              left: `${window.innerWidth / 2 - 50}px`,
+              top: `${window.innerHeight / 2 - 50}px`,
+              opacity: 0, // Start fully visible
+              transition: 'opacity 1.0s ease-out', // Smooth fade out
+          }}
+          onClick={() => handleBubbleImageClick(imageUrl)} // Use the passed imageUrl
+      >
+          <img
+              src={imageUrl} // Use the dynamic image URL
+              alt="Bubble Content"
+          />
+      </div>
+  );
 
-    setBubbles((prevBubbles) => [...prevBubbles, newBubble]);
+  setBubbles((prevBubbles) => [...prevBubbles, newBubble]);
 
-    // Set a timeout to fade out and remove the bubble after a certain duration
-    setTimeout(() => {
-        setBubbles((prevBubbles) => prevBubbles.filter(bubble => bubble.key !== newBubble.key)); // Remove the bubble
-    }, 3000); // Adjust the duration as needed
-  };
+  // Set a timeout to fade out and remove the bubble after a certain duration
+  setTimeout(() => {
+      setBubbles((prevBubbles) => prevBubbles.filter(bubble => bubble.key !== newBubble.key)); // Remove the bubble
+  }, 3000); // Adjust the duration as needed
+};
+
 
   // Add state to manage the image popup visibility and the selected image
   const [isImagePopupVisible, setIsImagePopupVisible] = useState(false);
@@ -1302,8 +1311,25 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
 
   // Function to handle bubble image click
   const handleBubbleImageClick = (imageUrl: string) => {
+    Keyboard.hide();
     setSelectedImage(imageUrl);
     setIsImagePopupVisible(true);
+  };
+
+  const [showImage, setShowImage] = useState<boolean>(true); // State to control image visibility
+
+  // Function to toggle image visibility
+  const toggleImageVisibility = () => {
+    let newShowImage = "true";
+    if(showImage){
+      newShowImage = "false"
+    } else{
+      newShowImage = "true"
+
+    }
+     // Toggle the boolean value
+    setShowImage(newShowImage == "true");
+    localStorage.setItem(`${id}_show_image`, JSON.stringify(newShowImage)); // Store the visibility state as true or false
   };
 
   return (
@@ -1351,7 +1377,7 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
                   key={index}
                   className={`message ${msg.role === 'user' ? 'sent' : 'received'}`}
                 >
-                  {msg.role !== 'user' && ( // Show avatar only for received messages
+                  {msg.role !== 'user' && ( // Show avatar only if showImage is true
                     <img 
                         src={localStorage.getItem(`${id}_char_image_url`) || ""} 
                         alt="Bubble Image" 
@@ -1493,6 +1519,19 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
         />
         <IonLabel className="delete-label">Change Voice</IonLabel>
       </IonItem>
+
+      {/* New option for toggling image visibility */}
+      <IonItem button onClick={() => {
+        toggleImageVisibility(); // Call the toggle function
+        setShowPopover(false);  // Close popover
+      }} detail={false} className="custom-item">
+        <IonIcon 
+          slot="start" 
+          icon={showImage ? image : imagesOutline} // Use an appropriate icon for toggling
+          className="delete-icon"
+        />
+        <IonLabel className="delete-label">{showImage ? 'Show Image' : 'Hide Image'}</IonLabel>
+      </IonItem>
     </IonList>
   </IonContent>
 
@@ -1557,7 +1596,10 @@ const [bubbles, setBubbles] = useState<JSX.Element[]>([]);
           <div className="image-popup">
               <div className="popup-content">
                   <img src={selectedImage || ''} alt="Large View" />
-                  <button className="close-popup" onClick={() => setIsImagePopupVisible(false)}>X</button>
+                  <button className="close-popup" onClick={() => {
+                    setIsImagePopupVisible(false);
+                    Keyboard.hide();
+                  }}>X</button>
               </div>
           </div>
       )}

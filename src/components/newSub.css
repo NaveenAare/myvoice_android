@@ -1,0 +1,214 @@
+/* SubscriptionModal.css (updated) */
+.memory-modal.light-theme {
+  --background: rgba(255, 255, 255, 0.98);
+  --border-radius: 20px 20px 0 0;
+  --backdrop-opacity: 0.2;
+}
+
+.modal-content {
+  padding: 20px;
+  color: #2c3e50;
+}
+
+.close-button {
+  --color: #000 !important;
+  color: #000 !important;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.header-section {
+  text-align: center;
+  margin: 0 0 20px 0;
+}
+
+.title {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #3498db;
+  display: block;
+}
+
+.subtitle {
+  color: #34495e !important;
+  font-size: 15px !important;
+}
+
+.blue-divider {
+  width: 50px;
+  height: 3px;
+  background: #3498db;
+  margin: 15px auto;
+  border-radius: 2px;
+}
+
+.plan-grid {
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Arrange plans in a column */
+  max-height: 100vh; /* Set a maximum height for the grid */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 10px; /* Add some padding */
+  gap: 15px; /* Space between cards */
+  margin-bottom: 200px !important;
+}
+
+.plan-grid.compact {
+  max-width: 70% !;
+  margin: 0 auto;
+}
+
+.plan-card {
+  background: white;
+  border-radius: 15px;
+  margin: 10px;
+  box-shadow: 0 4px 16px rgba(52, 152, 219, 0.4);
+  border: 1px solid rgba(52, 152, 219, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.plan-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.15);
+}
+
+.plan-badge {
+  background: #e3f2fd;
+  color: #3498db;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.best-value {
+  background: #3498db;
+  color: #000 !important;
+}
+
+.ribbon-icon {
+  font-size: 0.9em;
+  margin-right: 5px;
+}
+
+.price-container {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.plan-price {
+  color: #000 !important;
+  font-size: 1.8em;
+  font-weight: 700;
+}
+
+.plan-duration {
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+
+.yearly-savings {
+  color: #2ecc71;
+  font-size: 0.9em;
+  font-weight: 500;
+  margin: 10px 0;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 15px 0;
+  margin: 15px 0;
+  border-top: 1px solid #ecf0f1;
+}
+
+.plan-features li {
+  padding: 6px 0;
+  font-size: 0.9em;
+  color: #34495e;
+  display: flex;
+  align-items: center;
+}
+
+.plan-features li:before {
+  content: '•';
+  color: #3498db;
+  margin-right: 8px;
+}
+
+.modal-content .select-button {
+  margin-top: 15px; /* Space above the button */
+  background-color: #3498db; /* Button background color */
+  color: white; /* Button text color */
+  font-weight: bold; /* Make the text bold */
+  border-radius: 20px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  border: none; /* Remove default border */
+  padding: 10px 20px; /* Add padding for better appearance */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+.modal-content .select-button:hover {
+  background-color: #2980b9; /* Darker shade on hover */
+}
+
+.security-note {
+  color: #7f8c8d;
+  font-size: 0.85em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.security-note ion-icon {
+  color: #3498db;
+  margin-right: 8px;
+}
+
+.custom-row {
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: column; /* Arrange items in a column */
+  flex-wrap: nowrap; /* Prevent wrapping to the next line */
+}
+
+.custom-col {
+  flex: 0 0 auto; /* Prevent the columns from growing */
+  min-width: 280px; /* Minimum card width */
+  max-width: 400px; /* Maximum card width */
+}
+
+.strike-price {
+  text-decoration: line-through; /* Strikethrough effect */
+  color: red; /* Color for the strikethrough price */
+  font-size: 1em; /* Adjust size as needed */
+  margin-right: 10px; /* Space between prices */
+}
+
+.original-price {
+  font-size: 1.8em; /* Larger font size for the original price */
+  color: green; /* Color for the original price */
+}
+
+.footer-links {
+  text-align: center; /* Center the links */
+  margin-top: 20px; /* Space above the links */
+  color: #000;
+}
+
+.footer-link {
+  color: #7f8c8d !important; /* Link color */
+  text-decoration: none; /* Remove underline */
+}
+
+.footer-link:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+
+

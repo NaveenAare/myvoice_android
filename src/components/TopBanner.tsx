@@ -7,8 +7,8 @@ import {useState } from 'react'; // Added useState
 const CardComponent: React.FC = () => {
     const router = useIonRouter();
     const [images, setImages] = useState<string[]>([]); // State to hold image URLs
-        const [loading, setLoading] = useState(true);
-
+    const [loading, setLoading] = useState(true);
+    
 
     const texts: string[] = [
         "AI-powered character creation 🤖",
@@ -128,7 +128,11 @@ const CardComponent: React.FC = () => {
                 Create new Group
             </IonButton>
             
+
+       
         </div>
+
+        
     );
 };
 

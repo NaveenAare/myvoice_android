@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { IonToast, IonIcon } from '@ionic/react';
+import { IonToast, IonIcon, IonPage, useIonRouter } from '@ionic/react';
 import { io } from 'socket.io-client';
 import './TalkingPage.css';
 import { 
@@ -45,6 +45,7 @@ const TalkingPage: React.FC = () => {
   let [isProcessing, setIsProcessing] = useState(false);
   let [messages, setMessages] = useState<Message[]>([]);
   const imageRef = useRef<HTMLImageElement | null>(null); // Reference for the image
+  const ionRouter = useIonRouter();
 
     // Function to update the image
     const updateImage = (newImageSrc: string) => {
@@ -397,7 +398,7 @@ const stopRecording = () => {
 
 
     
-    playSendMessageAudio();
+    playAfterMessageAudio();
     console.error(' Is Processing ........:::: ', isProcessing);
 
     if (isProcessing) return;
@@ -738,7 +739,7 @@ const playAudioResponse = async (base64Audio: string): Promise<void> => {
 
   // Function to handle back navigation
   const handleBackButtonClick = () => {
-    history.goBack(); // Navigate back to the previous page
+    ionRouter.push(`/character-chat/${id}`, 'back', 'push'); // Navigate back to the previous page
   };
 
   // Effect to handle physical back button press
@@ -758,6 +759,7 @@ const playAudioResponse = async (base64Audio: string): Promise<void> => {
   }, [history]);
 
   return (
+    <IonPage className='ionPage'>
     <IonContent>
       <button className="back-arrow-btn" onClick={handleBackButtonClick}>
         <IonIcon icon={arrowForward} className="arrow-icon" />
@@ -804,6 +806,7 @@ const playAudioResponse = async (base64Audio: string): Promise<void> => {
         />
       </div>
     </IonContent>
+    </IonPage>
   );
 };
 
